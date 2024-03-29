@@ -1,0 +1,11 @@
+bool mode
+float64 a
+float64 b
+float64 c
+float64 d
+float64 e
+float64 f
+string[] mdis
+string[] param_value
+---
+int32 res

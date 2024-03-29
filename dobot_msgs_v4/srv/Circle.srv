@@ -1,0 +1,17 @@
+bool mode
+float64 a
+float64 b
+float64 c
+float64 d
+float64 e
+float64 f
+float64 a2
+float64 b2
+float64 c2
+float64 d2
+float64 e2
+float64 f2
+int32 count
+string[] param_value
+---
+int32 res

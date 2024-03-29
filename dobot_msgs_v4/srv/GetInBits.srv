@@ -1,0 +1,5 @@
+int32 index
+int32 addr
+int32 count
+---
+int32 res
