@@ -89,7 +89,7 @@ ros2 launch dobot_rviz display.launch
 
 可通过加载 joint_state_publisher_gui 调节各关节的角度，在 rviz 上看到其显示效果
 
-![rviz显示](/rviz.jpg)
+![rviz显示](/image/rviz.jpg)
 
 ## moveit 控制
 
