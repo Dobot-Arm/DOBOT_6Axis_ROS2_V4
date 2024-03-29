@@ -1,0 +1,69 @@
+# ur10:
+#   # Publish all joint states -----------------------------------
+#   joint_state_controller:
+#     type: joint_state_controller/JointStateController
+#     publish_rate: 50
+
+controller_manager:
+  ros__parameters:
+    #update_rate: 100 # Hz
+    #210611 if NOT set, ur10 dangles down with gravity
+    #TODO test other values
+    #update_rate: 1000 # Hz =Gazebo
+
+    joint_trajectory_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+      joints:
+        - shoulder_pan_joint
+        - shoulder_lift_joint
+        - elbow_joint
+        - wrist_1_joint
+        - wrist_2_joint
+        - wrist_3_joint
+      publish_rate: 50
+      write_op_modes:
+        - shoulder_pan_joint
+        - shoulder_lift_joint
+        - elbow_joint
+        - wrist_1_joint
+        - wrist_2_joint
+        - wrist_3_joint
+
+    joint_state_controller:
+      type: joint_state_controller/JointStateController
+      joints:
+        - shoulder_pan_joint
+        - shoulder_lift_joint
+        - elbow_joint
+        - wrist_1_joint
+        - wrist_2_joint
+        - wrist_3_joint
+      publish_rate: 50
+      write_op_modes:
+        - shoulder_pan_joint
+        - shoulder_lift_joint
+        - elbow_joint
+        - wrist_1_joint
+        - wrist_2_joint
+        - wrist_3_joint
+
+joint_trajectory_controller:
+  ros__parameters:
+    joints:
+      - shoulder_pan_joint
+      - shoulder_lift_joint
+      - elbow_joint
+      - wrist_1_joint
+      - wrist_2_joint
+      - wrist_3_joint
+    write_op_modes:
+      - shoulder_pan_joint
+      - shoulder_lift_joint
+      - elbow_joint
+      - wrist_1_joint
+      - wrist_2_joint
+      - wrist_3_joint
+    interface_name: position
+    state_publish_rate: 50.0
+    #state_publish_rate: 25.0
+    action_monitor_rate: 20.0

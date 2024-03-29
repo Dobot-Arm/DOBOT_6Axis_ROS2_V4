@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+  <name>cr_description</name>
+  <version>0.0.0</version>
+  <description>The cr_description package</description>
+
+  <maintainer email="dobot@dobot.cc">Dobot</maintainer>
+
+  <license>BSD</license>
+
+  <author email="dobot@dobot.cc">Dobot</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <export>
+      <build_type>ament_cmake</build_type>
+  </export>
+
+</package>
