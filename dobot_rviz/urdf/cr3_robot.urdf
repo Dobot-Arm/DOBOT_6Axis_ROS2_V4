@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="cr3_robot">
+  <link name="dummy_link" />
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.0027213 3.915E-07 0.022038"
+        rpy="0 0 0" />
+      <mass
+        value="0.653" />
+      <inertia
+        ixx="0.00075137"
+        ixy="-3.0366E-08"
+        ixz="1.2825E-06"
+        iyy="0.00080094"
+        iyz="2.5423E-09"
+        izz="0.0010902" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+    <joint name="dummy_joint" type="fixed">
+      <parent link="dummy_link" />
+      <child  link="base_link" />
+    </joint>
+
+  <link
+    name="Link1">
+    <inertial>
+      <origin
+        xyz="-3.68657602416735E-05 -0.00394516685385322 0.00364037839421286"
+        rpy="0 0 0" />
+      <mass
+        value="1.31100598822002" />
+      <inertia
+        ixx="0.00202531167977736"
+        ixy="-1.62039964254407E-06"
+        ixz="4.44242218921916E-07"
+        iyy="0.00198085794611413"
+        iyz="0.000256891817572315"
+        izz="0.00183966900872187" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/Link1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/Link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint1"
+    type="revolute">
+    <origin
+      xyz="0 0 0.1283"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Link2">
+    <inertial>
+      <origin
+        xyz="-0.129235280055448 1.440541622715E-05 0.133173619961293"
+        rpy="0 0 0" />
+      <mass
+        value="3.40043726977504" />
+      <inertia
+        ixx="0.00450581324845612"
+        ixy="1.58054368766225E-06"
+        ixz="8.56287041890268E-05"
+        iyy="0.00632329822349442"
+        iyz="-4.41201729949356E-07"
+        izz="0.00578241711656701" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/Link2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/Link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint2"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.5708 1.5708 0" />
+    <parent
+      link="Link1" />
+    <child
+      link="Link2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Link3">
+    <inertial>
+      <origin
+        xyz="-0.119822632176479 8.63344146663093E-08 0.0099876637825216"
+        rpy="0 0 0" />
+      <mass
+        value="2.21449412948544" />
+      <inertia
+        ixx="0.00236120280734313"
+        ixy="1.81888962826726E-08"
+        ixz="0.000137629457194959"
+        iyy="0.00313635345351584"
+        iyz="-1.39166877342495E-08"
+        izz="0.00285118872456311" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/Link3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/Link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint3"
+    type="revolute">
+    <origin
+      xyz="-0.274 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="Link2" />
+    <child
+      link="Link3" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.86"
+      upper="2.86"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Link4">
+    <inertial>
+      <origin
+        xyz="1.74679534498573E-07 0.0034522361215461 -0.0028730999658578"
+        rpy="0 0 0" />
+      <mass
+        value="0.842272956366123" />
+      <inertia
+        ixx="0.00100389823526424"
+        ixy="-3.26498724132116E-09"
+        ixz="-3.83652674720848E-09"
+        iyy="0.000793473566890046"
+        iyz="0.000133420135294005"
+        izz="0.000993889852029541" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/Link4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/Link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint4"
+    type="revolute">
+    <origin
+      xyz="-0.23 0 0.1283"
+      rpy="0 0 -1.5708" />
+    <parent
+      link="Link3" />
+    <child
+      link="Link4" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Link5">
+    <inertial>
+      <origin
+        xyz="-1.74603758796282E-07 -0.00333192403958193 -0.00286780844130663"
+        rpy="0 0 0" />
+      <mass
+        value="0.843692877114241" />
+      <inertia
+        ixx="0.0010085532680982"
+        ixy="-7.28325271824168E-09"
+        ixz="9.25818664621925E-09"
+        iyy="0.000794614679668754"
+        iyz="-0.000133904812596915"
+        izz="0.000998497358703575" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/Link5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/Link5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint5"
+    type="revolute">
+    <origin
+      xyz="0 -0.116 0"
+      rpy="1.5708 0 0" />
+    <parent
+      link="Link4" />
+    <child
+      link="Link5" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Link6">
+    <inertial>
+      <origin
+        xyz="-5.77233004964394E-07 0.000270130842674243 -0.0201386770129675"
+        rpy="0 0 0" />
+      <mass
+        value="0.159409278145106" />
+      <inertia
+        ixx="8.29484481057063E-05"
+        ixy="-1.45209400395148E-09"
+        ixz="-1.72340872805449E-11"
+        iyy="8.35928339777967E-05"
+        iyz="-1.33911019721127E-07"
+        izz="0.000131911087085913" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/Link6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://dobot_rviz/meshes/cr3/Link6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint6"
+    type="revolute">
+    <origin
+      xyz="0 0.105 0"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="Link5" />
+    <child
+      link="Link6" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-6.28"
+      upper="6.28"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>
