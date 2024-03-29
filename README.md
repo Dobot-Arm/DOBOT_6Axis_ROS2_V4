@@ -1,6 +1,3 @@
----
-typora-root-url: ./image
----
 # <center>ROS-Robot</center>
 # 1. 简介
 
@@ -101,7 +98,7 @@ ros2 launch dobot_moveit dobot_moveit.launch.py
 
 * 鼠标将关节拖到任意的角度，点击 "Plan and Execute" 即可看到运行效果
 
-![moveit显示](/moveit.jpg)
+![moveit显示](/image/moveit.jpg)
 
 ## gazebo 仿真
 
@@ -110,7 +107,7 @@ ros2 launch dobot_moveit dobot_moveit.launch.py
 ```
 ros2 launch dobot_gazebo load_urdf_into_gazebo.launch.py 
 ```
-![gazebo仿真](/gazebo.jpg)
+![gazebo仿真](/image/gazebo.jpg)
 
 ##  控制真实机械臂
 
@@ -124,4 +121,4 @@ ros2 launch dobot_gazebo load_urdf_into_gazebo.launch.py
 ```
 ros2 service list
 ```
-![service](/service.jpg)
+![service](/image/service.jpg)
