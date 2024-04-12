@@ -1,7 +1,7 @@
 # <center>ROS-Robot</center>
 # 1. 简介
 
-DOBOT_6Axis-ROS2 是为 Dobot 公司旗下基于TCP/IP协议的ROS的封装设计的软件开发套件。它基于 ROS/C++、python语言开发，遵循Dobot-TCP-IP控制通信协议，通过socket与机器终端进行Tcp连接，  并为用户提供了易用的api接口。通过 TCP-IP-ROS-6AXis，用户可以快速地连接Dobot机器并进行二次开发对机器的控制与使用。
+DOBOT_6Axis-ROS2_V4 是为 Dobot 公司旗下基于TCP/IP协议的ROS的封装设计的软件开发套件。它基于 ROS/C++、python语言开发，遵循Dobot-TCP-IP控制通信协议，通过socket与机器终端进行Tcp连接，  并为用户提供了易用的api接口。通过 TCP-IP-ROS-6AXis，用户可以快速地连接Dobot机器并进行二次开发对机器的控制与使用。
 
 
 
@@ -24,7 +24,7 @@ mkdir -p ~/dobot_ws/src
 
 cd ~/dobot_ws/src
 
-git clone https://github.com/Dobot-Arm/DOBOT_6Axis_ROS2.git
+git clone https://github.com/Dobot-Arm/DOBOT_6Axis_ROS2_V4.git
 
 cd ~/catkin_ws
 ```
