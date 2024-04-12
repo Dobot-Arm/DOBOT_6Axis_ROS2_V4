@@ -1,0 +1,371 @@
+<?xml version="1.0"?>
+<robot name="cr5_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+ <link name="dummy_link" />
+ <link name="base_link">
+    <inertial>
+      <origin xyz="-8.0961E-06 0.0019103 0.028995" rpy="0 0 0" />
+      <mass value="0.90882" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find cra_description)/meshes/cr5/base_link.dae" />
+      </geometry>
+      <material
+        name="">
+        <color rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find cra_description)/meshes/cr5/base_link.dae" />
+      </geometry>
+    </collision>
+  </link>
+  <link  name="world"/>
+<joint name="world_joint" type="fixed">
+    <parent link="world" />
+    <child  link="dummy_link" />
+  </joint>
+
+  <joint name="dummy_joint" type="fixed">
+    <parent link="dummy_link" />
+    <child  link="base_link" />
+  </joint>
+
+
+  <link  name="Link1">
+    <inertial>
+      <origin xyz="-8.7268E-07 -0.0032576 -0.0076748" rpy="0 0 0" />
+      <mass value="1.6123" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find cra_description)/meshes/cr5/Link1.dae" />
+      </geometry>
+      <material
+        name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find cra_description)/meshes/cr5/Link1.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint1" type="revolute">
+    <origin xyz="0 0 0.147" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="Link1" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.14" upper="3.14" effort="300" velocity="100" />
+  </joint>
+
+  <link name="Link2">
+    <inertial>
+      <origin xyz="-0.21351 -1.3842E-06 0.14252" rpy="0 0 0" />
+      <mass value="5.5186" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+         <mesh filename="file://$(find cra_description)/meshes/cr5/Link2.dae" />
+      </geometry>
+      <material
+        name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find cra_description)/meshes/cr5/Link2.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint2" type="revolute">
+    <origin xyz="0 0 0" rpy="1.5708 1.5708 0" />
+    <parent link="Link1" />
+    <child  link="Link2" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.14" upper="3.14" effort="300" velocity="100" />
+  </joint>
+
+  <link name="Link3">
+    <inertial>
+      <origin xyz="-0.15231 -1.4079E-07 0.022693" rpy="0 0 0" />
+      <mass value="2.8536" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find cra_description)/meshes/cr5/Link3.dae" />
+      </geometry>
+      <material
+        name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"  rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find cra_description)/meshes/cr5/Link3.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint3" type="revolute">
+    <origin xyz="-0.427 0 0" rpy="0 0 0" />
+    <parent link="Link2" />
+    <child link="Link3" />
+    <axis  xyz="0 0 1" />
+    <limit lower="-2.86"  upper="2.86"  effort="300" velocity="100" />
+  </joint>
+
+  <link name="Link4">
+    <inertial>
+      <origin xyz="-3.2386E-07 -0.002077 -0.0015548" rpy="0 0 0" />
+      <mass value="0.67058" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find cra_description)/meshes/cr5/Link4.dae" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find cra_description)/meshes/cr5/Link4.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint4" type="revolute">
+    <origin xyz="-0.357 0 0.141" rpy="0 0 -1.5708" />
+    <parent link="Link3" />
+    <child link="Link4" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.14" upper="3.14" effort="300" velocity="100" />
+  </joint>
+  <link
+    name="Link5">
+    <inertial>
+      <origin xyz="-3.7738E-07 -0.0045777 -0.0012971" rpy="0 0 0" />
+      <mass value="0.7269" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find cra_description)/meshes/cr5/Link5.dae" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find cra_description)/meshes/cr5/Link5.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint5" type="revolute">
+    <origin xyz="0 -0.116 0" rpy="1.5708 0 0" />
+    <parent link="Link4" />
+    <child link="Link5" />
+    <axis xyz="0 0 1" />
+    <limit lower="-3.14" upper="3.14" effort="300" velocity="100" />
+  </joint>
+
+  <link name="Link6">
+    <inertial>
+      <origin xyz="5.0777E-11 9.3774E-05 -0.019285" rpy="0 0 0" />
+      <mass value="0.15789" />
+      <inertia
+        ixx="0"
+        ixy="0"
+        ixz="0"
+        iyy="0"
+        iyz="0"
+        izz="0" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find cra_description)/meshes/cr5/Link6.dae" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find cra_description)/meshes/cr5/Link6.dae" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint6" type="revolute">
+    <origin xyz="0 0.105 0"  rpy="-1.5708 0 0" />
+    <parent link="Link5" />
+    <child link="Link6" />
+    <axis xyz="0 0 1" />
+    <limit lower="-6.28" upper="6.28" effort="300" velocity="100" />
+  </joint>
+    <gazebo reference="base_link">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="Link1">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="Link2">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="Link3">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="Link4">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="Link5">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="Link6">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo> 
+    <!-- 在运行demo.launch.py时，需要注释这个ros2_control节点，因为它使用了xxx.ros2_control.xacro来生成了ros2_control节点-->
+    <ros2_control name="GazeboSystem" type="system">
+        <hardware>
+            <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </hardware>
+        <joint name="joint1">
+            <command_interface name="position">
+                <param name="min">-1</param>
+                <param name="max">1</param>
+            </command_interface>
+            <state_interface name="position">
+                <param name="initial_value">0.0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="joint2">
+            <command_interface name="position">
+                <param name="min">-1</param>
+                <param name="max">1</param>
+            </command_interface>
+            <state_interface name="position">
+                <param name="initial_value">0.0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="joint3">
+            <command_interface name="position">
+                <param name="min">-1</param>
+                <param name="max">1</param>
+            </command_interface>
+            <state_interface name="position">
+                <param name="initial_value">0.0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="joint4">
+            <command_interface name="position">
+                <param name="min">-1</param>
+                <param name="max">1</param>
+            </command_interface>
+            <state_interface name="position">
+                <param name="initial_value">0.0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="joint5">
+            <command_interface name="position">
+                <param name="min">-1</param>
+                <param name="max">1</param>
+            </command_interface>
+            <state_interface name="position">
+                <param name="initial_value">0.0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="joint6">
+            <command_interface name="position">
+                <param name="min">-1</param>
+                <param name="max">1</param>
+            </command_interface>
+            <state_interface name="position">
+                <param name="initial_value">0.0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+    </ros2_control>
+
+
+    <gazebo>
+        <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+            <parameters> $(find cr5_moveit)/config/ros2_controllers.yaml</parameters>
+            <robot_param_node>robot_state_publisher</robot_param_node>
+        </plugin>
+    </gazebo>
+</robot>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+  <name>cra_description</name>
+  <version>0.0.0</version>
+  <description>The cr_description package</description>
+
+  <maintainer email="UR@UR.gr">UR</maintainer>
+
+  <license>BSD</license>
+
+  <author email="UR@UR.gr">UR</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <export>
+      <build_type>ament_cmake</build_type>
+  </export>
+
+</package>

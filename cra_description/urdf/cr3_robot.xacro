@@ -1,0 +1,506 @@
+<?xml version="1.0"?>
+<robot name="cr3_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+  <link name="dummy_link" />
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.0027213 3.915E-07 0.022038"
+        rpy="0 0 0" />
+      <mass
+        value="0.653" />
+      <inertia
+        ixx="0.00075137"
+        ixy="-3.0366E-08"
+        ixz="1.2825E-06"
+        iyy="0.00080094"
+        iyz="2.5423E-09"
+        izz="0.0010902" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link  name="world"/>
+<joint name="world_joint" type="fixed">
+    <parent link="world" />
+    <child  link="dummy_link" />
+  </joint>
+
+  <joint name="dummy_joint" type="fixed">
+    <parent link="dummy_link" />
+    <child  link="base_link" />
+  </joint>
+
+  <link
+    name="Link1">
+    <inertial>
+      <origin
+        xyz="-3.68657602416735E-05 -0.00394516685385322 0.00364037839421286"
+        rpy="0 0 0" />
+      <mass
+        value="1.31100598822002" />
+      <inertia
+        ixx="0.00202531167977736"
+        ixy="-1.62039964254407E-06"
+        ixz="4.44242218921916E-07"
+        iyy="0.00198085794611413"
+        iyz="0.000256891817572315"
+        izz="0.00183966900872187" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/Link1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/Link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint1"
+    type="revolute">
+    <origin
+      xyz="0 0 0.1283"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="300"
+      velocity="100" />
+  </joint>
+  <link
+    name="Link2">
+    <inertial>
+      <origin
+        xyz="-0.129235280055448 1.440541622715E-05 0.133173619961293"
+        rpy="0 0 0" />
+      <mass
+        value="3.40043726977504" />
+      <inertia
+        ixx="0.00450581324845612"
+        ixy="1.58054368766225E-06"
+        ixz="8.56287041890268E-05"
+        iyy="0.00632329822349442"
+        iyz="-4.41201729949356E-07"
+        izz="0.00578241711656701" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/Link2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/Link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint2"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.5708 1.5708 0" />
+    <parent
+      link="Link1" />
+    <child
+      link="Link2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="300"
+      velocity="100" />
+  </joint>
+  <link
+    name="Link3">
+    <inertial>
+      <origin
+        xyz="-0.119822632176479 8.63344146663093E-08 0.0099876637825216"
+        rpy="0 0 0" />
+      <mass
+        value="2.21449412948544" />
+      <inertia
+        ixx="0.00236120280734313"
+        ixy="1.81888962826726E-08"
+        ixz="0.000137629457194959"
+        iyy="0.00313635345351584"
+        iyz="-1.39166877342495E-08"
+        izz="0.00285118872456311" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/Link3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/Link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint3"
+    type="revolute">
+    <origin
+      xyz="-0.274 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="Link2" />
+    <child
+      link="Link3" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.86"
+      upper="2.86"
+      effort="300"
+      velocity="100" />
+  </joint>
+  <link
+    name="Link4">
+    <inertial>
+      <origin
+        xyz="1.74679534498573E-07 0.0034522361215461 -0.0028730999658578"
+        rpy="0 0 0" />
+      <mass
+        value="0.842272956366123" />
+      <inertia
+        ixx="0.00100389823526424"
+        ixy="-3.26498724132116E-09"
+        ixz="-3.83652674720848E-09"
+        iyy="0.000793473566890046"
+        iyz="0.000133420135294005"
+        izz="0.000993889852029541" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/Link4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/Link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint4"
+    type="revolute">
+    <origin
+      xyz="-0.23 0 0.1283"
+      rpy="0 0 -1.5708" />
+    <parent
+      link="Link3" />
+    <child
+      link="Link4" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="300"
+      velocity="100" />
+  </joint>
+  <link
+    name="Link5">
+    <inertial>
+      <origin
+        xyz="-1.74603758796282E-07 -0.00333192403958193 -0.00286780844130663"
+        rpy="0 0 0" />
+      <mass
+        value="0.843692877114241" />
+      <inertia
+        ixx="0.0010085532680982"
+        ixy="-7.28325271824168E-09"
+        ixz="9.25818664621925E-09"
+        iyy="0.000794614679668754"
+        iyz="-0.000133904812596915"
+        izz="0.000998497358703575" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/Link5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/Link5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint5"
+    type="revolute">
+    <origin
+      xyz="0 -0.116 0"
+      rpy="1.5708 0 0" />
+    <parent
+      link="Link4" />
+    <child
+      link="Link5" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-3.14"
+      upper="3.14"
+      effort="300"
+      velocity="100" />
+  </joint>
+  <link
+    name="Link6">
+    <inertial>
+      <origin
+        xyz="-5.77233004964394E-07 0.000270130842674243 -0.0201386770129675"
+        rpy="0 0 0" />
+      <mass
+        value="0.159409278145106" />
+      <inertia
+        ixx="8.29484481057063E-05"
+        ixy="-1.45209400395148E-09"
+        ixz="-1.72340872805449E-11"
+        iyy="8.35928339777967E-05"
+        iyz="-1.33911019721127E-07"
+        izz="0.000131911087085913" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/Link6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="file://$(find cra_description)/meshes/cr3/Link6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint6"
+    type="revolute">
+    <origin
+      xyz="0 0.105 0"
+      rpy="-1.5708 0 0" />
+    <parent
+      link="Link5" />
+    <child
+      link="Link6" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-6.28"
+      upper="6.28"
+      effort="300"
+      velocity="100" />
+  </joint>
+  <gazebo reference="base_link">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="Link1">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="Link2">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="Link3">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="Link4">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="Link5">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="Link6">
+        <gravity>false</gravity>
+        <selfCollide>true</selfCollide>
+    </gazebo> 
+    <!-- 在运行demo.launch.py时，需要注释这个ros2_control节点，因为它使用了xxx.ros2_control.xacro来生成了ros2_control节点-->
+    <ros2_control name="GazeboSystem" type="system">
+        <hardware>
+            <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+        </hardware>
+        <joint name="joint1">
+            <command_interface name="position">
+                <param name="min">-1</param>
+                <param name="max">1</param>
+            </command_interface>
+            <state_interface name="position">
+                <param name="initial_value">0.0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="joint2">
+            <command_interface name="position">
+                <param name="min">-1</param>
+                <param name="max">1</param>
+            </command_interface>
+            <state_interface name="position">
+                <param name="initial_value">0.0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="joint3">
+            <command_interface name="position">
+                <param name="min">-1</param>
+                <param name="max">1</param>
+            </command_interface>
+            <state_interface name="position">
+                <param name="initial_value">0.0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="joint4">
+            <command_interface name="position">
+                <param name="min">-1</param>
+                <param name="max">1</param>
+            </command_interface>
+            <state_interface name="position">
+                <param name="initial_value">0.0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="joint5">
+            <command_interface name="position">
+                <param name="min">-1</param>
+                <param name="max">1</param>
+            </command_interface>
+            <state_interface name="position">
+                <param name="initial_value">0.0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        <joint name="joint6">
+            <command_interface name="position">
+                <param name="min">-1</param>
+                <param name="max">1</param>
+            </command_interface>
+            <state_interface name="position">
+                <param name="initial_value">0.0</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+    </ros2_control>
+
+
+    <gazebo>
+        <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+            <parameters>$(find cr3_moveit)/config/ros2_controllers.yaml</parameters>
+            <robot_param_node>robot_state_publisher</robot_param_node>
+        </plugin>
+    </gazebo>
+
+</robot>
