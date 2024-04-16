@@ -5,7 +5,7 @@ import sys
 import rclpy                                                                      # ROS2 Python接口库
 from rclpy.node   import Node                                                     # ROS2 节点类
 from dobot_msgs_v4.srv import *   # 自定义的服务接口                                   
-
+import time
 
 class adderClient(Node):
     def __init__(self, name):
