@@ -20,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        'demo = dobot.demo:main',
+        'demo = dobot_demo.demo:main',
         ],
     },
 )
