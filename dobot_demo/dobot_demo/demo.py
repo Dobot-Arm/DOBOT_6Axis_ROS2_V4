@@ -64,14 +64,14 @@ def main(args=None):
     rclpy.init(args=args)                                                         # ROS2 Python接口初始化
     node = adderClient("service_adder_client")                                    # 创建ROS2节点对象并进行初始化
     node.send_request()                                                           # 发送服务请求
-    talker.point("MovJ", 350, -80, 0, 0, 0, 0)
-    talker.point("MovL", 350, -80, -40, 0, 0, 0)  
-    talker.DO(1, 1)
-    talker.point("MovJ", 350, -80, 0, 0, 0, 0)
-    talker.point("MovJ", 350, 60, 0, 0, 0, 0)
-    talker.point("MovL", 350, 60, -40, 0, 0, 0)
-    talker.DO(1, 0)
-    talker.point("MovJ", 350, 60, 0, 0, 0, 0)
+    node.point("MovJ", 350, -80, 0, 0, 0, 0)
+    node.point("MovL", 350, -80, -40, 0, 0, 0)  
+    node.DO(1, 1)
+    node.point("MovJ", 350, -80, 0, 0, 0, 0)
+    node.point("MovJ", 350, 60, 0, 0, 0, 0)
+    node.point("MovL", 350, 60, -40, 0, 0, 0)
+    node.DO(1, 0)
+    node.point("MovJ", 350, 60, 0, 0, 0, 0)
     time.sleep(3)  
     node.destroy_node()                                                           # 销毁节点对象
     rclpy.shutdown()                                                              # 关闭ROS2 Python接口
