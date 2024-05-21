@@ -320,7 +320,7 @@
 
     <gazebo>
         <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-            <parameters>$(find me6_moveit/config)/ros2_controllers.yaml</parameters>
+            <parameters> $(find me6_moveit)/config/ros2_controllers.yaml</parameters>
             <robot_param_node>robot_state_publisher</robot_param_node>
         </plugin>
     </gazebo>
