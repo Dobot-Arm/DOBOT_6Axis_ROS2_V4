@@ -142,7 +142,7 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
 
             recv_ptr = recv_ptr + strlen(recv_ptr);
         }
-        result = regexRecv(std::string(*recv_ptr));
+        //result = regexRecv(std::string(*recv_ptr));
         if (result.size() >= 2U)
         {
             if (stoi(result[0]) == 0)

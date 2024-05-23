@@ -214,7 +214,7 @@ void CRRobotRos2::init()
     kServiceMoveJog = this->create_service<dobot_msgs_v4::srv::MoveJog>(serviceMoveJog, std::bind(&CRRobotRos2::MoveJog, this, std::placeholders::_1, std::placeholders::_2));
     kServiceStopMoveJog = this->create_service<dobot_msgs_v4::srv::StopMoveJog>(serviceStopMoveJog, std::bind(&CRRobotRos2::StopMoveJog, this, std::placeholders::_1, std::placeholders::_2));
     kServiceRelMovLTool = this->create_service<dobot_msgs_v4::srv::RelMovLTool>(serviceRelMovLTool, std::bind(&CRRobotRos2::RelMovLTool, this, std::placeholders::_1, std::placeholders::_2));
-    kServiceRelMovJTool = this->create_service<dobot_msgs_v4::srv::RelMovLTool>(serviceRelMovJTool, std::bind(&CRRobotRos2::RelMovJTool, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceRelMovJTool = this->create_service<dobot_msgs_v4::srv::RelMovJTool>(serviceRelMovJTool, std::bind(&CRRobotRos2::RelMovJTool, this, std::placeholders::_1, std::placeholders::_2));
     kServiceRelMovJUser = this->create_service<dobot_msgs_v4::srv::RelMovJUser>(serviceRelMovJUser, std::bind(&CRRobotRos2::RelMovJUser, this, std::placeholders::_1, std::placeholders::_2));
     kServiceRelMovLUser = this->create_service<dobot_msgs_v4::srv::RelMovLUser>(serviceRelMovLUser, std::bind(&CRRobotRos2::RelMovLUser, this, std::placeholders::_1, std::placeholders::_2));
     kServiceRelJointMovJ = this->create_service<dobot_msgs_v4::srv::RelJointMovJ>(serviceRelJointMovJ, std::bind(&CRRobotRos2::RelJointMovJ, this, std::placeholders::_1, std::placeholders::_2));
