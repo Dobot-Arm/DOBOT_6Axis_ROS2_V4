@@ -39,7 +39,7 @@ source install/local_setup.sh
 ### 设置环境变量
 
 ```
-source $HOME/dobot_ws/install/local_setup.sh
+echo "source ~/dobot_ws/install/local_setup.sh" >> ~/.bashrc
 ```
 
 ### 设置机械臂连接IP
