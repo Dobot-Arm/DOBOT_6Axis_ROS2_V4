@@ -43,7 +43,11 @@ void CRCommanderRos2::recvTask()
                 {
 
                     if (real_time_data_->len != 1440)
+                    {
+                        std::cout<<"[command] realtime data doesn't have expected size ,"<<real_time_data_->len<<std::endl;
                         continue;
+                    }
+                        
 
                     mutex_.lock();
                     for (uint32_t i = 0; i < 6; i++)
