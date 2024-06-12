@@ -47,11 +47,13 @@ void CRCommanderRos2::recvTask()
                         std::cout<<"[command] realtime data doesn't have expected size ,"<<real_time_data_->len<<std::endl;
                         continue;
                     }
+
                         
 
                     mutex_.lock();
                     for (uint32_t i = 0; i < 6; i++)
                         current_joint_[i] = deg2Rad(real_time_data_->q_actual[i]);
+                    std::cout<<"[command] realtime data have expected size ,"<<real_time_data_->len<<std::endl;
 
                     memcpy(tool_vector_, real_time_data_->tool_vector_actual, sizeof(tool_vector_));
                     mutex_.unlock();
