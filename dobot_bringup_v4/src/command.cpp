@@ -47,7 +47,7 @@ void CRCommanderRos2::recvTask()
                         std::cout<<"[command] realtime data doesn't have expected size ,"<<real_time_data_->len<<std::endl;
                         continue;
                     }
-
+                
                         
 
                     mutex_.lock();

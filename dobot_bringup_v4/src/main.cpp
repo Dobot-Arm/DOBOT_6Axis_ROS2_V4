@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     {
       joint_state_msg.position[i] = position[i];
     }
-   // joint_state_pub->publish(joint_state_msg);
+   joint_state_pub->publish(joint_state_msg);
 
     double val[6];
     robot->getToolVectorActual(val);
