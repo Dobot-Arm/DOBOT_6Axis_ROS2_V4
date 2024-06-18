@@ -148,18 +148,32 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
 
             recv_ptr = recv_ptr + strlen(recv_ptr);
         }
+        std::cout<<"recv_ptr"<<recv_ptr<<std::endl;
+        const char* startPos = strchr(recv_ptr, '{');
+    const char* endPos = strchr(recv_ptr, '}');
+std::string number {};
+    if (startPos != nullptr && endPos != nullptr && startPos < endPos) {
+        // Calculate the length of the substring between '{' and '}'
+        size_t length = endPos - startPos - 1;
+
+        // Extract the substring between '{' and '}'
+        char numberStr[length + 1];
+        strncpy(numberStr, startPos + 1, length);
+        numberStr[length] = '\0'; // Null-terminate the C-string
+
+        result.push_back("0");//bad hardcording design
+        result.push_back(numberStr);
+
+        // Output the extracted number
+        std::cout << "Extracted number: " << number << std::endl;
+    }
+    
+    
+
+
         //result = regexRecv(std::string(*recv_ptr));
-        if (result.size() >= 2U)
-        {
-            if (stoi(result[0]) == 0)
-            {
-                err_id = stoi(result[1]);
-            }
-            else
-            {
-                err_id = 2147483647; // int-max
-            }
-        }
+        //std::cout<<"result"<<result.size()<<std::endl;
+    
         std::cout << "tcp recv feedback : " << *recv_ptr << std::endl; // FIXME parse the buf may be better
     }
     catch (const std::logic_error &err)
@@ -175,7 +189,7 @@ bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id)
     {
         std::vector<std::string> result_;
         doTcpCmd(this->dash_board_tcp_, cmd.c_str(), err_id, result_);
-        std::cout<<"result = "<<result_<<std::endl;
+        std::cout<<"result = "<<result_.size()<<std::endl;
         return true;
     }
     catch (const TcpClientException &err)

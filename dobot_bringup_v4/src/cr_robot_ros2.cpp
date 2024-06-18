@@ -632,7 +632,11 @@ bool CRRobotRos2::Tool(const std::shared_ptr<dobot_msgs_v4::srv::Tool::Request> 
 
 bool CRRobotRos2::RobotMode(const std::shared_ptr<dobot_msgs_v4::srv::RobotMode::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::RobotMode::Response> response)
 {
-    return commander_->callRosService(parseTool::parserrobotModeRequest2String(request), response->res);
+    std::vector<std::string> result;
+    bool out =  commander_->callRosService(parseTool::parserrobotModeRequest2String(request), response->res,result);
+    if(result.size()>1)
+        response->mode = std::stoi(result[1]);
+    return out;
 }
 
 bool CRRobotRos2::SetPayload(const std::shared_ptr<dobot_msgs_v4::srv::SetPayload::Request> request,
