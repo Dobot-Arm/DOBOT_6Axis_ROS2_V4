@@ -175,6 +175,7 @@ bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id)
     {
         std::vector<std::string> result_;
         doTcpCmd(this->dash_board_tcp_, cmd.c_str(), err_id, result_);
+        std::cout<<"result = "<<result_<<std::endl;
         return true;
     }
     catch (const TcpClientException &err)
