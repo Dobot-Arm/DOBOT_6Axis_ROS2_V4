@@ -516,15 +516,23 @@ void CRRobotRos2::getErrorID(std::vector<int> &vec)
     kClientGeterror = this->create_client<dobot_msgs_v4::srv::GetErrorID>(name);
     // 创建请求消息
     auto request = std::make_shared<dobot_msgs_v4::srv::GetErrorID::Request>();
-
+    int jugaad_counter{0};
     while (!kClientGeterror->service_is_ready())
     {
+        if(jugaad_counter)
+        {
+            vec.push_back(-2);
+            return;
+        }
         if (!rclcpp::ok())
         {
             RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for the service. Exiting.");
             return;
         }
         RCLCPP_INFO(this->get_logger(), "service not available, waiting again...");
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        jugaad_counter++;
+
     }
 
     auto result = kClientGeterror->async_send_request(request);
@@ -1089,5 +1097,6 @@ bool CRRobotRos2::ServoJ(const std::shared_ptr<dobot_msgs_v4::srv::ServoJ::Reque
 
 bool CRRobotRos2::ServoP(const std::shared_ptr<dobot_msgs_v4::srv::ServoP::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::ServoP::Response> response)
 {
+    std::cout<<"Dobot Driver called ServoP"<<std::endl;
     return commander_->callRosService(parseTool::parserServoPRequest2String(request), response->res);
 }

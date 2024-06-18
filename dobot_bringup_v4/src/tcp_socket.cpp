@@ -80,6 +80,7 @@ void TcpClient::tcpSend(const void *buf, uint32_t len)
 
 bool TcpClient::tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t timeout)
 {
+    // std::cout << "tcpRecv : "<< std::endl;
     uint8_t *tmp = (uint8_t *)buf; // NOLINT(modernize-use-auto)
     fd_set read_fds;
     timeval tv = {0, 0};
@@ -93,6 +94,7 @@ bool TcpClient::tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t ti
         tv.tv_sec = timeout / 1000;
         tv.tv_usec = (timeout % 1000) * 1000;
         int err = ::select(fd_ + 1, &read_fds, nullptr, nullptr, &tv);
+        // std::cout<<"tcp err "<<err<<std::endl;
         if (err < 0)
         {
             disConnect();

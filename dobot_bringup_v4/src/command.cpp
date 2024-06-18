@@ -53,7 +53,7 @@ void CRCommanderRos2::recvTask()
                     mutex_.lock();
                     for (uint32_t i = 0; i < 6; i++)
                         current_joint_[i] = deg2Rad(real_time_data_->q_actual[i]);
-                    std::cout<<"[command] realtime data have expected size ,"<<real_time_data_->len<<std::endl;
+                    // std::cout<<"[command] realtime data have expected size ,"<<real_time_data_->len<<std::endl;
 
                     memcpy(tool_vector_, real_time_data_->tool_vector_actual, sizeof(tool_vector_));
                     mutex_.unlock();
@@ -170,6 +170,7 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
 
 bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id)
 {
+    std::cout<<"Dobot Driver called a ros service with cmd :"<<cmd<<std::endl;
     try
     {
         std::vector<std::string> result_;
@@ -178,6 +179,7 @@ bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id)
     }
     catch (const TcpClientException &err)
     {
+        std::cout<<"Dobot Driver had an error with cmd"<<cmd<<std::endl;
         std::cout << "%s" << std::endl;
         err_id = -1;
         return false;
