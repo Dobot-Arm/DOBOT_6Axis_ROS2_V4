@@ -6,7 +6,7 @@ CRCommanderRos2::CRCommanderRos2(const std::string &ip)
     is_running_ = false;
     real_time_data_ = std::make_shared<RealTimeData>();
     real_time_tcp_ = std::make_shared<TcpClient>(ip, 30004);
-    // dash_board_tcp_ = std::make_shared<TcpClient>(ip, 29999);
+    dash_board_tcp_ = std::make_shared<TcpClient>(ip, 29999);
 }
 
 CRCommanderRos2::~CRCommanderRos2()
@@ -82,19 +82,19 @@ void CRCommanderRos2::recvTask()
             }
         }
 
-        // if (!dash_board_tcp_->isConnect())
-        // {
-        //     try
-        //     {
-        //         dash_board_tcp_->connect();
-        //     }
-        //     catch (const TcpClientException &err)
-        //     {
+        if (!dash_board_tcp_->isConnect())
+        {
+            try
+            {
+                dash_board_tcp_->connect();
+            }
+            catch (const TcpClientException &err)
+            {
 
-        //         std::cout << "tcp recv ERROR : %s" << std::endl;
-        //         sleep(3);
-        //     }
-        // }
+                std::cout << "tcp recv ERROR : %s" << std::endl;
+                sleep(3);
+            }
+        }
     }
 }
 
@@ -189,7 +189,7 @@ bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id, std
 {
     try
     {
-        // doTcpCmd(this->dash_board_tcp_, cmd.c_str(), err_id, result_);
+        doTcpCmd(this->dash_board_tcp_, cmd.c_str(), err_id, result_);
         return true;
     }
     catch (const TcpClientException &err)
