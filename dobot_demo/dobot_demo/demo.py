@@ -29,7 +29,7 @@ class adderClient(Node):
     def point(self, Move, X_j1, Y_j2, Z_j3, RX_j4, RY_j5, RZ_j6):  # 运动指令
         if Move == "MovJ":
             P1 = MovJ.Request()
-            P1.mode = False
+            P1.mode = True
             P1.a = float(X_j1)
             P1.b = float(Y_j2)
             P1.c = float(Z_j3)
@@ -40,7 +40,7 @@ class adderClient(Node):
             print(response)
         elif Move == "MovL":
             P1 = MovL.Request()
-            P1.mode = False
+            P1.mode = True
             P1.a = float(X_j1)
             P1.b = float(Y_j2)
             P1.c = float(Z_j3)
@@ -52,24 +52,20 @@ class adderClient(Node):
         else:
             print("无该指令")
 
+    def DO(self, index, status):  # IO 控制夹爪/气泵
+        DO_V = DO.Request()
+        DO_V.index = index
+        DO_V.status = status
+        response = self.DO_l.call_async(DO_V)
+        print(response)
+
 
 def main(args=None):
     rclpy.init(args=args)                                                         # ROS2 Python接口初始化
     node = adderClient("service_adder_client")                                    # 创建ROS2节点对象并进行初始化
-    node.send_request()                                                           # 发送服务请求
-    node.point("MovJ", 350, -80, 0, 0, 0, 0)
-    node.point("MovL", 350, -80, -40, 0, 0, 0)  
-    node.DO(1, 1)
-    node.point("MovJ", 350, -80, 0, 0, 0, 0)
-    node.point("MovJ", 350, 60, 0, 0, 0, 0)
-    node.point("MovL", 350, 60, -40, 0, 0, 0)
-    node.DO(1, 0)
-    node.point("MovJ", 350, 60, 0, 0, 0, 0)
+    #node.send_request()                                                           # 发送服务请求
+    node.point("MovJ", 50, -8, 0, 0, 0, 0)
+    node.point("MovJ", 0, -8, 0, 0, 0, 0)  
     time.sleep(3)  
     node.destroy_node()                                                           # 销毁节点对象
     rclpy.shutdown()                                                              # 关闭ROS2 Python接口
-
-
-
-
-
