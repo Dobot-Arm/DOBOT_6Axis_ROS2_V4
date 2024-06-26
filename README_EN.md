@@ -39,7 +39,7 @@ source install/local_setup.sh
 ### Set environment variable
 
 ```
-source $HOME/dobot_ws/install/local_setup.sh
+echo "source ~/dobot_ws/install/local_setup.sh" >> ~/.bashrc
 ```
 
 ### Set the robot arm connection IP
@@ -72,6 +72,12 @@ source ~/.bashrc
 
 ```
 echo "export DOBOT_TYPE=cr16" >> ~/.bashrc
+source ~/.bashrc
+```
+### If it is a E6 robot, please type the following commands
+
+```
+echo "export DOBOT_TYPE=me6" >> ~/.bashrc
 source ~/.bashrc
 ```
 # 2. Demonstration
