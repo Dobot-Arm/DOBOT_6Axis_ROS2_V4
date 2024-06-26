@@ -74,6 +74,12 @@ source ~/.bashrc
 echo "export DOBOT_TYPE=cr16" >> ~/.bashrc
 source ~/.bashrc
 ```
+### 若为 E6 机械臂，则使用如下命令设置机械臂类型
+
+```
+echo "export DOBOT_TYPE=me6" >> ~/.bashrc
+source ~/.bashrc
+```
 # 2. 使用演示
 
 ## 在仿真环境下使用
