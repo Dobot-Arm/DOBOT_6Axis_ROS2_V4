@@ -12,6 +12,7 @@ DOBOT_6Axis-ROS2_V4 is a software development kit designed by Dobot based on the
 When connected to LAN1 via wired connection: IP: 192.168.5.1; When connected to LAN2 via wired connection: IP: 192.168.100.1; Wireless connection: IP: 192.168.1.6
 
 * Try pinging the controller IP to make sure it is under the same network segment.
+* * Ubuntu 20.04;Ubuntu 22.04
 
 ### Run steps
 
