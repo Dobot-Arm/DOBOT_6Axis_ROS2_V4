@@ -26,7 +26,7 @@ cd ~/dobot_ws/src
 
 git clone https://github.com/Dobot-Arm/DOBOT_6Axis_ROS2_V4.git
 
-cd ~/catkin_ws
+cd ~/dobot_ws
 ```
 
 ### Compile
