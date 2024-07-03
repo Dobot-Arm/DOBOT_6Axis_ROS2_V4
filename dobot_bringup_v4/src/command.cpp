@@ -217,7 +217,7 @@ bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id, std
 
 bool CRCommanderRos2::isEnable() const
 {
-    return real_time_data_->robot_mode == 5;
+    return ((real_time_data_->robot_mode == 5) || (real_time_data_->robot_mode == 7));
 }
 
 bool CRCommanderRos2::isConnected() const
