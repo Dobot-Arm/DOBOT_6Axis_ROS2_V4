@@ -88,7 +88,7 @@ source ~/.bashrc
 ## rviz 显示
 
 ```
-ros2 launch dobot_rviz display.launch
+ros2 launch dobot_rviz dobot_rviz.launch.py
 ```
 
 可通过加载 joint_state_publisher_gui 调节各关节的角度，在 rviz 上看到其显示效果
@@ -112,7 +112,7 @@ ros2 launch dobot_moveit dobot_moveit.launch.py
 * 使用如下命令启动 gazebo
 
 ```
-ros2 launch dobot_gazebo load_urdf_into_gazebo.launch.py 
+ros2 launch dobot_gazebo dobot_gazebo.launch.py 
 ```
 ![gazebo仿真](/image/gazebo.jpg)
 
