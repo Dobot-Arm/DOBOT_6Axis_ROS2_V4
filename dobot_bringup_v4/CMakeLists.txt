@@ -21,6 +21,8 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(ur5_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
 find_package(dobot_msgs_v4 REQUIRED)
 
 
@@ -31,6 +33,9 @@ include_directories(
 
 
 add_executable(${PROJECT_NAME}_node src/main.cpp src/cr_robot_ros2.cpp src/command.cpp src/tcp_socket.cpp src/parseTool.cpp)
+
+
+
 
 target_include_directories(${PROJECT_NAME}_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -49,7 +54,7 @@ target_link_libraries(${PROJECT_NAME}_node
         pthread
         )
 
-install(TARGETS ${PROJECT_NAME}_node
+install(TARGETS ${PROJECT_NAME}_node 
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY launch config

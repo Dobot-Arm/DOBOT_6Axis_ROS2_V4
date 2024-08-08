@@ -34,11 +34,7 @@ int main(int argc, char *argv[])
   std::string a = robot_type == nullptr ? "cr5" : robot_type;
   std::string b = "_robot/joint_controller/follow_joint_trajectory";
   std::string ss = z + a + b;
-  for (uint32_t i = 0; i < 6; i++)
-  {
-    joint_state_msg.position.push_back(0.0);
-    joint_state_msg.name.push_back(std::string("joint") + std::to_string(i + 1));
-  }
+ 
 
   double rate_value = robot->declare_parameter<double>("JointStatePublishRate", 10.0);
 
@@ -56,7 +52,7 @@ int main(int argc, char *argv[])
     {
       joint_state_msg.position[i] = position[i];
     }
-    joint_state_pub->publish(joint_state_msg);
+   joint_state_pub->publish(joint_state_msg);
 
     double val[6];
     robot->getToolVectorActual(val);

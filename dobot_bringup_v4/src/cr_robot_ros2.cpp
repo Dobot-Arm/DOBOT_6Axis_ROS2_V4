@@ -214,6 +214,7 @@ void CRRobotRos2::init()
     kServiceMoveJog = this->create_service<dobot_msgs_v4::srv::MoveJog>(serviceMoveJog, std::bind(&CRRobotRos2::MoveJog, this, std::placeholders::_1, std::placeholders::_2));
     kServiceStopMoveJog = this->create_service<dobot_msgs_v4::srv::StopMoveJog>(serviceStopMoveJog, std::bind(&CRRobotRos2::StopMoveJog, this, std::placeholders::_1, std::placeholders::_2));
     kServiceRelMovLTool = this->create_service<dobot_msgs_v4::srv::RelMovLTool>(serviceRelMovLTool, std::bind(&CRRobotRos2::RelMovLTool, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceRelMovJTool = this->create_service<dobot_msgs_v4::srv::RelMovJTool>(serviceRelMovJTool, std::bind(&CRRobotRos2::RelMovJTool, this, std::placeholders::_1, std::placeholders::_2));
     kServiceRelMovJUser = this->create_service<dobot_msgs_v4::srv::RelMovJUser>(serviceRelMovJUser, std::bind(&CRRobotRos2::RelMovJUser, this, std::placeholders::_1, std::placeholders::_2));
     kServiceRelMovLUser = this->create_service<dobot_msgs_v4::srv::RelMovLUser>(serviceRelMovLUser, std::bind(&CRRobotRos2::RelMovLUser, this, std::placeholders::_1, std::placeholders::_2));
     kServiceRelJointMovJ = this->create_service<dobot_msgs_v4::srv::RelJointMovJ>(serviceRelJointMovJ, std::bind(&CRRobotRos2::RelJointMovJ, this, std::placeholders::_1, std::placeholders::_2));
@@ -515,15 +516,23 @@ void CRRobotRos2::getErrorID(std::vector<int> &vec)
     kClientGeterror = this->create_client<dobot_msgs_v4::srv::GetErrorID>(name);
     // 创建请求消息
     auto request = std::make_shared<dobot_msgs_v4::srv::GetErrorID::Request>();
-
+    int jugaad_counter{0};
     while (!kClientGeterror->service_is_ready())
     {
+        if(jugaad_counter)
+        {
+            vec.push_back(-2);
+            return;
+        }
         if (!rclcpp::ok())
         {
             RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for the service. Exiting.");
             return;
         }
         RCLCPP_INFO(this->get_logger(), "service not available, waiting again...");
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        jugaad_counter++;
+
     }
 
     auto result = kClientGeterror->async_send_request(request);
@@ -623,7 +632,11 @@ bool CRRobotRos2::Tool(const std::shared_ptr<dobot_msgs_v4::srv::Tool::Request> 
 
 bool CRRobotRos2::RobotMode(const std::shared_ptr<dobot_msgs_v4::srv::RobotMode::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::RobotMode::Response> response)
 {
-    return commander_->callRosService(parseTool::parserrobotModeRequest2String(request), response->res);
+    std::vector<std::string> result;
+    bool out =  commander_->callRosService(parseTool::parserrobotModeRequest2String(request), response->res,result);
+    if(result.size()>1)
+        response->mode = std::stoi(result[1]);
+    return out;
 }
 
 bool CRRobotRos2::SetPayload(const std::shared_ptr<dobot_msgs_v4::srv::SetPayload::Request> request,
@@ -1088,5 +1101,6 @@ bool CRRobotRos2::ServoJ(const std::shared_ptr<dobot_msgs_v4::srv::ServoJ::Reque
 
 bool CRRobotRos2::ServoP(const std::shared_ptr<dobot_msgs_v4::srv::ServoP::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::ServoP::Response> response)
 {
+    std::cout<<"Dobot Driver called ServoP"<<std::endl;
     return commander_->callRosService(parseTool::parserServoPRequest2String(request), response->res);
 }
