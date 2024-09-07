@@ -49,6 +49,7 @@ class MoveCircleActionServer(Node):
                print(i)
                time.sleep(0.3)
             self.Trajectory = False
+            time.sleep(0.3)
         else:
             print("No data.....")
         goal_handle.succeed()                           # 动作执行成功
