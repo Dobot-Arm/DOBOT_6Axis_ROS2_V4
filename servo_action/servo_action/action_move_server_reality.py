@@ -39,7 +39,7 @@ class MoveCircleActionServer(Node):
             for ii in i.positions:
                 acd.append(180*ii/3.14159)
             self.adc.append(acd)
-            self.Trajectory = True
+        self.Trajectory = True
             
 
     def execute_callback(self, goal_handle):            # 执行收到动作目标之后的处理函数
