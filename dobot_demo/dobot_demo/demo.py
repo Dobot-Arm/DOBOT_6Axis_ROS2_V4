@@ -19,7 +19,7 @@ class adderClient(Node):
             self.get_logger().info('service not available, waiting again...') 
                     
     def initialization(self):  # 初始化：速度、坐标系、负载、工具偏心等
-        response = self.EnableRobot_l.call_async()
+        response = self.EnableRobot_l.call_async(EnableRobot.Request())
         print(response)
         spe = SpeedFactor.Request()
         spe.ratio = 10
