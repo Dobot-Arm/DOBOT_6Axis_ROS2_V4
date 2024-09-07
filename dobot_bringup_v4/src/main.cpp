@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
   sensor_msgs::msg::JointState joint_state_msg;
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub = robot->create_publisher<sensor_msgs::msg::JointState>("joint_states_robot", 100);
   joint_state_msg.name = {"joint1", "joint2", "joint3", "joint4", "joint5", "joint6"};
-  //joint_state_msg.position = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  joint_state_msg.position = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
   dobot_msgs_v4::msg::RobotStatus robot_status_msg;
   rclcpp::Publisher<dobot_msgs_v4::msg::RobotStatus>::SharedPtr robot_status_pub = robot->create_publisher<dobot_msgs_v4::msg::RobotStatus>("dobot_msgs_v4/msg/RobotStatus", 100);
