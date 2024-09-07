@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
   // 创建关节状态消息和发布者
   sensor_msgs::msg::JointState joint_state_msg;
-  rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub = robot->create_publisher<sensor_msgs::msg::JointState>("joint_states", 100);
+  rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub = robot->create_publisher<sensor_msgs::msg::JointState>("joint_states_robot", 100);
   joint_state_msg.name = {"joint1", "joint2", "joint3", "joint4", "joint5", "joint6"};
   //joint_state_msg.position = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
