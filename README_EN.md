@@ -9,7 +9,7 @@ DOBOT_6Axis-ROS2_V4 is a software development kit designed by Dobot based on the
 
 * You can connect your computer to the network interface of the controller with a network cable, and then set the fixed IP to be in the same network segment as the controller IP. You can also connect your computer to the controller via wireless connection.
 
-When connected to LAN1 via wired connection: IP: 192.168.5.1; When connected to LAN2 via wired connection: IP: 192.168.100.1; Wireless connection: IP: 192.168.1.6
+When connected via wired connection: IP: 192.168.5.1; Wireless connection: IP: 192.168.1.6
 
 * Try pinging the controller IP to make sure it is under the same network segment.
 * * Ubuntu 20.04;Ubuntu 22.04
