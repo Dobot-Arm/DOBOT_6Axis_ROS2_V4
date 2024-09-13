@@ -6,8 +6,8 @@ import time
 
 import rclpy                                      # ROS2 Python接口库
 from rclpy.node   import Node                     # ROS2 节点类
-from rclpy.action import ActionClient             # ROS2 动作服务器类
-from control_msgs.action import FollowJointTrajectory  # 自定义的圆周运动接口
+from rclpy.action import ActionClient             
+from control_msgs.action import FollowJointTrajectory  
 import trajectory_msgs
 import os
 
