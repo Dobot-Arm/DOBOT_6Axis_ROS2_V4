@@ -43,11 +43,17 @@ void CRCommanderRos2::recvTask()
                 {
 
                     if (real_time_data_->len != 1440)
+                    {
+                        std::cout<<"[command] realtime data doesn't have expected size ,"<<real_time_data_->len<<std::endl;
                         continue;
+                    }
+                
+                        
 
                     mutex_.lock();
                     for (uint32_t i = 0; i < 6; i++)
                         current_joint_[i] = deg2Rad(real_time_data_->q_actual[i]);
+                    // std::cout<<"[command] realtime data have expected size ,"<<real_time_data_->len<<std::endl;
 
                     memcpy(tool_vector_, real_time_data_->tool_vector_actual, sizeof(tool_vector_));
                     mutex_.unlock();
@@ -142,18 +148,32 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
 
             recv_ptr = recv_ptr + strlen(recv_ptr);
         }
-        // result = regexRecv(std::string(buf));
-        if (result.size() >= 2U)
-        {
-            if (stoi(result[0]) == 0)
-            {
-                err_id = stoi(result[1]);
-            }
-            else
-            {
-                err_id = 2147483647; // int-max
-            }
-        }
+        std::cout<<"recv_ptr"<<recv_ptr<<std::endl;
+        const char* startPos = strchr(recv_ptr, '{');
+    const char* endPos = strchr(recv_ptr, '}');
+std::string number {};
+    if (startPos != nullptr && endPos != nullptr && startPos < endPos) {
+        // Calculate the length of the substring between '{' and '}'
+        size_t length = endPos - startPos - 1;
+
+        // Extract the substring between '{' and '}'
+        char numberStr[length + 1];
+        strncpy(numberStr, startPos + 1, length);
+        numberStr[length] = '\0'; // Null-terminate the C-string
+
+        result.push_back("0");//bad hardcording design
+        result.push_back(numberStr);
+
+        // Output the extracted number
+        std::cout << "Extracted number: " << number << std::endl;
+    }
+    
+    
+
+
+        //result = regexRecv(std::string(*recv_ptr));
+        //std::cout<<"result"<<result.size()<<std::endl;
+    
         std::cout << "tcp recv feedback : " << *recv_ptr << std::endl; // FIXME parse the buf may be better
     }
     catch (const std::logic_error &err)
@@ -164,14 +184,17 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
 
 bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id)
 {
+    std::cout<<"Dobot Driver called a ros service with cmd :"<<cmd<<std::endl;
     try
     {
         std::vector<std::string> result_;
         doTcpCmd(this->dash_board_tcp_, cmd.c_str(), err_id, result_);
+        std::cout<<"result = "<<result_.size()<<std::endl;
         return true;
     }
     catch (const TcpClientException &err)
     {
+        std::cout<<"Dobot Driver had an error with cmd"<<cmd<<std::endl;
         std::cout << "%s" << std::endl;
         err_id = -1;
         return false;
@@ -194,12 +217,12 @@ bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id, std
 
 bool CRCommanderRos2::isEnable() const
 {
-    return real_time_data_->robot_mode == 5;
+    return ((real_time_data_->robot_mode == 5) || (real_time_data_->robot_mode == 7));
 }
 
 bool CRCommanderRos2::isConnected() const
 {
-    return dash_board_tcp_->isConnect() && real_time_tcp_->isConnect();
+    return real_time_tcp_->isConnect();
 }
 
 uint16_t CRCommanderRos2::getRobotMode() const
