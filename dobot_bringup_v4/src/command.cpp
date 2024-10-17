@@ -1,5 +1,7 @@
 #include <dobot_bringup/command.h>
-
+#include <iostream>
+#include <chrono>
+#include <thread>
 CRCommanderRos2::CRCommanderRos2(const std::string &ip)
     : current_joint_{}, tool_vector_{}, is_running_(false)
 {
@@ -104,7 +106,9 @@ void CRCommanderRos2::init()
         std::cout << "Commander : %s" << std::endl;
     }
 }
-
+int stringToInt(const std::string& str) {
+    return std::atoi(str.c_str());
+}
 void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd, int32_t &err_id,
                                std::vector<std::string> &result)
 {
@@ -113,22 +117,13 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
         uint32_t has_read;
         char buf[1024];
         memset(buf, 0, sizeof(buf));
-        std::cout << "tcp send cmd :" << cmd << std::endl;
+        auto currentTime = std::chrono::system_clock::now();
+        auto currentTime_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(currentTime);
+        auto valueMS = currentTime_ms.time_since_epoch().count();
+        std::cout <<"time: "<<valueMS <<"  tcp send cmd :" << cmd << std::endl;
+
         tcp->tcpSend(cmd, strlen(cmd));
-
-        // std::shared_ptr<std::string> recv_ptr = std::make_shared<std::string>();
         char *recv_ptr = buf;
-        // while (true) {
-        //     bool err = tcp->tcpRecv(recv_ptr, 1024, has_read, 0);
-        //     if (!err) {
-        //         sleep(0.01);
-        //         continue;
-        //     }
-        //     if (*(recv_ptr + strlen(recv_ptr) - 1) == ';')
-        //         break;
-
-        //     recv_ptr = recv_ptr + strlen(recv_ptr);
-        // }
         while (true)
         {
             bool err = tcp->tcpRecv(recv_ptr, 1024, has_read, 0);
@@ -142,19 +137,77 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
 
             recv_ptr = recv_ptr + strlen(recv_ptr);
         }
-        // result = regexRecv(std::string(buf));
-        if (result.size() >= 2U)
+        for (int i = 0; i < 2000;i++)  //赋值
         {
-            if (stoi(result[0]) == 0)
+            if (recv_ptr[i] == '{')
             {
-                err_id = stoi(result[1]);
+                std::string str(recv_ptr); // 将char*类型转为string类型
+                std::string result = str.substr(0, i-1); // 使用substr函数截取指定长度的子字符串
+                int num = stringToInt(result);
+                err_id = num;
+                std::cout << "ErrorID: " << result<< std::endl;
             }
-            else
-            {
-                err_id = 2147483647; // int-max
-            }
+            
         }
-        std::cout << "tcp recv feedback : " << *recv_ptr << std::endl; // FIXME parse the buf may be better
+
+        std::cout << "tcp recv feedback : " << recv_ptr << std::endl; // FIXME parse the buf may be better
+    }
+    catch (const std::logic_error &err)
+    {
+        std::cout << "tcpDoCmd failed " << std::endl;
+    }
+}
+
+
+void CRCommanderRos2::doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cmd, int32_t &err_id,std::string &mode_id,
+                               std::vector<std::string> &result)
+{
+    try
+    {
+        uint32_t has_read;
+        char buf[1024];
+        memset(buf, 0, sizeof(buf));
+        auto currentTime = std::chrono::system_clock::now();
+        auto currentTime_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(currentTime);
+        auto valueMS = currentTime_ms.time_since_epoch().count();
+        std::cout <<"time: "<<valueMS <<"  tcp send cmd :" << cmd << std::endl;
+        tcp->tcpSend(cmd, strlen(cmd));
+        char *recv_ptr = buf;
+        while (true)
+        {
+            bool err = tcp->tcpRecv(recv_ptr, 1024, has_read, 0);
+            if (!err)
+            {
+                sleep(0.01);
+                continue;
+            }
+            if (*(recv_ptr + strlen(recv_ptr) - 1) == ';')
+                break;
+
+            recv_ptr = recv_ptr + strlen(recv_ptr);
+        }
+        int pose1 = 0;
+        for (int i = 0; i < 2000;i++)  //赋值
+        {
+            if (recv_ptr[i] == '{')
+            {
+                std::string str(recv_ptr); // 将char*类型转为string类型
+                std::string result = str.substr(0, i-1); // 使用substr函数截取指定长度的子字符串
+                int num = stringToInt(result);
+                err_id = num;
+                std::cout << "ErrorID: " << num<< std::endl;
+                pose1 = i;
+            }
+            if (recv_ptr[i] == '}')
+            {
+                std::string str(recv_ptr); // 将char*类型转为string类型
+                std::string result = str.substr(pose1, i-pose1+1); // 使用substr函数截取指定长度的子字符串
+                mode_id = result;
+                break;
+            }
+            
+        }
+        std::cout << "tcp recv feedback : " << recv_ptr << std::endl; // FIXME parse the buf may be better
     }
     catch (const std::logic_error &err)
     {
@@ -168,6 +221,21 @@ bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id)
     {
         std::vector<std::string> result_;
         doTcpCmd(this->dash_board_tcp_, cmd.c_str(), err_id, result_);
+        return true;
+    }
+    catch (const TcpClientException &err)
+    {
+        std::cout << "%s" << std::endl;
+        err_id = -1;
+        return false;
+    }
+}
+bool CRCommanderRos2::callRosService_f(const std::string cmd, int32_t &err_id,std::string &mode_id)
+{
+    try
+    {
+        std::vector<std::string> result_;
+        doTcpCmd_f(this->dash_board_tcp_, cmd.c_str(), err_id,mode_id, result_);
         return true;
     }
     catch (const TcpClientException &err)
