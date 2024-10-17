@@ -1,0 +1,4 @@
+int32[] index_group
+---
+string robot_return
+int32 res

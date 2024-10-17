@@ -1,0 +1,7 @@
+int32   index
+int32   addr
+int32   count
+string  val_type
+---
+string robot_return
+int32 res

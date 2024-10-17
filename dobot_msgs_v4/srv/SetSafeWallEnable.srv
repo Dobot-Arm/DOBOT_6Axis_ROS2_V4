@@ -1,0 +1,4 @@
+int32 index
+int32 value
+---
+int32 res
