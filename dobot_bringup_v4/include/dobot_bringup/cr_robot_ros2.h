@@ -260,6 +260,7 @@ private:
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::PositiveKin>> kServicePositiveKin;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::InverseKin>> kServiceInverseKin;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::GetPose>> kServiceGetPose;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::GetAngle>> kServiceGetAngle;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::SetCollisionLevel>> kServiceSetCollisionLevel;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::EmergencyStop>> kServiceEmergencyStop;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::ModbusRTUCreate>> kServiceModbusRTUCreate;
