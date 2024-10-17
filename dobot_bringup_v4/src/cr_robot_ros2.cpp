@@ -161,6 +161,7 @@ void CRRobotRos2::init()
     kServicePositiveKin = this->create_service<dobot_msgs_v4::srv::PositiveKin>(servicePositiveKin, std::bind(&CRRobotRos2::PositiveKin, this, std::placeholders::_1, std::placeholders::_2));
     kServiceInverseKin = this->create_service<dobot_msgs_v4::srv::InverseKin>(serviceInverseKin, std::bind(&CRRobotRos2::InverseKin, this, std::placeholders::_1, std::placeholders::_2));
     kServiceGetPose = this->create_service<dobot_msgs_v4::srv::GetPose>(serviceGetPose, std::bind(&CRRobotRos2::GetPose, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceGetAngle = this->create_service<dobot_msgs_v4::srv::GetAngle>(serviceGetAngle, std::bind(&CRRobotRos2::GetAngle, this, std::placeholders::_1, std::placeholders::_2));
     kServiceSetCollisionLevel = this->create_service<dobot_msgs_v4::srv::SetCollisionLevel>(serviceSetCollisionLevel, std::bind(&CRRobotRos2::SetCollisionLevel, this, std::placeholders::_1, std::placeholders::_2));
     kServiceEmergencyStop = this->create_service<dobot_msgs_v4::srv::EmergencyStop>(serviceEmergencyStop, std::bind(&CRRobotRos2::EmergencyStop, this, std::placeholders::_1, std::placeholders::_2));
     kServiceModbusRTUCreate = this->create_service<dobot_msgs_v4::srv::ModbusRTUCreate>(serviceModbusRTUCreate, std::bind(&CRRobotRos2::ModbusRTUCreate, this, std::placeholders::_1, std::placeholders::_2));
@@ -221,7 +222,7 @@ void CRRobotRos2::init()
     kServiceServoJ = this->create_service<dobot_msgs_v4::srv::ServoJ>(serviceServoJ, std::bind(&CRRobotRos2::ServoJ, this, std::placeholders::_1, std::placeholders::_2));
     kServiceServoP = this->create_service<dobot_msgs_v4::srv::ServoP>(serviceServoP, std::bind(&CRRobotRos2::ServoP, this, std::placeholders::_1, std::placeholders::_2));
 
-    kTimer = this->create_wall_timer(std::chrono::seconds(2), std::bind(&CRRobotRos2::backendTask, this));
+    //kTimer = this->create_wall_timer(std::chrono::seconds(2), std::bind(&CRRobotRos2::backendTask, this));
     commander_ = std::make_shared<CRCommanderRos2>(robotIp);
     commander_->init();
     kPublisherInfo = this->create_publisher<std_msgs::msg::String>(topicFeedInfo, 10);
@@ -324,6 +325,7 @@ void CRRobotRos2::pubFeedBackInfo()
         {
             vecTransit.push_back(realTimeData->qd_actual[i]);
         }
+       // cout << "Hello, world!" << endl;
         root["qd_actual"] = vecTransit;
         vecTransit.clear();
 
@@ -523,26 +525,26 @@ void CRRobotRos2::getErrorID(std::vector<int> &vec)
             RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for the service. Exiting.");
             return;
         }
-        RCLCPP_INFO(this->get_logger(), "service not available, waiting again...");
+        //RCLCPP_INFO(this->get_logger(), "service not available, waiting again...");
     }
 
     auto result = kClientGeterror->async_send_request(request);
 
     // Wait for the result.
     auto self_shared_ptr = shared_from_this();
-    if (rclcpp::spin_until_future_complete(self_shared_ptr, result) ==
-        rclcpp::FutureReturnCode::SUCCESS)
-    {
-        for (auto i : result.get()->error_id)
-        {
-            vec.push_back(i);
-            RCLCPP_INFO(this->get_logger(), "Sum: %d", result.get()->error_id[0]);
-        }
-    }
-    else
-    {
-        RCLCPP_ERROR(this->get_logger(), "Failed to call service add_two_ints");
-    }
+    // if (rclcpp::spin_until_future_complete(self_shared_ptr, result) ==
+    //     rclcpp::FutureReturnCode::SUCCESS)
+    // {
+    //     for (auto i : result.get()->error_id)
+    //     {
+    //         vec.push_back(i);
+    //         RCLCPP_INFO(this->get_logger(), "Sum: %d", result.get()->error_id[0]);
+    //     }
+    // }
+    // else
+    // {
+    //     RCLCPP_ERROR(this->get_logger(), "Failed to call service add_two_ints");
+    // }
 }
 
 void CRRobotRos2::backendTask()
@@ -623,7 +625,7 @@ bool CRRobotRos2::Tool(const std::shared_ptr<dobot_msgs_v4::srv::Tool::Request> 
 
 bool CRRobotRos2::RobotMode(const std::shared_ptr<dobot_msgs_v4::srv::RobotMode::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::RobotMode::Response> response)
 {
-    return commander_->callRosService(parseTool::parserrobotModeRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserrobotModeRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::SetPayload(const std::shared_ptr<dobot_msgs_v4::srv::SetPayload::Request> request,
@@ -734,7 +736,7 @@ bool CRRobotRos2::SetSafeSkin(const std::shared_ptr<dobot_msgs_v4::srv::SetSafeS
 bool CRRobotRos2::GetStartPose(const std::shared_ptr<dobot_msgs_v4::srv::GetStartPose::Request> request,
                                const std::shared_ptr<dobot_msgs_v4::srv::GetStartPose::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetStartPoseRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetStartPoseRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::StartPath(const std::shared_ptr<dobot_msgs_v4::srv::StartPath::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::StartPath::Response> response)
@@ -756,12 +758,12 @@ bool CRRobotRos2::InverseKin(const std::shared_ptr<dobot_msgs_v4::srv::InverseKi
 
 bool CRRobotRos2::GetAngle(const std::shared_ptr<dobot_msgs_v4::srv::GetAngle::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetAngle::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetAngleRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetAngleRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::GetPose(const std::shared_ptr<dobot_msgs_v4::srv::GetPose::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetPose::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetPoseRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetPoseRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::EmergencyStop(const std::shared_ptr<dobot_msgs_v4::srv::EmergencyStop::Request> request,
@@ -790,17 +792,17 @@ bool CRRobotRos2::ModbusClose(const std::shared_ptr<dobot_msgs_v4::srv::ModbusCl
 
 bool CRRobotRos2::GetInBits(const std::shared_ptr<dobot_msgs_v4::srv::GetInBits::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetInBits::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetInBitsRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetInBitsRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::GetInRegs(const std::shared_ptr<dobot_msgs_v4::srv::GetInRegs::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetInRegs::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetInRegsRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetInRegsRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::GetCoils(const std::shared_ptr<dobot_msgs_v4::srv::GetCoils::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetCoils::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetCoilsRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetCoilsRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::SetCoils(const std::shared_ptr<dobot_msgs_v4::srv::SetCoils::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::SetCoils::Response> response)
@@ -811,7 +813,7 @@ bool CRRobotRos2::SetCoils(const std::shared_ptr<dobot_msgs_v4::srv::SetCoils::R
 bool CRRobotRos2::GetHoldRegs(const std::shared_ptr<dobot_msgs_v4::srv::GetHoldRegs::Request> request,
                               const std::shared_ptr<dobot_msgs_v4::srv::GetHoldRegs::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetHoldRegsRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetHoldRegsRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::SetHoldRegs(const std::shared_ptr<dobot_msgs_v4::srv::SetHoldRegs::Request> request,
@@ -823,7 +825,7 @@ bool CRRobotRos2::SetHoldRegs(const std::shared_ptr<dobot_msgs_v4::srv::SetHoldR
 bool CRRobotRos2::GetErrorID(const std::shared_ptr<dobot_msgs_v4::srv::GetErrorID::Request> request,
                              const std::shared_ptr<dobot_msgs_v4::srv::GetErrorID::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetErrorIDRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetErrorIDRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::DI(const std::shared_ptr<dobot_msgs_v4::srv::DI::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::DI::Response> response)
@@ -880,18 +882,18 @@ bool CRRobotRos2::DragSensivity(const std::shared_ptr<dobot_msgs_v4::srv::DragSe
 
 bool CRRobotRos2::GetDO(const std::shared_ptr<dobot_msgs_v4::srv::GetDO::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetDO::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetDORequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetDORequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::GetAO(const std::shared_ptr<dobot_msgs_v4::srv::GetAO::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetAO::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetAORequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetAORequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::GetDOGroup(const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroup::Request> request,
                              const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroup::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetDOGroupRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetDOGroupRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::SetTool485(const std::shared_ptr<dobot_msgs_v4::srv::SetTool485::Request> request,
@@ -953,37 +955,37 @@ bool CRRobotRos2::CalcTool(const std::shared_ptr<dobot_msgs_v4::srv::CalcTool::R
 bool CRRobotRos2::GetInputBool(const std::shared_ptr<dobot_msgs_v4::srv::GetInputBool::Request> request,
                                const std::shared_ptr<dobot_msgs_v4::srv::GetInputBool::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetInputboolRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetInputboolRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::GetInputInt(const std::shared_ptr<dobot_msgs_v4::srv::GetInputInt::Request> request,
                               const std::shared_ptr<dobot_msgs_v4::srv::GetInputInt::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetInputIntRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetInputIntRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::GetInputFloat(const std::shared_ptr<dobot_msgs_v4::srv::GetInputFloat::Request> request,
                                 const std::shared_ptr<dobot_msgs_v4::srv::GetInputFloat::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetInputFloatRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetInputFloatRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::GetOutputBool(const std::shared_ptr<dobot_msgs_v4::srv::GetOutputBool::Request> request,
                                 const std::shared_ptr<dobot_msgs_v4::srv::GetOutputBool::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetOutputboolRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetOutputboolRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::GetOutputInt(const std::shared_ptr<dobot_msgs_v4::srv::GetOutputInt::Request> request,
                                const std::shared_ptr<dobot_msgs_v4::srv::GetOutputInt::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetOutputIntRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetOutputIntRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::GetOutputFloat(const std::shared_ptr<dobot_msgs_v4::srv::GetOutputFloat::Request> request,
                                  const std::shared_ptr<dobot_msgs_v4::srv::GetOutputFloat::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetOutputFloatRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetOutputFloatRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::SetOutputBool(const std::shared_ptr<dobot_msgs_v4::srv::SetOutputBool::Request> request,
@@ -1006,12 +1008,12 @@ bool CRRobotRos2::SetOutputFloat(const std::shared_ptr<dobot_msgs_v4::srv::SetOu
 
 bool CRRobotRos2::MovJ(const std::shared_ptr<dobot_msgs_v4::srv::MovJ::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::MovJ::Response> response)
 {
-    return commander_->callRosService(parseTool::parsermovJRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parsermovJRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::MovL(const std::shared_ptr<dobot_msgs_v4::srv::MovL::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::MovL::Response> response)
 {
-    return commander_->callRosService(parseTool::parsermovLRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parsermovLRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::MovLIO(const std::shared_ptr<dobot_msgs_v4::srv::MovLIO::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::MovLIO::Response> response)
@@ -1078,7 +1080,7 @@ bool CRRobotRos2::RelJointMovJ(const std::shared_ptr<dobot_msgs_v4::srv::RelJoin
 bool CRRobotRos2::GetCurrentCommandId(const std::shared_ptr<dobot_msgs_v4::srv::GetCurrentCommandId::Request> request,
                                       const std::shared_ptr<dobot_msgs_v4::srv::GetCurrentCommandId::Response> response)
 {
-    return commander_->callRosService(parseTool::parserGetCurrentCommandIdRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserGetCurrentCommandIdRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::ServoJ(const std::shared_ptr<dobot_msgs_v4::srv::ServoJ::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::ServoJ::Response> response)
