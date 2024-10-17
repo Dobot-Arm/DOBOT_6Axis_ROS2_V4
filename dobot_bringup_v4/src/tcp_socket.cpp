@@ -62,7 +62,7 @@ void TcpClient::tcpSend(const void *buf, uint32_t len)
     if (!is_connected_)
         throw TcpClientException("tcp is disconnected");
 
-    std::cout << "send : " << buf << std::endl;
+    //std::cout << "send : " << buf << std::endl;
 
     const auto *tmp = (const uint8_t *)buf;
     while (len)
@@ -125,6 +125,7 @@ bool TcpClient::tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t ti
 
         tmp++;
         has_read += err;
+        //std::cout << "sbfeed:" << has_read << std::endl;
     }
     return true;
 }
