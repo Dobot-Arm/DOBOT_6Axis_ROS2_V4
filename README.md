@@ -12,7 +12,7 @@ DOBOT_6Axis-ROS2_V4 是为 Dobot 公司旗下基于TCP/IP协议的ROS的封装�
   有线连接时连接：ip为192.168.5.1,  无线连接：ip为192.168.1.6
 
 * 尝试 ping 通控制器 IP，确保在同一网段下。
-* Ubuntu 20.04;Ubuntu 22.04
+* Ubuntu 22.04
 
 ### 运行步骤
 
