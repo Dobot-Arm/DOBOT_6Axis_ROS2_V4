@@ -59,9 +59,14 @@ namespace parseTool
     std::string parserDORequest2String(const std::shared_ptr<dobot_msgs_v4::srv::DO::Request> request)
     {
         std::stringstream ss; // DO(index,status,time)
-
-        ss << "DO(" << request->index << "," << request->status << "," << request->time << ")";
-
+        if (request->time == 0)
+        {
+            ss << "DO(" << request->index << "," << request->status << ")";
+        }
+        else
+        {
+            ss << "DO(" << request->index << "," << request->status << "," << request->time << ")";
+        }
         return ss.str();
     }
     std::string parserDOInstantRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::DOInstant::Request> request)
