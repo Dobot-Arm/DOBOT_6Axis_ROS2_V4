@@ -4,7 +4,7 @@
   <name>dobot_demo</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="dobot@todo.todo">dobot</maintainer>
+  <maintainer email="opensource@dobot.cc">dobot</maintainer>
   <license>TODO: License declaration</license>
 
   <test_depend>ament_copyright</test_depend>
