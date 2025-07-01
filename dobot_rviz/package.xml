@@ -4,7 +4,7 @@
   <name>dobot_rviz</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="dobot@todo.todo">dobot</maintainer>
+  <maintainer email="futingxing@dobot-robot.com">FTX</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

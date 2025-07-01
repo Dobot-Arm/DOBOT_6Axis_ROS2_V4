@@ -4,11 +4,11 @@
   <version>0.0.0</version>
   <description>The cra_description package</description>
 
-  <maintainer email="dobot@dobot.cc">dobot</maintainer>
+  <maintainer email="futingxing@dobot-robot.com">TX_F</maintainer>
 
   <license>BSD</license>
 
-  <author email="dobot@dobot.cc">dobot</author>
+  <author email="futingxing@dobot-robot.com">TX_F</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

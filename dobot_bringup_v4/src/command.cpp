@@ -112,6 +112,7 @@ int stringToInt(const std::string& str) {
 void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd, int32_t &err_id,
                                std::vector<std::string> &result)
 {
+    std::ignore = result;
     try
     {
         uint32_t has_read;
@@ -162,6 +163,7 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
 void CRCommanderRos2::doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cmd, int32_t &err_id,std::string &mode_id,
                                std::vector<std::string> &result)
 {
+    std::ignore = result;
     try
     {
         uint32_t has_read;

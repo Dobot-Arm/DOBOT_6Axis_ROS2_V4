@@ -1,6 +1,5 @@
 from launch import LaunchDescription
 import launch_ros.actions
-from launch import LaunchDescription
 import json
 import os
 

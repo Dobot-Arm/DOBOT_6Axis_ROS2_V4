@@ -30,10 +30,10 @@ def load_yaml(package_name, file_path):
 
 
 def generate_launch_description():
-    mane = os.getenv("DOBOT_TYPE")
-    robot_name_in_model = f'{mane}_robot'
+    name = os.getenv("DOBOT_TYPE")
+    robot_name_in_model = f'{name}_robot'
     package_name = 'cra_description'
-    urdf_name = f"{mane}_robot.xacro"
+    urdf_name = f"{name}_robot.xacro"
     gazebo = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
@@ -73,7 +73,7 @@ def generate_launch_description():
     # # 路径执行控制器
     load_joint_trajectory_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-             f'{mane}_group_controller'],
+             f'{name}_group_controller'],
         output='screen'
     )
 

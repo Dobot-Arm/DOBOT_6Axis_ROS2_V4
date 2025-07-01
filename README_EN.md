@@ -1,131 +1,159 @@
-# <center>ROS-Robot</center>
-# 1. Introduction
+**ROS2_V4 Installation and Configuration Guide**  
 
-DOBOT_6Axis-ROS2_V4 is a software development kit designed by Dobot based on the ROS of TCP/IP protocol. It is developed based on ROS/C++、python language, follows the Dobot-TCP-IP control communication protocol, connects to the device terminal via socket, and provides users with an easy-to-use API interface. Through DOBOT_6Axis-ROS2_V4, users can quickly connect to the Dobot device and carry out secondary development to control and use the device.
+---
 
+### **Introduction**  
+DOBOT_6Axis-ROS2_V4 is a ROS Software Development Kit (SDK) developed by Dobot based on the TCP/IP protocol. This kit is built using ROS/C++ and Python, adhering to the Dobot-TCP-IP control communication protocol. It establishes a TCP connection with the robotic arm terminal via Socket and provides user-friendly API interfaces. Users can quickly connect to Dobot robotic arms for secondary development and control.  
 
+---
 
-## Pre-dependency
+### **Prerequisites**  
+1. **Network Configuration**  
+   - **Wired Connection**: Controller IP is `192.168.5.1`. Set the computer to a fixed IP within the same subnet.  
+   - **Wireless Connection**: Controller IP is `192.168.1.6`.  
+   - Use the `ping` command to test the controller IP and ensure network connectivity.  
 
-* You can connect your computer to the network interface of the controller with a network cable, and then set the fixed IP to be in the same network segment as the controller IP. You can also connect your computer to the controller via wireless connection.
+2. **System Requirements**  
+   - **Operating System**: Ubuntu 22.04  
+   - **ROS Version**: ROS2 Humble  
 
-When connected via wired connection: IP: 192.168.5.1; Wireless connection: IP: 192.168.1.6
+---
 
-* Try pinging the controller IP to make sure it is under the same network segment.
-* * Ubuntu 22.04
+### **Installation and Configuration Steps**  
 
-### Run steps
+#### **1. Source Code Compilation**  
+1. Download the source code:  
+   ```bash
+   mkdir -p ~/dobot_ws/src
+   cd ~/dobot_ws/src
+   git clone https://github.com/Dobot-Arm/DOBOT_6Axis_ROS2_V4.git
+   cd ~/dobot_ws
+   ```
 
-# 1. Source Code Compilation
+2. Compile the source code:  
+   ```bash
+   colcon build
+   source install/local_setup.sh
+   ```
 
-### Download source code
+3. Set environment variables:  
+   ```bash
+   echo "source ~/dobot_ws/install/local_setup.sh" >> ~/.bashrc
+   ```
 
-```
-mkdir -p ~/dobot_ws/src
+4. Configure the robotic arm connection IP (default for wired connection):  
+   ```bash
+   echo "export IP_address=192.168.5.1" >> ~/.bashrc
+   ```
 
-cd ~/dobot_ws/src
+5. Specify the robotic arm model (select based on the actual model):  
+   ```bash
+   # Example: CR5 model
+   echo "export DOBOT_TYPE=cr5" >> ~/.bashrc
+   ```
+   - Supported models: CR3, CR5, CR7, CR10, CR12, CR16, CR20, E6 (ME6).  
 
-git clone https://github.com/Dobot-Arm/DOBOT_6Axis_ROS2_V4.git
+6. Apply the configuration:  
+   ```bash
+   source ~/.bashrc
+   ```
+   - To modify the configuration, edit the `~/.bashrc` file using a text editor.  
 
-cd ~/dobot_ws
-```
+---
 
-### Compile
+### **Feature Demonstrations**  
 
-```
-colcon build
-
-source install/local_setup.sh
-```
-### Set environment variable
-
-```
-echo "source ~/dobot_ws/install/local_setup.sh" >> ~/.bashrc
-```
-
-### Set the robot arm connection IP
-```
-echo "export IP_address=192.168.5.1" >> ~/.bashrc
-source ~/.bashrc
-```
-### If it is a CR3 robot, please type the following commands
-
-```
-echo "export DOBOT_TYPE=cr3" >> ~/.bashrc
-source ~/.bashrc
-```
-
-### If it is a CR5 robot, please type the following commands
-
-```
-echo "export DOBOT_TYPE=cr5" >> ~/.bashrc
-source ~/.bashrc
-```
-
-### If it is a CR10 robot, please type the following commands
-
-```
-echo "export DOBOT_TYPE=cr10" >> ~/.bashrc
-source ~/.bashrc
-```
-
-### If it is a CR16 robot, please type the following commands
-
-```
-echo "export DOBOT_TYPE=cr16" >> ~/.bashrc
-source ~/.bashrc
-```
-### If it is a E6 robot, please type the following commands
-
-```
-echo "export DOBOT_TYPE=me6" >> ~/.bashrc
-source ~/.bashrc
-```
-# 2. Demonstration
-
-## Use in a simulation environment
-
-## rviz display
-
-```
-ros2 launch dobot_rviz dobot_rviz.launch.py
-```
-
-You can access the joint_state_publisher_gui for each angle, and see the effect on the rviz page.
-
+#### **1. Simulation Environment Usage**  
+- **RViz Model Loading**:  
+  ```bash
+  ros2 launch dobot_rviz dobot_rviz.launch.py
+  ```
+  - Used for visualizing the robotic arm model.  
 ![rviz](/image/rviz.jpg)
-
-## moveit control
-
-* Start moveit with the following command
-
-```
-ros2 launch dobot_moveit dobot_moveit.launch.py
-```
-
-* Drag the joint to any angle and click "Plan and Execute" to see the result.
-
+- **MoveIt Virtual Demo**:  
+  ```bash
+  ros2 launch dobot_moveit moveit_demo.launch.py
+  ```
+  - Drag the joint angles and click "Plan and Execute" to observe the motion.  
 ![moveit](/image/moveit.jpg)
-
-## gazebo simulation
-
-* Start gazebo with the following command
-
-```
-ros2 launch dobot_gazebo dobot_gazebo.launch.py 
-```
+- **Gazebo Simulation**:  
+  ```bash
+  ros2 launch dobot_gazebo dobot_gazebo.launch.py
+  ```
+  - Launches the Gazebo simulation environment.  
 ![gazebo](/image/gazebo.jpg)
+- **Gazebo and MoveIt Integration**:  
+  1. Launch Gazebo and MoveIt:  
+     ```bash
+     ros2 launch dobot_gazebo gazebo_moveit.launch.py
+     ros2 launch dobot_moveit moveit_gazebo.launch.py
+     ```
+  2. Drag the robotic arm in MoveIt and execute "Plan and Execute"; the motion will synchronize with Gazebo.  
+  ![service](/image/node.jpg)
 
-##  Controlling the real robot
+---
 
-* **Use the following command to connect to the robot**
+#### **2. Controlling a Real Robotic Arm**  
+1. **Connect to the Robotic Arm**:  
+   ```bash
+   ros2 launch cr_robot_ros2 dobot_bringup_ros2.launch.py
+   ```
 
+2. **View Service List**:  
+   ```bash
+   ros2 service list
+   ```
+  - ![service](/image/service.jpg)
+3. **Control the Robotic Arm with MoveIt**:  
+   ```bash
+   ros2 launch dobot_moveit dobot_moveit.launch.py
+   ```
+   ![service](/image/dobot_moveit.jpg)
+   - **Note**: Ensure the robotic arm is in remote TCP mode and enabled.  
+
+4. **Enable the Robotic Arm**:  
+   - Use `rqt service caller` to invoke the service:  
+     ```
+     /dobot_bringup_ros2/srv/EnableRobot
+     ```
+     ![gazebo](/image/rqt.jpg)
+
+5. **Key Topics**:  
+   - `/joint_states_robot`: Joint angle information.  
+   - `/dobot_msgs_v4/msg/ToolVectorActual`: Cartesian position information.  
+   ![gazebo](/image/topic.jpg)
+---
+
+### **Essential Toolkit Installation**  
+
+#### **1. Gazebo Installation**  
+- Installation command:  
+  ```bash
+  sudo apt install ros-humble-gazebo-*
   ```
-  ros2 launch cr_robot_ros2 dobot_bringup_ros2.launch.py
+- Environment variable configuration:  
+  ```bash
+  echo "source /usr/share/gazebo/setup.bash" >> ~/.bashrc
+  ```
+- Test run:  
+  ```bash
+  ros2 launch gazebo_ros gazebo.launch.py
   ```
 
-* **View services**
-```
-ros2 service list
-```
-![service](/image/service.jpg)
+#### **2. MoveIt Installation**  
+- Installation command:  
+  ```bash
+  sudo apt-get install ros-humble-moveit
+  ```
+
+---
+
+### **Notes**  
+- Ensure correct network configuration to avoid connection failures due to IP settings.  
+- When operating a real robotic arm, strictly follow safety protocols to prevent unintended movements.  
+- In the simulation environment, test motion planning before applying it to real-world scenarios.  
+
+--- 
+
+**Document Version**: V4  
+**Last Updated**: April 2, 2025

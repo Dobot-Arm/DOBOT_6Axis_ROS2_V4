@@ -19,26 +19,26 @@ int main(int argc, char *argv[])
 
   // 创建关节状态消息和发布者
   sensor_msgs::msg::JointState joint_state_msg;
-  rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub = robot->create_publisher<sensor_msgs::msg::JointState>("joint_states_robot", 100);
+  rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub = robot->create_publisher<sensor_msgs::msg::JointState>("joint_states_robot", 10);
   joint_state_msg.name = {"joint1", "joint2", "joint3", "joint4", "joint5", "joint6"};
   joint_state_msg.position = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
   dobot_msgs_v4::msg::RobotStatus robot_status_msg;
-  rclcpp::Publisher<dobot_msgs_v4::msg::RobotStatus>::SharedPtr robot_status_pub = robot->create_publisher<dobot_msgs_v4::msg::RobotStatus>("dobot_msgs_v4/msg/RobotStatus", 100);
+  rclcpp::Publisher<dobot_msgs_v4::msg::RobotStatus>::SharedPtr robot_status_pub = robot->create_publisher<dobot_msgs_v4::msg::RobotStatus>("dobot_msgs_v4/msg/RobotStatus", 10);
 
   dobot_msgs_v4::msg::ToolVectorActual tool_vector_actual_msg;
-  rclcpp::Publisher<dobot_msgs_v4::msg::ToolVectorActual>::SharedPtr tool_vector_pub = robot->create_publisher<dobot_msgs_v4::msg::ToolVectorActual>("dobot_msgs_v4/msg/ToolVectorActual", 100);
+  rclcpp::Publisher<dobot_msgs_v4::msg::ToolVectorActual>::SharedPtr tool_vector_pub = robot->create_publisher<dobot_msgs_v4::msg::ToolVectorActual>("dobot_msgs_v4/msg/ToolVectorActual", 10);
 
   std::string z = "/";
   const char *robot_type = getenv("DOBOT_TYPE");
   std::string a = robot_type == nullptr ? "cr5" : robot_type;
   std::string b = "_robot/joint_controller/follow_joint_trajectory";
   std::string ss = z + a + b;
-  for (uint32_t i = 0; i < 6; i++)
-  {
-    joint_state_msg.position.push_back(0.0);
-    joint_state_msg.name.push_back(std::string("joint") + std::to_string(i + 1));
-  }
+//  for (uint32_t i = 0; i < 6; i++)
+//  {
+//    joint_state_msg.position.push_back(0.0);
+//    joint_state_msg.name.push_back(std::string("joint") + std::to_string(i + 1));
+//  }
 
   double rate_value = robot->declare_parameter<double>("JointStatePublishRate", 10.0);
 

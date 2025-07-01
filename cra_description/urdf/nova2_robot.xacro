@@ -315,10 +315,9 @@
         </joint>
     </ros2_control>
 
-
     <gazebo>
         <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-            <parameters>/home/dobot/V4_ROS2_ws/src/DOBOT_6Axis_ROS2/cr5_moveit/config/ros2_controllers.yaml</parameters>
+            <parameters> $(find nova2_moveit)/config/ros2_controllers.yaml</parameters>
             <robot_param_node>robot_state_publisher</robot_param_node>
         </plugin>
     </gazebo>

@@ -1,4 +1,3 @@
-
 #include <dobot_bringup/cr_robot_ros2.h>
 #include <sensor_msgs/msg/joint_state.hpp>
 
@@ -501,6 +500,8 @@ void CRRobotRos2::pubFeedBackInfo()
 void CRRobotRos2::execute_action(const std::shared_ptr<dobot_msgs_v4::srv::EnableRobot::Request> request,
                                  std::shared_ptr<dobot_msgs_v4::srv::EnableRobot::Response> response)
 {
+    std::ignore = request;
+    std::ignore = response;
     std::cout << "execute_action" << std::endl;
 }
 
@@ -511,7 +512,7 @@ void CRRobotRos2::goalHandle()
 
 void CRRobotRos2::getErrorID(std::vector<int> &vec)
 {
-
+    std::ignore = vec;
     // 创建服务客户端
     std::string name = kRobotName + "/dobot_bringup_ros2/srv/GeterrorID";
     kClientGeterror = this->create_client<dobot_msgs_v4::srv::GetErrorID>(name);
@@ -830,7 +831,7 @@ bool CRRobotRos2::GetErrorID(const std::shared_ptr<dobot_msgs_v4::srv::GetErrorI
 
 bool CRRobotRos2::DI(const std::shared_ptr<dobot_msgs_v4::srv::DI::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::DI::Response> response)
 {
-    return commander_->callRosService(parseTool::parserDIRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserDIRequest2String(request), response->res,response->robot_return);
 }
 
 bool CRRobotRos2::ToolDI(const std::shared_ptr<dobot_msgs_v4::srv::ToolDI::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::ToolDI::Response> response)
@@ -1092,3 +1093,4 @@ bool CRRobotRos2::ServoP(const std::shared_ptr<dobot_msgs_v4::srv::ServoP::Reque
 {
     return commander_->callRosService(parseTool::parserServoPRequest2String(request), response->res);
 }
+

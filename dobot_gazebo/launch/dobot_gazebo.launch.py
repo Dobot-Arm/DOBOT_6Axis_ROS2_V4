@@ -30,10 +30,10 @@ def load_yaml(package_name, file_path):
 
 
 def generate_launch_description():
-    mane = os.getenv("DOBOT_TYPE")
-    robot_name_in_model = f'{mane}_robot'
+    name = os.getenv("DOBOT_TYPE")
+    robot_name_in_model = f'{name}_robot'
     package_name = 'cra_description'
-    urdf_name = f"{mane}_robot.xacro"
+    urdf_name = f"{name}_robot.xacro"
     gazebo = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory('gazebo_ros'), 'launch'), '/gazebo.launch.py']),
@@ -45,7 +45,6 @@ def generate_launch_description():
     xacro_file = os.path.join(cra_description_path,
                               'urdf',
                               urdf_name)
-
     doc = xacro.parse(open(xacro_file))
     xacro.process_doc(doc)
     robot_description_config = doc.toxml()

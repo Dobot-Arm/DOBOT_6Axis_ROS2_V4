@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: dobot_rviz
+    relative_path: urdf/cr20_robot.urdf
+  srdf:
+    relative_path: config/cr20_robot.srdf
+  package_settings:
+    author_name: futingxing
+    author_email: futingxing@dobot-robots.com
+    generated_timestamp: 1735198439
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

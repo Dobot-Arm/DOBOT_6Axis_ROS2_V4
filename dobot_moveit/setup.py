@@ -16,13 +16,15 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='dobot',
-    maintainer_email='dobot@todo.todo',
+    maintainer='FTX',
+    maintainer_email='futingxing@dobot-robot.com',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+        'joint_states    = dobot_moveit.joint_states:main',
+        'action_move_server    = dobot_moveit.action_move_server:main',
         ],
     },
 )

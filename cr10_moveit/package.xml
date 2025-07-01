@@ -6,7 +6,7 @@
   <description>
      An automatically generated package with all the configuration and launch files for using the cr10_robot with the MoveIt Motion Planning Framework
   </description>
-  <maintainer email="dobot@dobot.cc">dobot</maintainer>
+  <maintainer email="futingxing@dobot-robot.com">FTX</maintainer>
 
   <license>BSD</license>
 
@@ -14,7 +14,7 @@
   <url type="bugtracker">https://github.com/ros-planning/moveit2/issues</url>
   <url type="repository">https://github.com/ros-planning/moveit2</url>
 
-  <author email="dobot@dobot.cc">dobot</author>
+  <author email="futingxing@dobot-robot.com">FTX</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

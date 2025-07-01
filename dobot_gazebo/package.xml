@@ -6,11 +6,11 @@
   <description>
     Launch files and worlds 
   </description>
-  <maintainer email="dobot@dobot.cc">dobot</maintainer>
+  <maintainer email="futingxing@dobot-robot.com">FTX</maintainer>
 
   <license>BSD</license>
 
-  <author email="dobot@dobot.cc">dobot</author>
+  <author email="futingxing@dobot-robot.com">FTX</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 

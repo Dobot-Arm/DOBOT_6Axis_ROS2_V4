@@ -4,7 +4,7 @@
   <name>cr_robot_ros2</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="qiufengwu@todo.todo">qiufengwu</maintainer>
+  <maintainer email="futingxing@dobot-robot.com">TX_F</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

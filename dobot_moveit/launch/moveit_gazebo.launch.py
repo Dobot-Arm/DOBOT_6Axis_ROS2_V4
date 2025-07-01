@@ -4,8 +4,8 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 import os
 from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
-    mane = os.getenv("DOBOT_TYPE")
-    package_name = f'{mane}_moveit'
+    name = os.getenv("DOBOT_TYPE")
+    package_name = f'{name}_moveit'
     urdf_name = "moveit_gazebo.launch.py"
 
     pkg_share = os.path.join(get_package_share_directory(package_name))

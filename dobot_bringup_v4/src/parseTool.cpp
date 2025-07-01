@@ -280,31 +280,31 @@ namespace parseTool
     std::string parserGetInRegsRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetInRegs::Request> request)
     {
         std::stringstream ss;
-        ss << "GetInRegs(request->" << request->index << ", request->" << request->addr << ", request->" << request->count
-           << ", request->" << request->val_type << ")";
+        ss << "GetInRegs(" << request->index << "," << request->addr << "," << request->count
+           << "," << request->val_type << ")";
 
         return ss.str();
     }
     std::string parserGetCoilsRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetCoils::Request> request)
     {
         std::stringstream ss;
-        ss << "GetCoils(request->" << request->index << ", request->" << request->addr << ", request->" << request->count << ")";
+        ss << "GetCoils(" << request->index << "," << request->addr << ", " << request->count << ")";
 
         return ss.str();
     }
     std::string parserSetCoilsRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::SetCoils::Request> request)
     {
         std::stringstream ss;
-        ss << "SetCoils(request->" << request->index << ", request->" << request->addr << ", request->" << request->count
-           << ", request->" << request->val_tab << ")";
+        ss << "SetCoils(" << request->index << "," << request->addr << "," << request->count
+           << "," << request->val_tab << ")";
 
         return ss.str();
     }
     std::string parserGetHoldRegsRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetHoldRegs::Request> request)
     {
         std::stringstream ss;
-        ss << "GetHoldRegs(request->" << request->index << ", request->" << request->addr << ", request->" << request->count
-           << ", request->" << request->val_type << ")";
+        ss << "GetHoldRegs(" << request->index << "," << request->addr << "," << request->count
+           << "," << request->val_type << ")";
 
         return ss.str();
     }

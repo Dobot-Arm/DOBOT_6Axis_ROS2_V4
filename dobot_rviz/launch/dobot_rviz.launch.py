@@ -1,17 +1,16 @@
 from ament_index_python.packages import get_package_share_path
-
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import Command, LaunchConfiguration
-
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 import os
+
 def generate_launch_description():
-    mane = str(os.getenv("DOBOT_TYPE"))
+    name = str(os.getenv("DOBOT_TYPE"))
     urdf_tutorial_path = get_package_share_path('dobot_rviz')
-    default_model_path = urdf_tutorial_path / f'urdf/{mane}_robot.urdf'
+    default_model_path = urdf_tutorial_path / f'urdf/{name}_robot.urdf'
     default_rviz_config_path = urdf_tutorial_path / 'rviz/urdf.rviz'
 
     gui_arg = DeclareLaunchArgument(name='gui', default_value='false', choices=['true', 'false'],
