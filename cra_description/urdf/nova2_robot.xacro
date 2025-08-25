@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
 <robot name="nova2_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
     <link name="dummy_link" />
-    <link name="base_link">
-        
-<inertial>
+    <link name="base_link">   
+    <inertial>
             <origin xyz="1.31739324853774E-05 -7.84959718585273E-06 0.0647773077977383" rpy="0 0 0" />
             <mass value="0.939873286768969" />
             <inertia ixx="0.00191682867137382" ixy="-3.45738044468349E-07" ixz="7.09345652971545E-07" iyy="0.00192279468074328" iyz="-4.56838232777704E-07" izz="0.00127269960160789" />
@@ -25,6 +24,12 @@
             </geometry>
         </collision>
     </link>
+  <link  name="world"/>
+  <joint name="world_joint" type="fixed">
+    <origin xyz="0 0 0.03" rpy="0 0 0" />
+    <parent link="world" />
+    <child  link="dummy_link" />
+  </joint>
   <joint
     name="dummy_joint"
     type="fixed">
@@ -33,8 +38,7 @@
     <child
       link="base_link" />
   </joint>
-    <link name="Link1">
-        
+    <link name="Link1">     
 <inertial>
             <origin xyz="-5.44523391156536E-07 -0.0218722568945782 -0.0236239644661121" rpy="0 0 0" />
             <mass value="0.803371401390743" />

@@ -42,6 +42,12 @@
       </geometry>
     </collision>
   </link>
+  <link  name="world"/>
+  <joint name="world_joint" type="fixed">
+    <origin xyz="0 0 0.03" rpy="0 0 0" />
+    <parent link="world" />
+    <child  link="dummy_link" />
+  </joint>
   <joint
     name="dummy_joint"
     type="fixed">
