@@ -748,13 +748,15 @@ bool CRRobotRos2::StartPath(const std::shared_ptr<dobot_msgs_v4::srv::StartPath:
 bool CRRobotRos2::PositiveKin(const std::shared_ptr<dobot_msgs_v4::srv::PositiveKin::Request> request,
                               const std::shared_ptr<dobot_msgs_v4::srv::PositiveKin::Response> response)
 {
-    return commander_->callRosService(parseTool::parserPositiveKinRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserPositiveKinRequest2String(request), response->res,response->robot_return);
+
 }
 
 bool CRRobotRos2::InverseKin(const std::shared_ptr<dobot_msgs_v4::srv::InverseKin::Request> request,
                              const std::shared_ptr<dobot_msgs_v4::srv::InverseKin::Response> response)
 {
-    return commander_->callRosService(parseTool::parserInverseKinRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserInverseKinRequest2String(request), response->res,response->robot_return);
+
 }
 
 bool CRRobotRos2::GetAngle(const std::shared_ptr<dobot_msgs_v4::srv::GetAngle::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetAngle::Response> response)

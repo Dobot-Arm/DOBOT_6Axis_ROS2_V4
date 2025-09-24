@@ -223,7 +223,7 @@ namespace parseTool
     {
         // InverseKin(X,Y,Z,Rx,Ry,Rz,User,Tool,useJointNear,JointNear)
         std::stringstream ss;
-        ss << "RunScript(" << request->x << "," << request->y << "," << request->z << "," << request->rx << "," << request->ry
+        ss << "InverseKin(" << request->x << "," << request->y << "," << request->z << "," << request->rx << "," << request->ry
            << "," << request->rz << ", user=" << request->user << ",tool=" << request->tool
            << ",useJointNear=" << request->use_joint_near << ",jointNear=" << request->joint_near << ")";
         return ss.str();

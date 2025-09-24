@@ -7,4 +7,5 @@ float64  j6
 string   user 
 string   tool 
 ---
+string robot_return
 int32 res
