@@ -2,12 +2,10 @@
 <robot name="cr10_robot" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <link name="dummy_link"/>
-  <link
-    name="base_link">
+  <link name="base_link">
     <inertial>
       <origin
-        xyz="-0.0017435 -4.7141E-06 0.032774"
-        rpy="0 0 0" />
+        xyz="-0.0017435 -4.7141E-06 0.032774" rpy="0 0 0" />
       <mass
         value="1.8265" />
       <inertia

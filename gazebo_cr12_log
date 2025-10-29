@@ -1,0 +1,56 @@
+dobot@dobot-virtual-machine:~$ ros2 launch dobot_gazebo gazebo_moveit.launch.py 
+[INFO] [launch]: All log files can be found below /home/dobot/.ros/log/2025-10-28-11-53-53-729657-dobot-virtual-machine-10593
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [gzserver-1]: process started with pid [10594]
+[INFO] [gzclient-2]: process started with pid [10596]
+[INFO] [robot_state_publisher-3]: process started with pid [10598]
+[INFO] [spawn_entity.py-4]: process started with pid [10600]
+[robot_state_publisher-3] [INFO] [1761623637.012076594] [robot_state_publisher]: got segment Link1
+[robot_state_publisher-3] [INFO] [1761623637.012467494] [robot_state_publisher]: got segment Link2
+[robot_state_publisher-3] [INFO] [1761623637.012521322] [robot_state_publisher]: got segment Link3
+[robot_state_publisher-3] [INFO] [1761623637.012559406] [robot_state_publisher]: got segment Link4
+[robot_state_publisher-3] [INFO] [1761623637.012594674] [robot_state_publisher]: got segment Link5
+[robot_state_publisher-3] [INFO] [1761623637.012628439] [robot_state_publisher]: got segment Link6
+[robot_state_publisher-3] [INFO] [1761623637.012661869] [robot_state_publisher]: got segment base_link
+[robot_state_publisher-3] [INFO] [1761623637.012696098] [robot_state_publisher]: got segment dummy_link
+[robot_state_publisher-3] [INFO] [1761623637.012731657] [robot_state_publisher]: got segment world
+[spawn_entity.py-4] [INFO] [1761623638.172706264] [spawn_entity]: Spawn Entity started
+[spawn_entity.py-4] [INFO] [1761623638.174534674] [spawn_entity]: Loading entity published on topic robot_description
+[spawn_entity.py-4] [INFO] [1761623638.181148637] [spawn_entity]: Waiting for entity xml on robot_description
+[spawn_entity.py-4] [INFO] [1761623638.196294387] [spawn_entity]: Waiting for service /spawn_entity, timeout = 30
+[spawn_entity.py-4] [INFO] [1761623638.197525485] [spawn_entity]: Waiting for service /spawn_entity
+[spawn_entity.py-4] [INFO] [1761623639.854869983] [spawn_entity]: Calling service /spawn_entity
+[gzclient-2] 
+[gzclient-2] libcurl: (6) Could not resolve host: fuel.ignitionrobotics.org
+[spawn_entity.py-4] [INFO] [1761623640.557556233] [spawn_entity]: Spawn status: SpawnEntity: Successfully spawned entity [cr12_robot]
+[INFO] [spawn_entity.py-4]: process has finished cleanly [pid 10600]
+[INFO] [ros2-5]: process started with pid [10706]
+[gzserver-1] [INFO] [1761623640.900429422] [gazebo_ros2_control]: Loading gazebo_ros2_control plugin
+[gzserver-1] [INFO] [1761623640.912402988] [gazebo_ros2_control]: Starting gazebo_ros2_control plugin in namespace: /
+[gzserver-1] [INFO] [1761623640.913158612] [gazebo_ros2_control]: Starting gazebo_ros2_control plugin in ros 2 node: gazebo_ros2_control
+[gzserver-1] [INFO] [1761623640.925768902] [gazebo_ros2_control]: connected to service!! robot_state_publisher
+[gzserver-1] [INFO] [1761623640.929438506] [gazebo_ros2_control]: Received urdf from param server, parsing...
+[gzserver-1] [INFO] [1761623640.929835811] [gazebo_ros2_control]: Loading parameter files /home/dobot/dobot_ws/install/cr12_moveit/share/cr12_moveit/config/ros2_controllers.yaml
+[gzserver-1] [rcutils|error_handling.c:65] an error string (message, file name, or formatted message) will be truncated
+[gzserver-1] [ERROR] [1761623640.931311488] [gazebo_ros2_control]: parser error Couldn't parse parameter override rule: '--param robot_description:=<?xml version="1.0" ?><!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+[gzserver-1]      Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
+[gzserver-1]      For more information, please see http://wiki.ros.org/sw_urdf_exporter --><robot name="cr12_robot"><link name="dummy_link"/><link name="base_link"><inertial><origin rpy="0 0 0" xyz="-0.00174386341900778 -4.3102660432092E-06 0.0327740188891512"/><mass value="1.82652439038323"/><inertia ixx="0.00417310093970523" ixy="5.83590024362277E-07" ixz="2.52017746820122E-05" iyy="0.00431292894874216" iyz="-5.50196168357807E-07" izz="0.00677037749045351"/></inertial><visual><origi, at ./src/rcl/arguments.c:343
+[gzserver-1] 
+[ros2-5] [INFO] [1761623643.177843738] [_ros2cli_10706]: waiting for service /controller_manager/load_controller to become available...
+[gzclient-2] context mismatch in svga_surface_destroy
+[gzclient-2] context mismatch in svga_surface_destroy
+[ros2-5] [WARN] [1761623653.234556718] [_ros2cli_10706]: Could not contact service /controller_manager/load_controller
+[ros2-5] [INFO] [1761623653.237885762] [_ros2cli_10706]: waiting for service /controller_manager/load_controller to become available...
+[ros2-5] [WARN] [1761623663.271421363] [_ros2cli_10706]: Could not contact service /controller_manager/load_controller
+[ros2-5] [INFO] [1761623663.275450712] [_ros2cli_10706]: waiting for service /controller_manager/load_controller to become available...
+[ros2-5] [WARN] [1761623673.323225759] [_ros2cli_10706]: Could not contact service /controller_manager/load_controller
+[ros2-5] [INFO] [1761623673.325759720] [_ros2cli_10706]: waiting for service /controller_manager/load_controller to become available...
+[ros2-5] [WARN] [1761623683.366800215] [_ros2cli_10706]: Could not contact service /controller_manager/load_controller
+[ros2-5] [INFO] [1761623683.371247171] [_ros2cli_10706]: waiting for service /controller_manager/load_controller to become available...
+[ros2-5] [WARN] [1761623693.419178719] [_ros2cli_10706]: Could not contact service /controller_manager/load_controller
+[ros2-5] [INFO] [1761623693.422574450] [_ros2cli_10706]: waiting for service /controller_manager/load_controller to become available...
+[ros2-5] [WARN] [1761623703.477727992] [_ros2cli_10706]: Could not contact service /controller_manager/load_controller
+[ros2-5] [INFO] [1761623703.479983934] [_ros2cli_10706]: waiting for service /controller_manager/load_controller to become available...
+[ros2-5] [WARN] [1761623713.533733828] [_ros2cli_10706]: Could not contact service /controller_manager/load_controller
+[ros2-5] [INFO] [1761623713.536228606] [_ros2cli_10706]: waiting for service /controller_manager/load_controller to become available...
+[ros2-5] [WARN] [1761623723.576757428] [_ros2cli_10706]: Could not contact service /controller_manager/load_controller

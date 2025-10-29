@@ -1,18 +1,12 @@
 <?xml version="1.0"?>
-<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
-     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
-     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot
   name="cr12_robot"  xmlns:xacro="http://ros.org/wiki/xacro">
   <link name="dummy_link"/>
-  <link
-    name="base_link">
+  <link name="base_link">
     <inertial>
       <origin
-        xyz="-0.00174386341900778 -4.3102660432092E-06 0.0327740188891512"
-        rpy="0 0 0" />
-      <mass
-        value="1.82652439038323" />
+        xyz="-0.00174386341900778 -4.3102660432092E-06 0.0327740188891512" rpy="0 0 0" />
+      <mass value="1.82652439038323" />
       <inertia
         ixx="0.00417310093970523"
         ixy="5.83590024362277E-07"
@@ -53,10 +47,10 @@
     <child  link="dummy_link" />
   </joint>
   
-     <joint name="dummy_joint" type="fixed">
+  <joint name="dummy_joint" type="fixed">
       <parent link="dummy_link" />
       <child  link="base_link" />
-    </joint>
+  </joint>
 
 
   <link

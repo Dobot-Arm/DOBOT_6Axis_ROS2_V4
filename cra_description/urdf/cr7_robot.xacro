@@ -1,16 +1,10 @@
 <?xml version="1.0"?>
-
-<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
-     Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
-     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot name="cr7_robot"  xmlns:xacro="http://ros.org/wiki/xacro">
     <link name="dummy_link" />
-  <link
-    name="base_link">
+  <link name="base_link">
     <inertial>
       <origin
-        xyz="-7.75881826404344E-06 0.00191109737802069 0.0289949710713939"
-        rpy="0 0 0" />
+        xyz="-7.75881826404344E-06 0.00191109737802069 0.0289949710713939" rpy="0 0 0" />
       <mass
         value="0.908795453638862" />
       <inertia
