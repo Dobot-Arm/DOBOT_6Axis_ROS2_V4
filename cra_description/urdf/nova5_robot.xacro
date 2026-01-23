@@ -44,7 +44,6 @@
   </link>
   <link  name="world"/>
   <joint name="world_joint" type="fixed">
-    <origin xyz="0 0 0.03" rpy="0 0 0" />
     <parent link="world" />
     <child  link="dummy_link" />
   </joint>
@@ -107,12 +106,12 @@
     <child
       link="Link1" />
     <axis
-      xyz="0 0 -0.999999999999855" />
+      xyz="0 0 0.999999999999855" />
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="300"
-      velocity="100" />
+      effort="0"
+      velocity="0" />
   </joint>
   <link
     name="Link2">
@@ -169,8 +168,8 @@
     <limit
       lower="-3.14"
       upper="3.14"
-      effort="300"
-      velocity="100" />
+      effort="0"
+      velocity="0" />
   </joint>
   <link
     name="Link3">
@@ -227,8 +226,8 @@
     <limit
       lower="-2.79"
       upper="2.79"
-      effort="300"
-      velocity="100" />
+      effort="0"
+      velocity="0" />
   </joint>
   <link
     name="Link4">
@@ -281,12 +280,12 @@
     <child
       link="Link4" />
     <axis
-      xyz="0 0 -1" />
+      xyz="0 0 1" />
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="300"
-      velocity="100" />
+      effort="0"
+      velocity="0" />
   </joint>
   <link
     name="Link5">
@@ -343,8 +342,8 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="300"
-      velocity="100" />
+      effort="0"
+      velocity="0" />
   </joint>
   <link
     name="Link6">
@@ -401,8 +400,8 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="300"
-      velocity="100" />
+      effort="0"
+      velocity="0" />
   </joint>
    <gazebo reference="base_link">
         <gravity>false</gravity>
