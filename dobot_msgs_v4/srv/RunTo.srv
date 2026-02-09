@@ -1,0 +1,13 @@
+float64 a1
+float64 b1
+float64 c1
+float64 d1
+float64 e1
+float64 f1
+int32 move_type
+int32 user -1
+int32 tool -1
+int32 a -1
+int32 v -1
+---
+int32 res

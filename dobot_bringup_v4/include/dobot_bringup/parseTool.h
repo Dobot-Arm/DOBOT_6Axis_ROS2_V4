@@ -104,6 +104,33 @@
 #include <dobot_msgs_v4/srv/get_current_command_id.hpp>
 #include <dobot_msgs_v4/srv/servo_j.hpp>
 #include <dobot_msgs_v4/srv/servo_p.hpp>
+#include <dobot_msgs_v4/srv/enable_ft_sensor.hpp>
+#include <dobot_msgs_v4/srv/six_force_home.hpp>
+#include <dobot_msgs_v4/srv/get_force.hpp>
+#include <dobot_msgs_v4/srv/force_drive_mode.hpp>
+#include <dobot_msgs_v4/srv/force_drive_speed.hpp>
+#include <dobot_msgs_v4/srv/fc_force_mode.hpp>
+#include <dobot_msgs_v4/srv/fc_set_deviation.hpp>
+#include <dobot_msgs_v4/srv/fc_set_force_limit.hpp>
+#include <dobot_msgs_v4/srv/fc_set_mass.hpp>
+#include <dobot_msgs_v4/srv/fc_set_stiffness.hpp>
+#include <dobot_msgs_v4/srv/fc_set_damping.hpp>
+#include <dobot_msgs_v4/srv/fc_off.hpp>
+#include <dobot_msgs_v4/srv/fc_set_force_speed_limit.hpp>
+#include <dobot_msgs_v4/srv/fc_set_force.hpp>
+#include <dobot_msgs_v4/srv/set_fc_collision.hpp>
+#include <dobot_msgs_v4/srv/fc_collision_switch.hpp>
+#include <dobot_msgs_v4/srv/set_work_zone_enable.hpp>
+#include <dobot_msgs_v4/srv/get_tool_do.hpp>
+#include <dobot_msgs_v4/srv/reset_robot.hpp>
+#include <dobot_msgs_v4/srv/run_to.hpp>
+#include <dobot_msgs_v4/srv/start_rt_offset.hpp>
+#include <dobot_msgs_v4/srv/end_rt_offset.hpp>
+#include <dobot_msgs_v4/srv/get_error.hpp>
+#include <dobot_msgs_v4/srv/do_group_dec.hpp>
+#include <dobot_msgs_v4/srv/get_do_group_dec.hpp>
+#include <dobot_msgs_v4/srv/di_group_dec.hpp>
+#include <dobot_msgs_v4/srv/request_control.hpp>
 
 namespace parseTool
 {
@@ -291,6 +318,34 @@ namespace parseTool
     std::string parserToolAIRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::ToolAI::Request> request);
 
     std::string parserToolDIRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::ToolDI::Request> request);
+
+    std::string parserEnableFTSensorRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::EnableFTSensor::Request> request);
+    std::string parserSixForceHomeRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::SixForceHome::Request> request);
+    std::string parserGetForceRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetForce::Request> request);
+    std::string parserForceDriveModeRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::ForceDriveMode::Request> request);
+    std::string parserForceDriveSpeedRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::ForceDriveSpeed::Request> request);
+    std::string parserFCForceModeRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCForceMode::Request> request);
+    std::string parserFCSetDeviationRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetDeviation::Request> request);
+    std::string parserFCSetForceLimitRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetForceLimit::Request> request);
+    std::string parserFCSetMassRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetMass::Request> request);
+    std::string parserFCSetStiffnessRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetStiffness::Request> request);
+    std::string parserFCSetDampingRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetDamping::Request> request);
+    std::string parserFCOffRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCOff::Request> request);
+    std::string parserFCSetForceSpeedLimitRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetForceSpeedLimit::Request> request);
+    std::string parserFCSetForceRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetForce::Request> request);
+    std::string parserSetFCCollisionRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::SetFCCollision::Request> request);
+    std::string parserFCCollisionSwitchRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCCollisionSwitch::Request> request);
+    std::string parserSetWorkZoneEnableRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::SetWorkZoneEnable::Request> request);
+    std::string parserGetToolDORequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetToolDO::Request> request);
+    std::string parserResetRobotRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::ResetRobot::Request> request);
+    std::string parserRunToRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::RunTo::Request> request);
+    std::string parserStartRTOffsetRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::StartRTOffset::Request> request);
+    std::string parserEndRTOffsetRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::EndRTOffset::Request> request);
+    std::string parserGetErrorRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetError::Request> request);
+    std::string parserDOGroupDECRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::DOGroupDEC::Request> request);
+    std::string parserGetDOGroupDECRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroupDEC::Request> request);
+    std::string parserDIGroupDECRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::DIGroupDEC::Request> request);
+    std::string parserRequestControlRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::RequestControl::Request> request);
 
 }
 

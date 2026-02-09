@@ -1,0 +1,9 @@
+int32 x
+int32 y
+int32 z
+int32 rx
+int32 ry
+int32 rz
+int32 controltype -1
+---
+int32 res

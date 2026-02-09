@@ -919,4 +919,233 @@ namespace parseTool
         ss << "ToolDI(" << request->index << ")";
         return ss.str();
     }
+
+    std::string parserEnableFTSensorRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::EnableFTSensor::Request> request)
+    {
+        std::stringstream ss;
+        ss << "EnableFTSensor(" << request->status << ")";
+        return ss.str();
+    }
+
+    std::string parserSixForceHomeRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::SixForceHome::Request> request)
+    {
+        std::ignore = request;
+        return "SixForceHome()";
+    }
+
+    std::string parserGetForceRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetForce::Request> request)
+    {
+        std::stringstream ss;
+        if (request->tool == -1) {
+            ss << "GetForce()";
+        } else {
+            ss << "GetForce(" << request->tool << ")";
+        }
+        return ss.str();
+    }
+
+    std::string parserForceDriveModeRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::ForceDriveMode::Request> request)
+    {
+        std::stringstream ss;
+        ss << "ForceDriveMode({" << request->x << "," << request->y << "," << request->z << "," 
+           << request->rx << "," << request->ry << "," << request->rz << "}";
+        
+        if (request->user != -1) {
+            ss << "," << request->user;
+        }
+        ss << ")";
+        return ss.str();
+    }
+
+    std::string parserForceDriveSpeedRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::ForceDriveSpeed::Request> request)
+    {
+        std::stringstream ss;
+        ss << "ForceDriveSpeed(" << request->speed << ")";
+        return ss.str();
+    }
+
+    std::string parserFCForceModeRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCForceMode::Request> request)
+    {
+        std::stringstream ss;
+        ss << "FCForceMode({" << request->x << "," << request->y << "," << request->z << "," 
+           << request->rx << "," << request->ry << "," << request->rz << "},{"
+           << request->fx << "," << request->fy << "," << request->fz << "," 
+           << request->frx << "," << request->fry << "," << request->frz << "}";
+        
+        if (request->reference != -1) ss << ",reference=" << request->reference;
+        if (request->user != -1) ss << ",user=" << request->user;
+        if (request->tool != -1) ss << ",tool=" << request->tool;
+        
+        ss << ")";
+        return ss.str();
+    }
+
+    std::string parserFCSetDeviationRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetDeviation::Request> request)
+    {
+        std::stringstream ss;
+        ss << "FCSetDeviation({" << request->x << "," << request->y << "," << request->z << "," 
+           << request->rx << "," << request->ry << "," << request->rz << "}";
+        
+        if (request->controltype != -1) {
+            ss << "," << request->controltype;
+        }
+        ss << ")";
+        return ss.str();
+    }
+
+    std::string parserFCSetForceLimitRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetForceLimit::Request> request)
+    {
+        std::stringstream ss;
+        ss << "FCSetForceLimit(" << request->x << "," << request->y << "," << request->z << "," 
+           << request->rx << "," << request->ry << "," << request->rz << ")";
+        return ss.str();
+    }
+
+    std::string parserFCSetMassRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetMass::Request> request)
+    {
+        std::stringstream ss;
+        ss << "FCSetMass(" << request->x << "," << request->y << "," << request->z << "," 
+           << request->rx << "," << request->ry << "," << request->rz << ")";
+        return ss.str();
+    }
+
+    std::string parserFCSetStiffnessRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetStiffness::Request> request)
+    {
+        std::stringstream ss;
+        ss << "FCSetStiffness(" << request->x << "," << request->y << "," << request->z << "," 
+           << request->rx << "," << request->ry << "," << request->rz << ")";
+        return ss.str();
+    }
+
+    std::string parserFCSetDampingRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetDamping::Request> request)
+    {
+        std::stringstream ss;
+        ss << "FCSetDamping(" << request->x << "," << request->y << "," << request->z << "," 
+           << request->rx << "," << request->ry << "," << request->rz << ")";
+        return ss.str();
+    }
+
+    std::string parserFCOffRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCOff::Request> request)
+    {
+        std::ignore = request;
+        return "FCOff()";
+    }
+
+    std::string parserFCSetForceSpeedLimitRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetForceSpeedLimit::Request> request)
+    {
+        std::stringstream ss;
+        ss << "FCSetForceSpeedLimit(" << request->x << "," << request->y << "," << request->z << "," 
+           << request->rx << "," << request->ry << "," << request->rz << ")";
+        return ss.str();
+    }
+
+    std::string parserFCSetForceRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCSetForce::Request> request)
+    {
+        std::stringstream ss;
+        ss << "FCSetForce(" << request->x << "," << request->y << "," << request->z << "," 
+           << request->rx << "," << request->ry << "," << request->rz << ")";
+        return ss.str();
+    }
+
+    std::string parserSetFCCollisionRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::SetFCCollision::Request> request)
+    {
+        std::stringstream ss;
+        ss << "SetFCCollision(" << request->force << "," << request->torque << ")";
+        return ss.str();
+    }
+
+    std::string parserFCCollisionSwitchRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::FCCollisionSwitch::Request> request)
+    {
+        std::stringstream ss;
+        ss << "FCCollisionSwitch(enable=" << request->enable << ")";
+        return ss.str();
+    }
+
+    std::string parserSetWorkZoneEnableRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::SetWorkZoneEnable::Request> request)
+    {
+        std::stringstream ss;
+        ss << "SetWorkZoneEnable(" << request->index << "," << request->value << ")";
+        return ss.str();
+    }
+
+    std::string parserGetToolDORequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetToolDO::Request> request)
+    {
+        std::stringstream ss;
+        ss << "GetToolDO(" << request->index << ")";
+        return ss.str();
+    }
+
+    std::string parserResetRobotRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::ResetRobot::Request> request)
+    {
+        std::ignore = request;
+        return "ResetRobot()";
+    }
+
+    std::string parserRunToRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::RunTo::Request> request)
+    {
+        std::stringstream ss;
+        char coord[200];
+        sprintf(coord, "{%f,%f,%f,%f,%f,%f}", request->a1, request->b1, request->c1, request->d1, request->e1, request->f1);
+        
+        if (request->move_type == 0) {
+            ss << "RunTo(pose=" << coord << ",moveType=0";
+        } else {
+            ss << "RunTo(joint=" << coord << ",moveType=1";
+        }
+        
+        if (request->user != -1) ss << ",user=" << request->user;
+        if (request->tool != -1) ss << ",tool=" << request->tool;
+        if (request->a != -1) ss << ",a=" << request->a;
+        if (request->v != -1) ss << ",v=" << request->v;
+        
+        ss << ")";
+        return ss.str();
+    }
+
+    std::string parserStartRTOffsetRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::StartRTOffset::Request> request)
+    {
+        std::ignore = request;
+        return "StartRTOffset()";
+    }
+
+    std::string parserEndRTOffsetRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::EndRTOffset::Request> request)
+    {
+        std::ignore = request;
+        return "EndRTOffset()";
+    }
+
+    std::string parserGetErrorRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetError::Request> request)
+    {
+        std::stringstream ss;
+        ss << "GetError(" << request->language << ")";
+        return ss.str();
+    }
+
+    std::string parserDOGroupDECRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::DOGroupDEC::Request> request)
+    {
+        std::stringstream ss;
+        ss << "DOGroupDEC(" << request->group << "," << request->value << ")";
+        return ss.str();
+    }
+
+    std::string parserGetDOGroupDECRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroupDEC::Request> request)
+    {
+        std::stringstream ss;
+        ss << "GetDOGroupDEC(" << request->group << "," << request->value << ")";
+        return ss.str();
+    }
+
+    std::string parserDIGroupDECRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::DIGroupDEC::Request> request)
+    {
+        std::stringstream ss;
+        ss << "DIGroupDEC(" << request->group << "," << request->value << ")";
+        return ss.str();
+    }
+
+    std::string parserRequestControlRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::RequestControl::Request> request)
+    {
+        std::ignore = request;
+        return "RequestControl()";
+    }
+
 }
