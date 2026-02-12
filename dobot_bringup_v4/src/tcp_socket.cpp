@@ -1,4 +1,5 @@
 #include <dobot_bringup/tcp_socket.h>
+#include <rclcpp/rclcpp.hpp>
 
 TcpClient::TcpClient(std::string ip, uint16_t port) : fd_(-1), port_(port), ip_(std::move(ip)), is_connected_(false)
 {
@@ -39,7 +40,7 @@ void TcpClient::connect()
         throw TcpClientException(toString() + std::string(" connect : ") + strerror(errno));
     is_connected_ = true;
 
-    std::cout << "connect successfully  " << toString() << std::endl;
+    RCLCPP_INFO(rclcpp::get_logger("dobot_tcp"), "connected to %s", toString().c_str());
 }
 
 void TcpClient::disConnect()
@@ -61,8 +62,6 @@ void TcpClient::tcpSend(const void *buf, uint32_t len)
 {
     if (!is_connected_)
         throw TcpClientException("tcp is disconnected");
-
-    //std::cout << "send : " << buf << std::endl;
 
     const auto *tmp = (const uint8_t *)buf;
     while (len)
@@ -125,7 +124,6 @@ bool TcpClient::tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t ti
 
         tmp++;
         has_read += err;
-        //std::cout << "sbfeed:" << has_read << std::endl;
     }
     return true;
 }

@@ -1,7 +1,10 @@
 #include <dobot_bringup/command.h>
-#include <iostream>
+#include <rclcpp/rclcpp.hpp>
 #include <chrono>
 #include <thread>
+
+static const rclcpp::Logger kLogger = rclcpp::get_logger("dobot_tcp");
+
 CRCommanderRos2::CRCommanderRos2(const std::string &ip)
     : current_joint_{}, tool_vector_{}, is_running_(false)
 {
@@ -56,13 +59,13 @@ void CRCommanderRos2::recvTask()
                 }
                 else
                 {
-                    std::cout << "tcp recv timeout" << std::endl;
+                    RCLCPP_WARN(kLogger, "tcp recv timeout");
                 }
             }
             catch (const TcpClientException &err)
             {
                 real_time_tcp_->disConnect();
-                std::cout << "tcp recv error :" << std::endl;
+                RCLCPP_ERROR(kLogger, "tcp recv error: %s", err.what());
             }
         }
         else
@@ -73,7 +76,7 @@ void CRCommanderRos2::recvTask()
             }
             catch (const TcpClientException &err)
             {
-                std::cout << "tcp recv Error : %s" << std::endl;
+                RCLCPP_ERROR(kLogger, "realtime tcp connect failed: %s", err.what());
                 sleep(3);
             }
         }
@@ -87,7 +90,7 @@ void CRCommanderRos2::recvTask()
             catch (const TcpClientException &err)
             {
 
-                std::cout << "tcp recv ERROR : %s" << std::endl;
+                RCLCPP_ERROR(kLogger, "dashboard tcp connect failed: %s", err.what());
                 sleep(3);
             }
         }
@@ -103,7 +106,7 @@ void CRCommanderRos2::init()
     }
     catch (const TcpClientException &err)
     {
-        std::cout << "Commander : %s" << std::endl;
+        RCLCPP_ERROR(kLogger, "Commander init failed: %s", err.what());
     }
 }
 int stringToInt(const std::string& str) {
@@ -121,7 +124,7 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
         auto currentTime = std::chrono::system_clock::now();
         auto currentTime_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(currentTime);
         auto valueMS = currentTime_ms.time_since_epoch().count();
-        std::cout <<"time: "<<valueMS <<"  tcp send cmd :" << cmd << std::endl;
+        RCLCPP_INFO(kLogger, "time: %ld  tcp send cmd: %s", valueMS, cmd);
 
         tcp->tcpSend(cmd, strlen(cmd));
         char *recv_ptr = buf;
@@ -146,16 +149,16 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
                 std::string result = str.substr(0, i-1); // 使用substr函数截取指定长度的子字符串
                 int num = stringToInt(result);
                 err_id = num;
-                std::cout << "ErrorID: " << result<< std::endl;
+                RCLCPP_INFO(kLogger, "ErrorID: %s", result.c_str());
             }
-            
+
         }
 
-        std::cout << "tcp recv feedback : " << recv_ptr << std::endl; // FIXME parse the buf may be better
+        RCLCPP_INFO(kLogger, "tcp recv feedback: %s", recv_ptr);
     }
     catch (const std::logic_error &err)
     {
-        std::cout << "tcpDoCmd failed " << std::endl;
+        RCLCPP_ERROR(kLogger, "tcpDoCmd failed: %s", err.what());
     }
 }
 
@@ -172,7 +175,7 @@ void CRCommanderRos2::doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cm
         auto currentTime = std::chrono::system_clock::now();
         auto currentTime_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(currentTime);
         auto valueMS = currentTime_ms.time_since_epoch().count();
-        std::cout <<"time: "<<valueMS <<"  tcp send cmd :" << cmd << std::endl;
+        RCLCPP_INFO(kLogger, "time: %ld  tcp send cmd: %s", valueMS, cmd);
         tcp->tcpSend(cmd, strlen(cmd));
         char *recv_ptr = buf;
         while (true)
@@ -197,7 +200,7 @@ void CRCommanderRos2::doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cm
                 std::string result = str.substr(0, i-1); // 使用substr函数截取指定长度的子字符串
                 int num = stringToInt(result);
                 err_id = num;
-                std::cout << "ErrorID: " << num<< std::endl;
+                RCLCPP_INFO(kLogger, "ErrorID: %d", num);
                 pose1 = i;
             }
             if (recv_ptr[i] == '}')
@@ -207,13 +210,13 @@ void CRCommanderRos2::doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cm
                 mode_id = result;
                 break;
             }
-            
+
         }
-        std::cout << "tcp recv feedback : " << recv_ptr << std::endl; // FIXME parse the buf may be better
+        RCLCPP_INFO(kLogger, "tcp recv feedback: %s", recv_ptr);
     }
     catch (const std::logic_error &err)
     {
-        std::cout << "tcpDoCmd failed " << std::endl;
+        RCLCPP_ERROR(kLogger, "tcpDoCmd failed: %s", err.what());
     }
 }
 
@@ -227,7 +230,7 @@ bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id)
     }
     catch (const TcpClientException &err)
     {
-        std::cout << "%s" << std::endl;
+        RCLCPP_ERROR(kLogger, "callRosService failed: %s", err.what());
         err_id = -1;
         return false;
     }
@@ -242,7 +245,7 @@ bool CRCommanderRos2::callRosService_f(const std::string cmd, int32_t &err_id,st
     }
     catch (const TcpClientException &err)
     {
-        std::cout << "%s" << std::endl;
+        RCLCPP_ERROR(kLogger, "callRosService_f failed: %s", err.what());
         err_id = -1;
         return false;
     }
@@ -256,7 +259,7 @@ bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id, std
     }
     catch (const TcpClientException &err)
     {
-        std::cout << "%s" << std::endl;
+        RCLCPP_ERROR(kLogger, "callRosService failed: %s", err.what());
         err_id = -1;
         return false;
     }

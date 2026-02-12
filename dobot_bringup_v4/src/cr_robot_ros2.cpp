@@ -502,12 +502,12 @@ void CRRobotRos2::execute_action(const std::shared_ptr<dobot_msgs_v4::srv::Enabl
 {
     std::ignore = request;
     std::ignore = response;
-    std::cout << "execute_action" << std::endl;
+    RCLCPP_INFO(rclcpp::get_logger("dobot_bringup"), "execute_action");
 }
 
 void CRRobotRos2::goalHandle()
 {
-    std::cout << "goalHandle" << std::endl;
+    RCLCPP_INFO(rclcpp::get_logger("dobot_bringup"), "goalHandle");
 }
 
 void CRRobotRos2::getErrorID(std::vector<int> &vec)
