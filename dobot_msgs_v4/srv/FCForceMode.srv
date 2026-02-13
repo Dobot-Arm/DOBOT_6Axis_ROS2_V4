@@ -1,0 +1,17 @@
+int32 x
+int32 y
+int32 z
+int32 rx
+int32 ry
+int32 rz
+int32 fx
+int32 fy
+int32 fz
+int32 frx
+int32 fry
+int32 frz
+int32 reference -1
+int32 user -1
+int32 tool -1
+---
+int32 res

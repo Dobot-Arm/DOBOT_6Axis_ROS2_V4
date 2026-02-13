@@ -115,6 +115,33 @@
 #include <dobot_msgs_v4/srv/get_current_command_id.hpp>
 #include <dobot_msgs_v4/srv/servo_j.hpp>
 #include <dobot_msgs_v4/srv/servo_p.hpp>
+#include <dobot_msgs_v4/srv/enable_ft_sensor.hpp>
+#include <dobot_msgs_v4/srv/six_force_home.hpp>
+#include <dobot_msgs_v4/srv/get_force.hpp>
+#include <dobot_msgs_v4/srv/force_drive_mode.hpp>
+#include <dobot_msgs_v4/srv/force_drive_speed.hpp>
+#include <dobot_msgs_v4/srv/fc_force_mode.hpp>
+#include <dobot_msgs_v4/srv/fc_set_deviation.hpp>
+#include <dobot_msgs_v4/srv/fc_set_force_limit.hpp>
+#include <dobot_msgs_v4/srv/fc_set_mass.hpp>
+#include <dobot_msgs_v4/srv/fc_set_stiffness.hpp>
+#include <dobot_msgs_v4/srv/fc_set_damping.hpp>
+#include <dobot_msgs_v4/srv/fc_off.hpp>
+#include <dobot_msgs_v4/srv/fc_set_force_speed_limit.hpp>
+#include <dobot_msgs_v4/srv/fc_set_force.hpp>
+#include <dobot_msgs_v4/srv/set_fc_collision.hpp>
+#include <dobot_msgs_v4/srv/fc_collision_switch.hpp>
+#include <dobot_msgs_v4/srv/set_work_zone_enable.hpp>
+#include <dobot_msgs_v4/srv/get_tool_do.hpp>
+#include <dobot_msgs_v4/srv/reset_robot.hpp>
+#include <dobot_msgs_v4/srv/run_to.hpp>
+#include <dobot_msgs_v4/srv/start_rt_offset.hpp>
+#include <dobot_msgs_v4/srv/end_rt_offset.hpp>
+#include <dobot_msgs_v4/srv/get_error.hpp>
+#include <dobot_msgs_v4/srv/do_group_dec.hpp>
+#include <dobot_msgs_v4/srv/get_do_group_dec.hpp>
+#include <dobot_msgs_v4/srv/di_group_dec.hpp>
+#include <dobot_msgs_v4/srv/request_control.hpp>
 
 class CRRobotRos2 : public rclcpp::Node
 {
@@ -226,6 +253,33 @@ protected:
     bool GetCurrentCommandId(const std::shared_ptr<dobot_msgs_v4::srv::GetCurrentCommandId::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetCurrentCommandId::Response> response);
     bool ServoJ(const std::shared_ptr<dobot_msgs_v4::srv::ServoJ::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::ServoJ::Response> response);
     bool ServoP(const std::shared_ptr<dobot_msgs_v4::srv::ServoP::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::ServoP::Response> response);
+    bool EnableFTSensor(const std::shared_ptr<dobot_msgs_v4::srv::EnableFTSensor::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::EnableFTSensor::Response> response);
+    bool SixForceHome(const std::shared_ptr<dobot_msgs_v4::srv::SixForceHome::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::SixForceHome::Response> response);
+    bool GetForce(const std::shared_ptr<dobot_msgs_v4::srv::GetForce::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetForce::Response> response);
+    bool ForceDriveMode(const std::shared_ptr<dobot_msgs_v4::srv::ForceDriveMode::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::ForceDriveMode::Response> response);
+    bool ForceDriveSpeed(const std::shared_ptr<dobot_msgs_v4::srv::ForceDriveSpeed::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::ForceDriveSpeed::Response> response);
+    bool FCForceMode(const std::shared_ptr<dobot_msgs_v4::srv::FCForceMode::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::FCForceMode::Response> response);
+    bool FCSetDeviation(const std::shared_ptr<dobot_msgs_v4::srv::FCSetDeviation::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::FCSetDeviation::Response> response);
+    bool FCSetForceLimit(const std::shared_ptr<dobot_msgs_v4::srv::FCSetForceLimit::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::FCSetForceLimit::Response> response);
+    bool FCSetMass(const std::shared_ptr<dobot_msgs_v4::srv::FCSetMass::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::FCSetMass::Response> response);
+    bool FCSetStiffness(const std::shared_ptr<dobot_msgs_v4::srv::FCSetStiffness::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::FCSetStiffness::Response> response);
+    bool FCSetDamping(const std::shared_ptr<dobot_msgs_v4::srv::FCSetDamping::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::FCSetDamping::Response> response);
+    bool FCOff(const std::shared_ptr<dobot_msgs_v4::srv::FCOff::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::FCOff::Response> response);
+    bool FCSetForceSpeedLimit(const std::shared_ptr<dobot_msgs_v4::srv::FCSetForceSpeedLimit::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::FCSetForceSpeedLimit::Response> response);
+    bool FCSetForce(const std::shared_ptr<dobot_msgs_v4::srv::FCSetForce::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::FCSetForce::Response> response);
+    bool SetFCCollision(const std::shared_ptr<dobot_msgs_v4::srv::SetFCCollision::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::SetFCCollision::Response> response);
+    bool FCCollisionSwitch(const std::shared_ptr<dobot_msgs_v4::srv::FCCollisionSwitch::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::FCCollisionSwitch::Response> response);
+    bool SetWorkZoneEnable(const std::shared_ptr<dobot_msgs_v4::srv::SetWorkZoneEnable::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::SetWorkZoneEnable::Response> response);
+    bool GetToolDO(const std::shared_ptr<dobot_msgs_v4::srv::GetToolDO::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetToolDO::Response> response);
+    bool ResetRobot(const std::shared_ptr<dobot_msgs_v4::srv::ResetRobot::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::ResetRobot::Response> response);
+    bool RunTo(const std::shared_ptr<dobot_msgs_v4::srv::RunTo::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::RunTo::Response> response);
+    bool StartRTOffset(const std::shared_ptr<dobot_msgs_v4::srv::StartRTOffset::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::StartRTOffset::Response> response);
+    bool EndRTOffset(const std::shared_ptr<dobot_msgs_v4::srv::EndRTOffset::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::EndRTOffset::Response> response);
+    bool GetError(const std::shared_ptr<dobot_msgs_v4::srv::GetError::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetError::Response> response);
+    bool DOGroupDEC(const std::shared_ptr<dobot_msgs_v4::srv::DOGroupDEC::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::DOGroupDEC::Response> response);
+    bool GetDOGroupDEC(const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroupDEC::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroupDEC::Response> response);
+    bool DIGroupDEC(const std::shared_ptr<dobot_msgs_v4::srv::DIGroupDEC::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::DIGroupDEC::Response> response);
+    bool RequestControl(const std::shared_ptr<dobot_msgs_v4::srv::RequestControl::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::RequestControl::Response> response);
 
 private:
     rclcpp::TimerBase::SharedPtr kTimer;
@@ -321,6 +375,33 @@ private:
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::GetCurrentCommandId>> kServiceGetCurrentCommandId;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::ServoJ>> kServiceServoJ;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::ServoP>> kServiceServoP;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::EnableFTSensor>> kServiceEnableFTSensor;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::SixForceHome>> kServiceSixForceHome;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::GetForce>> kServiceGetForce;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::ForceDriveMode>> kServiceForceDriveMode;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::ForceDriveSpeed>> kServiceForceDriveSpeed;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::FCForceMode>> kServiceFCForceMode;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::FCSetDeviation>> kServiceFCSetDeviation;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::FCSetForceLimit>> kServiceFCSetForceLimit;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::FCSetMass>> kServiceFCSetMass;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::FCSetStiffness>> kServiceFCSetStiffness;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::FCSetDamping>> kServiceFCSetDamping;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::FCOff>> kServiceFCOff;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::FCSetForceSpeedLimit>> kServiceFCSetForceSpeedLimit;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::FCSetForce>> kServiceFCSetForce;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::SetFCCollision>> kServiceSetFCCollision;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::FCCollisionSwitch>> kServiceFCCollisionSwitch;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::SetWorkZoneEnable>> kServiceSetWorkZoneEnable;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::GetToolDO>> kServiceGetToolDO;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::ResetRobot>> kServiceResetRobot;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::RunTo>> kServiceRunTo;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::StartRTOffset>> kServiceStartRTOffset;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::EndRTOffset>> kServiceEndRTOffset;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::GetError>> kServiceGetError;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::DOGroupDEC>> kServiceDOGroupDEC;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::GetDOGroupDEC>> kServiceGetDOGroupDEC;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::DIGroupDEC>> kServiceDIGroupDEC;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::RequestControl>> kServiceRequestControl;
     std::shared_ptr<rclcpp::Client<dobot_msgs_v4::srv::GetErrorID>> kClientGeterror;
 
 private:

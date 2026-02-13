@@ -128,6 +128,35 @@ void CRRobotRos2::init()
     std::string serviceGetCurrentCommandId = kRobotName + "/dobot_bringup_ros2/srv/GetCurrentCommandId";
     std::string serviceServoJ = kRobotName + "/dobot_bringup_ros2/srv/ServoJ";
     std::string serviceServoP = kRobotName + "/dobot_bringup_ros2/srv/ServoP";
+
+    std::string serviceEnableFTSensor = kRobotName + "/dobot_bringup_ros2/srv/EnableFTSensor";
+    std::string serviceSixForceHome = kRobotName + "/dobot_bringup_ros2/srv/SixForceHome";
+    std::string serviceGetForce = kRobotName + "/dobot_bringup_ros2/srv/GetForce";
+    std::string serviceForceDriveMode = kRobotName + "/dobot_bringup_ros2/srv/ForceDriveMode";
+    std::string serviceForceDriveSpeed = kRobotName + "/dobot_bringup_ros2/srv/ForceDriveSpeed";
+    std::string serviceFCForceMode = kRobotName + "/dobot_bringup_ros2/srv/FCForceMode";
+    std::string serviceFCSetDeviation = kRobotName + "/dobot_bringup_ros2/srv/FCSetDeviation";
+    std::string serviceFCSetForceLimit = kRobotName + "/dobot_bringup_ros2/srv/FCSetForceLimit";
+    std::string serviceFCSetMass = kRobotName + "/dobot_bringup_ros2/srv/FCSetMass";
+    std::string serviceFCSetStiffness = kRobotName + "/dobot_bringup_ros2/srv/FCSetStiffness";
+    std::string serviceFCSetDamping = kRobotName + "/dobot_bringup_ros2/srv/FCSetDamping";
+    std::string serviceFCOff = kRobotName + "/dobot_bringup_ros2/srv/FCOff";
+    std::string serviceFCSetForceSpeedLimit = kRobotName + "/dobot_bringup_ros2/srv/FCSetForceSpeedLimit";
+    std::string serviceFCSetForce = kRobotName + "/dobot_bringup_ros2/srv/FCSetForce";
+    std::string serviceSetFCCollision = kRobotName + "/dobot_bringup_ros2/srv/SetFCCollision";
+    std::string serviceFCCollisionSwitch = kRobotName + "/dobot_bringup_ros2/srv/FCCollisionSwitch";
+    std::string serviceSetWorkZoneEnable = kRobotName + "/dobot_bringup_ros2/srv/SetWorkZoneEnable";
+    std::string serviceGetToolDO = kRobotName + "/dobot_bringup_ros2/srv/GetToolDO";
+    std::string serviceResetRobot = kRobotName + "/dobot_bringup_ros2/srv/ResetRobot";
+    std::string serviceRunTo = kRobotName + "/dobot_bringup_ros2/srv/RunTo";
+    std::string serviceStartRTOffset = kRobotName + "/dobot_bringup_ros2/srv/StartRTOffset";
+    std::string serviceEndRTOffset = kRobotName + "/dobot_bringup_ros2/srv/EndRTOffset";
+    std::string serviceGetError = kRobotName + "/dobot_bringup_ros2/srv/GetError";
+    std::string serviceDOGroupDEC = kRobotName + "/dobot_bringup_ros2/srv/DOGroupDEC";
+    std::string serviceGetDOGroupDEC = kRobotName + "/dobot_bringup_ros2/srv/GetDOGroupDEC";
+    std::string serviceDIGroupDEC = kRobotName + "/dobot_bringup_ros2/srv/DIGroupDEC";
+    std::string serviceRequestControl = kRobotName + "/dobot_bringup_ros2/srv/RequestControl";
+    
     std::string topicFeedInfo = kRobotName + "/dobot_bringup_ros2/msg/FeedInfo";
 
     kServiceEnableRobot = this->create_service<dobot_msgs_v4::srv::EnableRobot>(serviceEnableRobot, std::bind(&CRRobotRos2::EnableRobot, this, std::placeholders::_1, std::placeholders::_2));
@@ -220,6 +249,33 @@ void CRRobotRos2::init()
     kServiceGetCurrentCommandId = this->create_service<dobot_msgs_v4::srv::GetCurrentCommandId>(serviceGetCurrentCommandId, std::bind(&CRRobotRos2::GetCurrentCommandId, this, std::placeholders::_1, std::placeholders::_2));
     kServiceServoJ = this->create_service<dobot_msgs_v4::srv::ServoJ>(serviceServoJ, std::bind(&CRRobotRos2::ServoJ, this, std::placeholders::_1, std::placeholders::_2));
     kServiceServoP = this->create_service<dobot_msgs_v4::srv::ServoP>(serviceServoP, std::bind(&CRRobotRos2::ServoP, this, std::placeholders::_1, std::placeholders::_2));
+kServiceEnableFTSensor = this->create_service<dobot_msgs_v4::srv::EnableFTSensor>(serviceEnableFTSensor, std::bind(&CRRobotRos2::EnableFTSensor, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceSixForceHome = this->create_service<dobot_msgs_v4::srv::SixForceHome>(serviceSixForceHome, std::bind(&CRRobotRos2::SixForceHome, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceGetForce = this->create_service<dobot_msgs_v4::srv::GetForce>(serviceGetForce, std::bind(&CRRobotRos2::GetForce, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceForceDriveMode = this->create_service<dobot_msgs_v4::srv::ForceDriveMode>(serviceForceDriveMode, std::bind(&CRRobotRos2::ForceDriveMode, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceForceDriveSpeed = this->create_service<dobot_msgs_v4::srv::ForceDriveSpeed>(serviceForceDriveSpeed, std::bind(&CRRobotRos2::ForceDriveSpeed, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceFCForceMode = this->create_service<dobot_msgs_v4::srv::FCForceMode>(serviceFCForceMode, std::bind(&CRRobotRos2::FCForceMode, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceFCSetDeviation = this->create_service<dobot_msgs_v4::srv::FCSetDeviation>(serviceFCSetDeviation, std::bind(&CRRobotRos2::FCSetDeviation, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceFCSetForceLimit = this->create_service<dobot_msgs_v4::srv::FCSetForceLimit>(serviceFCSetForceLimit, std::bind(&CRRobotRos2::FCSetForceLimit, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceFCSetMass = this->create_service<dobot_msgs_v4::srv::FCSetMass>(serviceFCSetMass, std::bind(&CRRobotRos2::FCSetMass, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceFCSetStiffness = this->create_service<dobot_msgs_v4::srv::FCSetStiffness>(serviceFCSetStiffness, std::bind(&CRRobotRos2::FCSetStiffness, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceFCSetDamping = this->create_service<dobot_msgs_v4::srv::FCSetDamping>(serviceFCSetDamping, std::bind(&CRRobotRos2::FCSetDamping, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceFCOff = this->create_service<dobot_msgs_v4::srv::FCOff>(serviceFCOff, std::bind(&CRRobotRos2::FCOff, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceFCSetForceSpeedLimit = this->create_service<dobot_msgs_v4::srv::FCSetForceSpeedLimit>(serviceFCSetForceSpeedLimit, std::bind(&CRRobotRos2::FCSetForceSpeedLimit, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceFCSetForce = this->create_service<dobot_msgs_v4::srv::FCSetForce>(serviceFCSetForce, std::bind(&CRRobotRos2::FCSetForce, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceSetFCCollision = this->create_service<dobot_msgs_v4::srv::SetFCCollision>(serviceSetFCCollision, std::bind(&CRRobotRos2::SetFCCollision, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceFCCollisionSwitch = this->create_service<dobot_msgs_v4::srv::FCCollisionSwitch>(serviceFCCollisionSwitch, std::bind(&CRRobotRos2::FCCollisionSwitch, this, std::placeholders::_1, std::placeholders::_2));    
+    kServiceSetWorkZoneEnable = this->create_service<dobot_msgs_v4::srv::SetWorkZoneEnable>(serviceSetWorkZoneEnable, std::bind(&CRRobotRos2::SetWorkZoneEnable, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceGetToolDO = this->create_service<dobot_msgs_v4::srv::GetToolDO>(serviceGetToolDO, std::bind(&CRRobotRos2::GetToolDO, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceResetRobot = this->create_service<dobot_msgs_v4::srv::ResetRobot>(serviceResetRobot, std::bind(&CRRobotRos2::ResetRobot, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceRunTo = this->create_service<dobot_msgs_v4::srv::RunTo>(serviceRunTo, std::bind(&CRRobotRos2::RunTo, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceStartRTOffset = this->create_service<dobot_msgs_v4::srv::StartRTOffset>(serviceStartRTOffset, std::bind(&CRRobotRos2::StartRTOffset, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceEndRTOffset = this->create_service<dobot_msgs_v4::srv::EndRTOffset>(serviceEndRTOffset, std::bind(&CRRobotRos2::EndRTOffset, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceGetError = this->create_service<dobot_msgs_v4::srv::GetError>(serviceGetError, std::bind(&CRRobotRos2::GetError, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceDOGroupDEC = this->create_service<dobot_msgs_v4::srv::DOGroupDEC>(serviceDOGroupDEC, std::bind(&CRRobotRos2::DOGroupDEC, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceGetDOGroupDEC = this->create_service<dobot_msgs_v4::srv::GetDOGroupDEC>(serviceGetDOGroupDEC, std::bind(&CRRobotRos2::GetDOGroupDEC, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceDIGroupDEC = this->create_service<dobot_msgs_v4::srv::DIGroupDEC>(serviceDIGroupDEC, std::bind(&CRRobotRos2::DIGroupDEC, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceRequestControl = this->create_service<dobot_msgs_v4::srv::RequestControl>(serviceRequestControl, std::bind(&CRRobotRos2::RequestControl, this, std::placeholders::_1, std::placeholders::_2));
 
     //kTimer = this->create_wall_timer(std::chrono::seconds(2), std::bind(&CRRobotRos2::backendTask, this));
     commander_ = std::make_shared<CRCommanderRos2>(robotIp);
@@ -829,6 +885,157 @@ bool CRRobotRos2::GetErrorID(const std::shared_ptr<dobot_msgs_v4::srv::GetErrorI
                              const std::shared_ptr<dobot_msgs_v4::srv::GetErrorID::Response> response)
 {
     return commander_->callRosService_f(parseTool::parserGetErrorIDRequest2String(request), response->res,response->robot_return);
+}
+
+bool CRRobotRos2::EnableFTSensor(const std::shared_ptr<dobot_msgs_v4::srv::EnableFTSensor::Request> request,
+                                 const std::shared_ptr<dobot_msgs_v4::srv::EnableFTSensor::Response> response)
+{
+    return commander_->callRosService(parseTool::parserEnableFTSensorRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::SixForceHome(const std::shared_ptr<dobot_msgs_v4::srv::SixForceHome::Request> request,
+                               const std::shared_ptr<dobot_msgs_v4::srv::SixForceHome::Response> response)
+{
+    return commander_->callRosService(parseTool::parserSixForceHomeRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::GetForce(const std::shared_ptr<dobot_msgs_v4::srv::GetForce::Request> request,
+                           const std::shared_ptr<dobot_msgs_v4::srv::GetForce::Response> response)
+{
+    return commander_->callRosService_f(parseTool::parserGetForceRequest2String(request), response->res, response->robot_return);
+}
+
+bool CRRobotRos2::ForceDriveMode(const std::shared_ptr<dobot_msgs_v4::srv::ForceDriveMode::Request> request,
+                                 const std::shared_ptr<dobot_msgs_v4::srv::ForceDriveMode::Response> response)
+{
+    return commander_->callRosService(parseTool::parserForceDriveModeRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::ForceDriveSpeed(const std::shared_ptr<dobot_msgs_v4::srv::ForceDriveSpeed::Request> request,
+                                  const std::shared_ptr<dobot_msgs_v4::srv::ForceDriveSpeed::Response> response)
+{
+    return commander_->callRosService(parseTool::parserForceDriveSpeedRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::FCForceMode(const std::shared_ptr<dobot_msgs_v4::srv::FCForceMode::Request> request,
+                              const std::shared_ptr<dobot_msgs_v4::srv::FCForceMode::Response> response)
+{
+    return commander_->callRosService(parseTool::parserFCForceModeRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::FCSetDeviation(const std::shared_ptr<dobot_msgs_v4::srv::FCSetDeviation::Request> request,
+                                 const std::shared_ptr<dobot_msgs_v4::srv::FCSetDeviation::Response> response)
+{
+    return commander_->callRosService(parseTool::parserFCSetDeviationRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::FCSetForceLimit(const std::shared_ptr<dobot_msgs_v4::srv::FCSetForceLimit::Request> request,
+                                  const std::shared_ptr<dobot_msgs_v4::srv::FCSetForceLimit::Response> response)
+{
+    return commander_->callRosService(parseTool::parserFCSetForceLimitRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::FCSetMass(const std::shared_ptr<dobot_msgs_v4::srv::FCSetMass::Request> request,
+                            const std::shared_ptr<dobot_msgs_v4::srv::FCSetMass::Response> response)
+{
+    return commander_->callRosService(parseTool::parserFCSetMassRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::FCSetStiffness(const std::shared_ptr<dobot_msgs_v4::srv::FCSetStiffness::Request> request,
+                                 const std::shared_ptr<dobot_msgs_v4::srv::FCSetStiffness::Response> response)
+{
+    return commander_->callRosService(parseTool::parserFCSetStiffnessRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::FCSetDamping(const std::shared_ptr<dobot_msgs_v4::srv::FCSetDamping::Request> request,
+                               const std::shared_ptr<dobot_msgs_v4::srv::FCSetDamping::Response> response)
+{
+    return commander_->callRosService(parseTool::parserFCSetDampingRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::FCOff(const std::shared_ptr<dobot_msgs_v4::srv::FCOff::Request> request,
+                        const std::shared_ptr<dobot_msgs_v4::srv::FCOff::Response> response)
+{
+    return commander_->callRosService(parseTool::parserFCOffRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::FCSetForceSpeedLimit(const std::shared_ptr<dobot_msgs_v4::srv::FCSetForceSpeedLimit::Request> request,
+                                       const std::shared_ptr<dobot_msgs_v4::srv::FCSetForceSpeedLimit::Response> response)
+{
+    return commander_->callRosService(parseTool::parserFCSetForceSpeedLimitRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::FCSetForce(const std::shared_ptr<dobot_msgs_v4::srv::FCSetForce::Request> request,
+                             const std::shared_ptr<dobot_msgs_v4::srv::FCSetForce::Response> response)
+{
+    return commander_->callRosService(parseTool::parserFCSetForceRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::SetFCCollision(const std::shared_ptr<dobot_msgs_v4::srv::SetFCCollision::Request> request,
+                                 const std::shared_ptr<dobot_msgs_v4::srv::SetFCCollision::Response> response)
+{
+    return commander_->callRosService(parseTool::parserSetFCCollisionRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::FCCollisionSwitch(const std::shared_ptr<dobot_msgs_v4::srv::FCCollisionSwitch::Request> request,
+                                    const std::shared_ptr<dobot_msgs_v4::srv::FCCollisionSwitch::Response> response)
+{
+    return commander_->callRosService(parseTool::parserFCCollisionSwitchRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::SetWorkZoneEnable(const std::shared_ptr<dobot_msgs_v4::srv::SetWorkZoneEnable::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::SetWorkZoneEnable::Response> response)
+{
+    return commander_->callRosService(parseTool::parserSetWorkZoneEnableRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::GetToolDO(const std::shared_ptr<dobot_msgs_v4::srv::GetToolDO::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetToolDO::Response> response)
+{
+    return commander_->callRosService_f(parseTool::parserGetToolDORequest2String(request), response->res, response->robot_return);
+}
+
+bool CRRobotRos2::ResetRobot(const std::shared_ptr<dobot_msgs_v4::srv::ResetRobot::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::ResetRobot::Response> response)
+{
+    return commander_->callRosService(parseTool::parserResetRobotRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::RunTo(const std::shared_ptr<dobot_msgs_v4::srv::RunTo::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::RunTo::Response> response)
+{
+    return commander_->callRosService(parseTool::parserRunToRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::StartRTOffset(const std::shared_ptr<dobot_msgs_v4::srv::StartRTOffset::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::StartRTOffset::Response> response)
+{
+    return commander_->callRosService(parseTool::parserStartRTOffsetRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::EndRTOffset(const std::shared_ptr<dobot_msgs_v4::srv::EndRTOffset::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::EndRTOffset::Response> response)
+{
+    return commander_->callRosService(parseTool::parserEndRTOffsetRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::GetError(const std::shared_ptr<dobot_msgs_v4::srv::GetError::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetError::Response> response)
+{
+    return commander_->callRosService_f(parseTool::parserGetErrorRequest2String(request), response->res, response->robot_return);
+}
+
+bool CRRobotRos2::DOGroupDEC(const std::shared_ptr<dobot_msgs_v4::srv::DOGroupDEC::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::DOGroupDEC::Response> response)
+{
+    return commander_->callRosService(parseTool::parserDOGroupDECRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::GetDOGroupDEC(const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroupDEC::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroupDEC::Response> response)
+{
+    return commander_->callRosService_f(parseTool::parserGetDOGroupDECRequest2String(request), response->res, response->robot_return);
+}
+
+bool CRRobotRos2::DIGroupDEC(const std::shared_ptr<dobot_msgs_v4::srv::DIGroupDEC::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::DIGroupDEC::Response> response)
+{
+    return commander_->callRosService_f(parseTool::parserDIGroupDECRequest2String(request), response->res, response->robot_return);
+}
+
+bool CRRobotRos2::RequestControl(const std::shared_ptr<dobot_msgs_v4::srv::RequestControl::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::RequestControl::Response> response)
+{
+    return commander_->callRosService(parseTool::parserRequestControlRequest2String(request), response->res);
 }
 
 bool CRRobotRos2::DI(const std::shared_ptr<dobot_msgs_v4::srv::DI::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::DI::Response> response)
