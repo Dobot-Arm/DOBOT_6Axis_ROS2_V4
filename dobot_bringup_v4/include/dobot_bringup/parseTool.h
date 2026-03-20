@@ -131,6 +131,9 @@
 #include <dobot_msgs_v4/srv/get_do_group_dec.hpp>
 #include <dobot_msgs_v4/srv/di_group_dec.hpp>
 #include <dobot_msgs_v4/srv/request_control.hpp>
+#include <dobot_msgs_v4/srv/check_odd_mov_l.hpp>
+#include <dobot_msgs_v4/srv/check_mov_j.hpp>
+#include <dobot_msgs_v4/srv/check_mov_c.hpp>
 
 namespace parseTool
 {
@@ -346,6 +349,10 @@ namespace parseTool
     std::string parserGetDOGroupDECRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroupDEC::Request> request);
     std::string parserDIGroupDECRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::DIGroupDEC::Request> request);
     std::string parserRequestControlRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::RequestControl::Request> request);
+
+    std::string parserCheckOddMovLRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovL::Request> request);
+    std::string parserCheckOddMovJRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovJ::Request> request);
+    std::string parserCheckOddMovCRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovC::Request> request);
 
 }
 

@@ -156,6 +156,9 @@ void CRRobotRos2::init()
     std::string serviceGetDOGroupDEC = kRobotName + "/dobot_bringup_ros2/srv/GetDOGroupDEC";
     std::string serviceDIGroupDEC = kRobotName + "/dobot_bringup_ros2/srv/DIGroupDEC";
     std::string serviceRequestControl = kRobotName + "/dobot_bringup_ros2/srv/RequestControl";
+    std::string serviceCheckOddMovL = kRobotName + "/dobot_bringup_ros2/srv/CheckOddMovL";
+    std::string serviceCheckOddMovJ = kRobotName + "/dobot_bringup_ros2/srv/CheckOddMovJ";
+    std::string serviceCheckOddMovC = kRobotName + "/dobot_bringup_ros2/srv/CheckOddMovC";
     
     std::string topicFeedInfo = kRobotName + "/dobot_bringup_ros2/msg/FeedInfo";
 
@@ -276,6 +279,9 @@ kServiceEnableFTSensor = this->create_service<dobot_msgs_v4::srv::EnableFTSensor
     kServiceGetDOGroupDEC = this->create_service<dobot_msgs_v4::srv::GetDOGroupDEC>(serviceGetDOGroupDEC, std::bind(&CRRobotRos2::GetDOGroupDEC, this, std::placeholders::_1, std::placeholders::_2));
     kServiceDIGroupDEC = this->create_service<dobot_msgs_v4::srv::DIGroupDEC>(serviceDIGroupDEC, std::bind(&CRRobotRos2::DIGroupDEC, this, std::placeholders::_1, std::placeholders::_2));
     kServiceRequestControl = this->create_service<dobot_msgs_v4::srv::RequestControl>(serviceRequestControl, std::bind(&CRRobotRos2::RequestControl, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceCheckOddMovL = this->create_service<dobot_msgs_v4::srv::CheckOddMovL>(serviceCheckOddMovL, std::bind(&CRRobotRos2::CheckOddMovL, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceCheckOddMovJ = this->create_service<dobot_msgs_v4::srv::CheckOddMovJ>(serviceCheckOddMovJ, std::bind(&CRRobotRos2::CheckOddMovJ, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceCheckOddMovC = this->create_service<dobot_msgs_v4::srv::CheckOddMovC>(serviceCheckOddMovC, std::bind(&CRRobotRos2::CheckOddMovC, this, std::placeholders::_1, std::placeholders::_2));
 
     //kTimer = this->create_wall_timer(std::chrono::seconds(2), std::bind(&CRRobotRos2::backendTask, this));
     commander_ = std::make_shared<CRCommanderRos2>(robotIp);
@@ -1036,6 +1042,21 @@ bool CRRobotRos2::DIGroupDEC(const std::shared_ptr<dobot_msgs_v4::srv::DIGroupDE
 bool CRRobotRos2::RequestControl(const std::shared_ptr<dobot_msgs_v4::srv::RequestControl::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::RequestControl::Response> response)
 {
     return commander_->callRosService(parseTool::parserRequestControlRequest2String(request), response->res);
+}
+
+bool CRRobotRos2::CheckOddMovL(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovL::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovL::Response> response)
+{
+    return commander_->callRosService_f(parseTool::parserCheckOddMovLRequest2String(request), response->res, response->robot_return);
+}
+
+bool CRRobotRos2::CheckOddMovJ(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovJ::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovJ::Response> response)
+{
+    return commander_->callRosService_f(parseTool::parserCheckOddMovJRequest2String(request), response->res, response->robot_return);
+}
+
+bool CRRobotRos2::CheckOddMovC(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovC::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovC::Response> response)
+{
+    return commander_->callRosService_f(parseTool::parserCheckOddMovCRequest2String(request), response->res, response->robot_return);
 }
 
 bool CRRobotRos2::DI(const std::shared_ptr<dobot_msgs_v4::srv::DI::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::DI::Response> response)

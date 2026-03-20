@@ -1148,4 +1148,75 @@ namespace parseTool
         return "RequestControl()";
     }
 
+    std::string parserCheckOddMovLRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovL::Request> request)
+    {
+        std::string stringOrder = "CheckOddMovL(";
+        char cmdCoordinate[100];
+        char cmdCoordinate2[100];
+        sprintf(cmdCoordinate, "{%0.3f,%0.3f,%0.3f,%0.3f,%0.3f,%0.3f}", request->point1_j1, request->point1_j2, request->point1_j3, request->point1_j4, request->point1_j5, request->point1_j6);
+        sprintf(cmdCoordinate2, "{%0.3f,%0.3f,%0.3f,%0.3f,%0.3f,%0.3f}", request->point2_j1, request->point2_j2, request->point2_j3, request->point2_j4, request->point2_j5, request->point2_j6);
+        
+        stringOrder = stringOrder + "joint=" + cmdCoordinate + ",joint=" + cmdCoordinate2;
+
+        if (!(request->param_value.empty() || request->param_value[0].empty()))
+        {
+            for (size_t i = 0; i < request->param_value.size(); i++)
+            {
+                stringOrder = stringOrder + "," + std::string(request->param_value[i]);
+            }
+        }
+
+        stringOrder = stringOrder + ")";
+
+        return stringOrder;
+    }
+
+    std::string parserCheckOddMovJRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovJ::Request> request)
+    {
+        std::string stringOrder = "CheckOddMovJ(";
+        char cmdCoordinate[100];
+        char cmdCoordinate2[100];
+        sprintf(cmdCoordinate, "{%0.3f,%0.3f,%0.3f,%0.3f,%0.3f,%0.3f}", request->point1_j1, request->point1_j2, request->point1_j3, request->point1_j4, request->point1_j5, request->point1_j6);
+        sprintf(cmdCoordinate2, "{%0.3f,%0.3f,%0.3f,%0.3f,%0.3f,%0.3f}", request->point2_j1, request->point2_j2, request->point2_j3, request->point2_j4, request->point2_j5, request->point2_j6);
+        
+        stringOrder = stringOrder + "joint=" + cmdCoordinate + ",joint=" + cmdCoordinate2;
+
+        if (!(request->param_value.empty() || request->param_value[0].empty()))
+        {
+            for (size_t i = 0; i < request->param_value.size(); i++)
+            {
+                stringOrder = stringOrder + "," + std::string(request->param_value[i]);
+            }
+        }
+
+        stringOrder = stringOrder + ")";
+
+        return stringOrder;
+    }
+
+    std::string parserCheckOddMovCRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovC::Request> request)
+    {
+        std::string stringOrder = "CheckOddMovC(";
+        char cmdCoordinate[100];
+        char cmdCoordinate2[100];
+        char cmdCoordinate3[100];
+        sprintf(cmdCoordinate, "{%0.3f,%0.3f,%0.3f,%0.3f,%0.3f,%0.3f}", request->point1_j1, request->point1_j2, request->point1_j3, request->point1_j4, request->point1_j5, request->point1_j6);
+        sprintf(cmdCoordinate2, "{%0.3f,%0.3f,%0.3f,%0.3f,%0.3f,%0.3f}", request->point2_j1, request->point2_j2, request->point2_j3, request->point2_j4, request->point2_j5, request->point2_j6);
+        sprintf(cmdCoordinate3, "{%0.3f,%0.3f,%0.3f,%0.3f,%0.3f,%0.3f}", request->point3_j1, request->point3_j2, request->point3_j3, request->point3_j4, request->point3_j5, request->point3_j6);
+        
+        stringOrder = stringOrder + "joint=" + cmdCoordinate + ",joint=" + cmdCoordinate2 + ",joint=" + cmdCoordinate3;
+
+        if (!(request->param_value.empty() || request->param_value[0].empty()))
+        {
+            for (size_t i = 0; i < request->param_value.size(); i++)
+            {
+                stringOrder = stringOrder + "," + std::string(request->param_value[i]);
+            }
+        }
+
+        stringOrder = stringOrder + ")";
+
+        return stringOrder;
+    }
+
 }

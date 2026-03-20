@@ -142,6 +142,9 @@
 #include <dobot_msgs_v4/srv/get_do_group_dec.hpp>
 #include <dobot_msgs_v4/srv/di_group_dec.hpp>
 #include <dobot_msgs_v4/srv/request_control.hpp>
+#include <dobot_msgs_v4/srv/check_odd_mov_l.hpp>
+#include <dobot_msgs_v4/srv/check_odd_mov_j.hpp>
+#include <dobot_msgs_v4/srv/check_odd_mov_c.hpp>
 
 class CRRobotRos2 : public rclcpp::Node
 {
@@ -280,6 +283,9 @@ protected:
     bool GetDOGroupDEC(const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroupDEC::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroupDEC::Response> response);
     bool DIGroupDEC(const std::shared_ptr<dobot_msgs_v4::srv::DIGroupDEC::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::DIGroupDEC::Response> response);
     bool RequestControl(const std::shared_ptr<dobot_msgs_v4::srv::RequestControl::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::RequestControl::Response> response);
+    bool CheckOddMovL(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovL::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovL::Response> response);
+    bool CheckOddMovJ(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovJ::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovJ::Response> response);
+    bool CheckOddMovC(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovC::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovC::Response> response);
 
 private:
     rclcpp::TimerBase::SharedPtr kTimer;
@@ -402,6 +408,9 @@ private:
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::GetDOGroupDEC>> kServiceGetDOGroupDEC;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::DIGroupDEC>> kServiceDIGroupDEC;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::RequestControl>> kServiceRequestControl;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::CheckOddMovL>> kServiceCheckOddMovL;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::CheckOddMovJ>> kServiceCheckOddMovJ;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::CheckOddMovC>> kServiceCheckOddMovC;
     std::shared_ptr<rclcpp::Client<dobot_msgs_v4::srv::GetErrorID>> kClientGeterror;
 
 private:

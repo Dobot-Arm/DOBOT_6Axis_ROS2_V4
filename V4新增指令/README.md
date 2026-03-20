@@ -3490,9 +3490,9 @@ while(true) {
 - 命令：仅支持在静止状态下进行查询，点位类型为关节点动
 - 格式：
 
-​	**CheckMovJ(joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6})**
+​	**CheckOddMovJ(joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6})**
 
-​	**CheckMovJ(joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6}, user = 1, tool = 0, a = 20, v = 50, cp = 100)**
+​	**CheckOddMovJ(joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6}, user = 1, tool = 0, a = 20, v = 50, cp = 100)**
 
 - 支持端口：29999
 - 参数详解：
@@ -3510,7 +3510,7 @@ while(true) {
 
 返回：**ResultID: 校验返回值**
 
-**ErrorID,{ResultID},CheckMovJ(joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6},user = 1, tool = 0, a = 20, v = 50, cp = 100)**
+**ErrorID,{ResultID},CheckOddMovJ(joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6},user = 1, tool = 0, a = 20, v = 50, cp = 100)**
 
 **ResultID**：
 
@@ -3530,9 +3530,9 @@ while(true) {
 - 命令：仅支持在静止状态下进行查询，点位类型为关节点动
 - 格式：
 
-​	**CheckMovC(joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6})**
+​	**CheckOddMovC(joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6})**
 
-​	**CheckMovC(joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6},{user = 1, tool = 0, a = 20, v = 50, cp = 100})**
+​	**CheckOddMovC(joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6},{user = 1, tool = 0, a = 20, v = 50, cp = 100})**
 
 - 支持端口：29999
 
@@ -3553,7 +3553,7 @@ while(true) {
 
 返回：**ResultID: 校验返回值**
 
-**ErrorID,{ResultID},CheckMovC(joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6},user = 1, tool = 0, a = 20, v = 50, cp = 100)**
+**ErrorID,{ResultID},CheckOddMovC(joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6},joint = {j1, j2, j3, j4, j5, j6},user = 1, tool = 0, a = 20, v = 50, cp = 100)**
 
 **ResultID**：
 
