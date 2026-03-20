@@ -132,8 +132,8 @@
 #include <dobot_msgs_v4/srv/di_group_dec.hpp>
 #include <dobot_msgs_v4/srv/request_control.hpp>
 #include <dobot_msgs_v4/srv/check_odd_mov_l.hpp>
-#include <dobot_msgs_v4/srv/check_mov_j.hpp>
-#include <dobot_msgs_v4/srv/check_mov_c.hpp>
+#include <dobot_msgs_v4/srv/check_odd_mov_j.hpp>
+#include <dobot_msgs_v4/srv/check_odd_mov_c.hpp>
 
 namespace parseTool
 {
