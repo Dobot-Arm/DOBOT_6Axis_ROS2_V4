@@ -22,7 +22,9 @@
 #include <rclcpp_action/create_server.hpp>
 #include <std_msgs/msg/string.hpp>
 #include <dobot_bringup/command.h>
+#include <dobot_bringup/trajectory_executor.h>
 #include <sensor_msgs/msg/joint_state.hpp>
+#include <control_msgs/action/follow_joint_trajectory.hpp>
 #include <dobot_msgs_v4/srv/enable_robot.hpp>
 #include <dobot_msgs_v4/srv/disable_robot.hpp>
 #include <dobot_msgs_v4/srv/clear_error.hpp>
@@ -408,10 +410,28 @@ private:
     void getErrorID(std::vector<int> &Vec);
     void pubFeedBackInfo();
 
+    // FollowJointTrajectory action server (replaces Python action_move_server)
+    using FollowJointTrajectory = control_msgs::action::FollowJointTrajectory;
+    using GoalHandleFJT = rclcpp_action::ServerGoalHandle<FollowJointTrajectory>;
+
+    rclcpp_action::GoalResponse handleGoalFJT(
+        const rclcpp_action::GoalUUID &uuid,
+        std::shared_ptr<const FollowJointTrajectory::Goal> goal);
+    rclcpp_action::CancelResponse handleCancelFJT(
+        const std::shared_ptr<GoalHandleFJT> goal_handle);
+    void handleAcceptedFJT(
+        const std::shared_ptr<GoalHandleFJT> goal_handle);
+    void executeTrajectory(
+        const std::shared_ptr<GoalHandleFJT> goal_handle);
+
 private:
     std::string kRobotName;
     std::shared_ptr<CRCommanderRos2> commander_;
     std::thread threadPubFeedBackInfo;
+
+    // Trajectory execution
+    std::shared_ptr<TrajectoryExecutor> trajectory_executor_;
+    rclcpp_action::Server<FollowJointTrajectory>::SharedPtr fjt_action_server_;
 };
 
 #endif // CRROBOTROS2_H

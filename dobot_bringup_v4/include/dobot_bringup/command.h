@@ -150,7 +150,14 @@ public:
     uint16_t getRobotMode() const;
     std::shared_ptr<RealTimeData> getRealData() const;
 
+    // Thread-safe, low-overhead command send for servo streaming.
+    // Uses dash_mutex_ to serialise with callRosService calls.
+    // Suppresses per-command INFO logging to avoid flooding at 50 Hz.
+    bool sendServoCommand(const std::string &cmd, int32_t &err_id);
+
 private:
+    std::mutex dash_mutex_;  // guards dashboard TCP access (service calls + servo streaming)
+
     static void doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd, int32_t &err_id,
                          std::vector<std::string> &result);
     static void doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cmd, int32_t &err_id,std::string &mode_id,

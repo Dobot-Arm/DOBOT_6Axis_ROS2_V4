@@ -4,6 +4,7 @@
 #include <thread>
 
 static const rclcpp::Logger kLogger = rclcpp::get_logger("dobot_tcp");
+static constexpr uint32_t kRecvBufSize = 1024;
 
 CRCommanderRos2::CRCommanderRos2(const std::string &ip)
     : current_joint_{}, tool_vector_{}, is_running_(false)
@@ -119,7 +120,7 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
     try
     {
         uint32_t has_read;
-        char buf[1024];
+        char buf[kRecvBufSize];
         memset(buf, 0, sizeof(buf));
         auto currentTime = std::chrono::system_clock::now();
         auto currentTime_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(currentTime);
@@ -128,33 +129,39 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
 
         tcp->tcpSend(cmd, strlen(cmd));
         char *recv_ptr = buf;
+        auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
         while (true)
         {
-            bool err = tcp->tcpRecv(recv_ptr, 1024, has_read, 0);
-            if (!err)
+            bool ok = tcp->tcpRecv(recv_ptr, static_cast<uint32_t>(kRecvBufSize - (recv_ptr - buf)), has_read, 100);
+            if (!ok)
             {
-                sleep(0.01);
+                if (std::chrono::steady_clock::now() > deadline)
+                {
+                    RCLCPP_ERROR(kLogger, "doTcpCmd: response timeout for: %s", cmd);
+                    err_id = -1;
+                    return;
+                }
                 continue;
             }
-            if (*(recv_ptr + strlen(recv_ptr) - 1) == ';')
+            if (*(recv_ptr + has_read - 1) == ';')
                 break;
 
-            recv_ptr = recv_ptr + strlen(recv_ptr);
+            recv_ptr += has_read;
         }
-        for (int i = 0; i < 2000;i++)  //赋值
+        for (int i = 0; buf[i] != '\0'; i++)
         {
-            if (recv_ptr[i] == '{')
+            if (buf[i] == '{')
             {
-                std::string str(recv_ptr); // 将char*类型转为string类型
-                std::string result = str.substr(0, i-1); // 使用substr函数截取指定长度的子字符串
-                int num = stringToInt(result);
-                err_id = num;
-                RCLCPP_INFO(kLogger, "ErrorID: %s", result.c_str());
+                std::string num_str(buf, i);
+                while (!num_str.empty() && (num_str.back() == ',' || num_str.back() == ' '))
+                    num_str.pop_back();
+                err_id = stringToInt(num_str);
+                RCLCPP_INFO(kLogger, "ErrorID: %s", num_str.c_str());
+                break;
             }
-
         }
 
-        RCLCPP_INFO(kLogger, "tcp recv feedback: %s", recv_ptr);
+        RCLCPP_INFO(kLogger, "tcp recv feedback: %s", buf);
     }
     catch (const std::logic_error &err)
     {
@@ -170,7 +177,7 @@ void CRCommanderRos2::doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cm
     try
     {
         uint32_t has_read;
-        char buf[1024];
+        char buf[kRecvBufSize];
         memset(buf, 0, sizeof(buf));
         auto currentTime = std::chrono::system_clock::now();
         auto currentTime_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(currentTime);
@@ -178,41 +185,44 @@ void CRCommanderRos2::doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cm
         RCLCPP_INFO(kLogger, "time: %ld  tcp send cmd: %s", valueMS, cmd);
         tcp->tcpSend(cmd, strlen(cmd));
         char *recv_ptr = buf;
+        auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
         while (true)
         {
-            bool err = tcp->tcpRecv(recv_ptr, 1024, has_read, 0);
-            if (!err)
+            bool ok = tcp->tcpRecv(recv_ptr, static_cast<uint32_t>(kRecvBufSize - (recv_ptr - buf)), has_read, 100);
+            if (!ok)
             {
-                sleep(0.01);
+                if (std::chrono::steady_clock::now() > deadline)
+                {
+                    RCLCPP_ERROR(kLogger, "doTcpCmd_f: response timeout for: %s", cmd);
+                    err_id = -1;
+                    return;
+                }
                 continue;
             }
-            if (*(recv_ptr + strlen(recv_ptr) - 1) == ';')
+            if (*(recv_ptr + has_read - 1) == ';')
                 break;
 
-            recv_ptr = recv_ptr + strlen(recv_ptr);
+            recv_ptr += has_read;
         }
-        int pose1 = 0;
-        for (int i = 0; i < 2000;i++)  //赋值
+        int brace_start = 0;
+        for (int i = 0; buf[i] != '\0'; i++)
         {
-            if (recv_ptr[i] == '{')
+            if (buf[i] == '{')
             {
-                std::string str(recv_ptr); // 将char*类型转为string类型
-                std::string result = str.substr(0, i-1); // 使用substr函数截取指定长度的子字符串
-                int num = stringToInt(result);
-                err_id = num;
-                RCLCPP_INFO(kLogger, "ErrorID: %d", num);
-                pose1 = i;
+                std::string num_str(buf, i);
+                while (!num_str.empty() && (num_str.back() == ',' || num_str.back() == ' '))
+                    num_str.pop_back();
+                err_id = stringToInt(num_str);
+                RCLCPP_INFO(kLogger, "ErrorID: %d", err_id);
+                brace_start = i;
             }
-            if (recv_ptr[i] == '}')
+            if (buf[i] == '}')
             {
-                std::string str(recv_ptr); // 将char*类型转为string类型
-                std::string result = str.substr(pose1, i-pose1+1); // 使用substr函数截取指定长度的子字符串
-                mode_id = result;
+                mode_id = std::string(buf + brace_start, i - brace_start + 1);
                 break;
             }
-
         }
-        RCLCPP_INFO(kLogger, "tcp recv feedback: %s", recv_ptr);
+        RCLCPP_INFO(kLogger, "tcp recv feedback: %s", buf);
     }
     catch (const std::logic_error &err)
     {
@@ -222,6 +232,7 @@ void CRCommanderRos2::doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cm
 
 bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id)
 {
+    std::lock_guard<std::mutex> lock(dash_mutex_);
     try
     {
         std::vector<std::string> result_;
@@ -237,6 +248,7 @@ bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id)
 }
 bool CRCommanderRos2::callRosService_f(const std::string cmd, int32_t &err_id,std::string &mode_id)
 {
+    std::lock_guard<std::mutex> lock(dash_mutex_);
     try
     {
         std::vector<std::string> result_;
@@ -252,6 +264,7 @@ bool CRCommanderRos2::callRosService_f(const std::string cmd, int32_t &err_id,st
 }
 bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id, std::vector<std::string> &result_)
 {
+    std::lock_guard<std::mutex> lock(dash_mutex_);
     try
     {
         doTcpCmd(this->dash_board_tcp_, cmd.c_str(), err_id, result_);
@@ -260,6 +273,66 @@ bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id, std
     catch (const TcpClientException &err)
     {
         RCLCPP_ERROR(kLogger, "callRosService failed: %s", err.what());
+        err_id = -1;
+        return false;
+    }
+}
+
+bool CRCommanderRos2::sendServoCommand(const std::string &cmd, int32_t &err_id)
+{
+    std::lock_guard<std::mutex> lock(dash_mutex_);
+    try
+    {
+        uint32_t has_read;
+        char buf[kRecvBufSize];
+        memset(buf, 0, sizeof(buf));
+
+        dash_board_tcp_->tcpSend(cmd.c_str(), cmd.length());
+
+        // Read response until ';' terminator (timeout after 2s).
+        char *recv_ptr = buf;
+        auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+        while (true)
+        {
+            bool ok = dash_board_tcp_->tcpRecv(
+                recv_ptr, static_cast<uint32_t>(kRecvBufSize - (recv_ptr - buf)),
+                has_read, 100);
+            if (!ok)
+            {
+                if (std::chrono::steady_clock::now() > deadline)
+                {
+                    RCLCPP_ERROR(kLogger, "sendServoCommand: response timeout");
+                    err_id = -1;
+                    return false;
+                }
+                continue;
+            }
+            if (*(recv_ptr + has_read - 1) == ';')
+                break;
+            recv_ptr += has_read;
+        }
+
+        // Parse error ID (number before first '{').
+        err_id = 0;
+        for (int i = 0; buf[i] != '\0'; i++)
+        {
+            if (buf[i] == '{')
+            {
+                std::string num_str(buf, i);
+                // Trim trailing comma / whitespace
+                while (!num_str.empty() &&
+                       (num_str.back() == ',' || num_str.back() == ' '))
+                    num_str.pop_back();
+                err_id = std::atoi(num_str.c_str());
+                break;
+            }
+        }
+
+        return true;
+    }
+    catch (const std::logic_error &err)
+    {
+        RCLCPP_ERROR(kLogger, "sendServoCommand failed: %s", err.what());
         err_id = -1;
         return false;
     }

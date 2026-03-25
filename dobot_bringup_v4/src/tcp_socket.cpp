@@ -66,14 +66,14 @@ void TcpClient::tcpSend(const void *buf, uint32_t len)
     const auto *tmp = (const uint8_t *)buf;
     while (len)
     {
-        int err = (int)::send(fd_, tmp, len, MSG_NOSIGNAL);
-        if (err < 0)
+        ssize_t bytes_sent = ::send(fd_, tmp, len, MSG_NOSIGNAL);
+        if (bytes_sent < 0)
         {
             disConnect();
             throw TcpClientException(toString() + std::string(" ::send() ") + strerror(errno));
         }
-        len -= err;
-        tmp += err;
+        len -= bytes_sent;
+        tmp += bytes_sent;
     }
 }
 
@@ -91,39 +91,36 @@ bool TcpClient::tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t ti
 
         tv.tv_sec = timeout / 1000;
         tv.tv_usec = (timeout % 1000) * 1000;
-        int err = ::select(fd_ + 1, &read_fds, nullptr, nullptr, &tv);
-        if (err < 0)
+        int select_result = ::select(fd_ + 1, &read_fds, nullptr, nullptr, &tv);
+        if (select_result < 0)
         {
             disConnect();
             throw TcpClientException(toString() + std::string(" select() : ") + strerror(errno));
         }
-        else if (err == 0)
+        else if (select_result == 0)
         {
             return false;
         }
 
-        err = (int)::read(fd_, tmp, len);
-        if (err < 0)
+        ssize_t bytes_read = ::read(fd_, tmp, len);
+        if (bytes_read < 0)
         {
             disConnect();
             throw TcpClientException(toString() + std::string(" ::read() ") + strerror(errno));
         }
-        else if (err == 0)
+        else if (bytes_read == 0)
         {
             disConnect();
             throw TcpClientException(toString() + std::string(" tcp server has disconnected"));
         }
-        len -= err;
-        tmp += (err - 1);
+        has_read += bytes_read;
+        tmp += bytes_read;
+        len -= bytes_read;
 
-        if (tmp[0] == ';')
+        if (*(tmp - 1) == ';')
         {
-            has_read += err;
             return true;
         }
-
-        tmp++;
-        has_read += err;
     }
     return true;
 }

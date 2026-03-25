@@ -12,22 +12,22 @@ response_adapters:
   - default_planning_response_adapters/ValidateSolution
 
 planner_configs:
-  RRTConnect:
+  RRTConnectkConfigDefault:
     type: geometric::RRTConnect
     range: 0.0
 
-  RRTstar:
+  RRTstarkConfigDefault:
     type: geometric::RRTstar
     range: 0.0
     goal_bias: 0.05
     optimization_objective: PathLengthOptimizationObjective
 
-  PRM:
+  PRMkConfigDefault:
     type: geometric::PRM
 
 cr5_group:
   planner_configs:
-    - RRTConnect
-    - RRTstar
-    - PRM
+    - RRTConnectkConfigDefault
+    - RRTstarkConfigDefault
+    - PRMkConfigDefault
   longest_valid_segment_fraction: 0.005

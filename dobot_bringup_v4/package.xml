@@ -11,11 +11,15 @@
   <depend>rclcpp</depend>
   <depend>rclcpp_action</depend>
   <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
   <depend>dobot_msgs_v4</depend>
+  <depend>control_msgs</depend>
+  <depend>trajectory_msgs</depend>
   <build_depend>message_generation</build_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

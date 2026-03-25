@@ -283,6 +283,40 @@ kServiceEnableFTSensor = this->create_service<dobot_msgs_v4::srv::EnableFTSensor
     kPublisherInfo = this->create_publisher<std_msgs::msg::String>(topicFeedInfo, 10);
     threadPubFeedBackInfo = std::thread(&CRRobotRos2::pubFeedBackInfo, this);
     threadPubFeedBackInfo.detach();
+
+    // ------------------------------------------------------------------
+    // Trajectory executor + FollowJointTrajectory action server
+    // ------------------------------------------------------------------
+    this->declare_parameter("servo_rate", 50.0);
+    this->declare_parameter("servo_t", 0.02);
+    this->declare_parameter("servo_aheadtime", 50.0);
+    this->declare_parameter("servo_gain", 500.0);
+
+    double servoRate = this->get_parameter("servo_rate").as_double();
+    double servoT = this->get_parameter("servo_t").as_double();
+    double servoAheadtime = this->get_parameter("servo_aheadtime").as_double();
+    double servoGain = this->get_parameter("servo_gain").as_double();
+
+    trajectory_executor_ = std::make_shared<TrajectoryExecutor>(
+        commander_, servoRate, servoT, servoAheadtime, servoGain);
+
+    std::string fjtActionName =
+        "/" + robotType + "_group_controller/follow_joint_trajectory";
+
+    fjt_action_server_ = rclcpp_action::create_server<FollowJointTrajectory>(
+        this, fjtActionName,
+        std::bind(&CRRobotRos2::handleGoalFJT, this,
+                  std::placeholders::_1, std::placeholders::_2),
+        std::bind(&CRRobotRos2::handleCancelFJT, this,
+                  std::placeholders::_1),
+        std::bind(&CRRobotRos2::handleAcceptedFJT, this,
+                  std::placeholders::_1));
+
+    RCLCPP_INFO(this->get_logger(),
+                "FollowJointTrajectory action server ready at %s "
+                "(rate=%.0f Hz, t=%.4f, ahead=%.1f, gain=%.1f)",
+                fjtActionName.c_str(),
+                servoRate, servoT, servoAheadtime, servoGain);
 }
 
 void CRRobotRos2::pubFeedBackInfo()
@@ -1301,5 +1335,111 @@ bool CRRobotRos2::ServoJ(const std::shared_ptr<dobot_msgs_v4::srv::ServoJ::Reque
 bool CRRobotRos2::ServoP(const std::shared_ptr<dobot_msgs_v4::srv::ServoP::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::ServoP::Response> response)
 {
     return commander_->callRosService(parseTool::parserServoPRequest2String(request), response->res);
+}
+
+// ======================================================================
+// FollowJointTrajectory action server callbacks
+// ======================================================================
+
+rclcpp_action::GoalResponse CRRobotRos2::handleGoalFJT(
+    const rclcpp_action::GoalUUID & /*uuid*/,
+    std::shared_ptr<const FollowJointTrajectory::Goal> /*goal*/)
+{
+    RCLCPP_INFO(this->get_logger(), "FJT: received trajectory goal");
+    return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+}
+
+rclcpp_action::CancelResponse CRRobotRos2::handleCancelFJT(
+    const std::shared_ptr<GoalHandleFJT> /*goal_handle*/)
+{
+    RCLCPP_INFO(this->get_logger(), "FJT: cancel requested");
+    return rclcpp_action::CancelResponse::ACCEPT;
+}
+
+void CRRobotRos2::handleAcceptedFJT(
+    const std::shared_ptr<GoalHandleFJT> goal_handle)
+{
+    // Run execution in a separate thread — the callback itself must
+    // return promptly.  Detached because we don't track the handle.
+    std::thread{std::bind(&CRRobotRos2::executeTrajectory, this,
+                          goal_handle)}
+        .detach();
+}
+
+void CRRobotRos2::executeTrajectory(
+    const std::shared_ptr<GoalHandleFJT> goal_handle)
+{
+    auto result = std::make_shared<FollowJointTrajectory::Result>();
+    const auto &trajectory = goal_handle->get_goal()->trajectory;
+
+    if (trajectory.points.empty())
+    {
+        RCLCPP_WARN(this->get_logger(), "FJT: empty trajectory, succeeding immediately");
+        result->error_code = result->SUCCESSFUL;
+        goal_handle->succeed(result);
+        return;
+    }
+
+    RCLCPP_INFO(this->get_logger(),
+                "FJT: executing %zu-point trajectory (%.2f s)",
+                trajectory.points.size(),
+                trajectory.points.back().time_from_start.sec +
+                    trajectory.points.back().time_from_start.nanosec / 1e9);
+
+    // Load and start.
+    trajectory_executor_->loadTrajectory(trajectory);
+    trajectory_executor_->start();
+
+    // Monitor loop: publish feedback, check cancellation.
+    rclcpp::Rate feedback_rate(20.0);  // 20 Hz feedback
+    while (rclcpp::ok() && trajectory_executor_->isRunning())
+    {
+        // Cancellation?
+        if (goal_handle->is_canceling())
+        {
+            RCLCPP_WARN(this->get_logger(), "FJT: cancelling trajectory");
+            trajectory_executor_->stop();
+            result->error_code = result->SUCCESSFUL;
+            result->error_string = "Cancelled by client";
+            goal_handle->canceled(result);
+            return;
+        }
+
+        // Publish feedback.
+        auto state = trajectory_executor_->getState();
+        auto feedback = std::make_shared<FollowJointTrajectory::Feedback>();
+        feedback->joint_names = trajectory.joint_names;
+        for (size_t i = 0; i < 6; i++)
+        {
+            // Convert degrees back to radians for ROS feedback.
+            feedback->desired.positions.push_back(
+                state.desired[i] * 3.14159265358979 / 180.0);
+            feedback->actual.positions.push_back(
+                state.actual[i] * 3.14159265358979 / 180.0);
+            feedback->error.positions.push_back(
+                state.error[i] * 3.14159265358979 / 180.0);
+        }
+        goal_handle->publish_feedback(feedback);
+
+        feedback_rate.sleep();
+    }
+
+    // Check final state.
+    auto state = trajectory_executor_->getState();
+    if (!state.error_msg.empty())
+    {
+        RCLCPP_ERROR(this->get_logger(), "FJT: trajectory aborted: %s",
+                     state.error_msg.c_str());
+        result->error_code = result->PATH_TOLERANCE_VIOLATED;
+        result->error_string = state.error_msg;
+        goal_handle->abort(result);
+    }
+    else
+    {
+        RCLCPP_INFO(this->get_logger(), "FJT: trajectory succeeded (%.2f s)",
+                    state.elapsed);
+        result->error_code = result->SUCCESSFUL;
+        goal_handle->succeed(result);
+    }
 }
 
