@@ -162,6 +162,43 @@ void TrajectoryExecutor::servoLoop()
                 servo_rate_, servo_t_, aheadtime_, gain_,
                 joints_deg_.size());
 
+    // Wait for robot to be in ENABLE mode (5) before streaming ServoJ.
+    // ServoJ is rejected if the robot is still RUNNING (7) from a
+    // previous command.
+    auto wait_start = std::chrono::steady_clock::now();
+    while (running_)
+    {
+        RealTimeData rd = commander_->getRealData();
+        uint64_t mode = rd.robot_mode;
+        if (mode == 5)
+            break;
+        if (mode == 9 || mode == 11)
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            state_.error_msg =
+                "Robot in error mode " + std::to_string(mode) +
+                " before trajectory start";
+            state_.done = true;
+            RCLCPP_ERROR(kLogger, "Robot mode %lu before start — aborting",
+                         static_cast<unsigned long>(mode));
+            running_ = false;
+            return;
+        }
+        if (std::chrono::steady_clock::now() - wait_start >
+            std::chrono::seconds(10))
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            state_.error_msg =
+                "Timeout waiting for ENABLE mode (current: " +
+                std::to_string(mode) + ")";
+            state_.done = true;
+            RCLCPP_ERROR(kLogger, "Timeout waiting for robot ENABLE mode");
+            running_ = false;
+            return;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
     auto start_time = std::chrono::steady_clock::now();
     const auto period = std::chrono::duration_cast<
         std::chrono::steady_clock::duration>(
@@ -218,8 +255,8 @@ void TrajectoryExecutor::servoLoop()
         }
 
         // Check robot mode from real-time data.
-        auto real_data = commander_->getRealData();
-        uint64_t mode = real_data->robot_mode;
+        RealTimeData real_data = commander_->getRealData();
+        uint64_t mode = real_data.robot_mode;
         if (mode == 9 || mode == 11)
         {
             std::lock_guard<std::mutex> lock(mutex_);
@@ -261,8 +298,8 @@ void TrajectoryExecutor::servoLoop()
             state_.desired = target;
             for (size_t i = 0; i < 6; i++)
             {
-                state_.actual[i] = real_data->q_actual[i];
-                state_.error[i] = target[i] - real_data->q_actual[i];
+                state_.actual[i] = real_data.q_actual[i];
+                state_.error[i] = target[i] - real_data.q_actual[i];
             }
         }
 

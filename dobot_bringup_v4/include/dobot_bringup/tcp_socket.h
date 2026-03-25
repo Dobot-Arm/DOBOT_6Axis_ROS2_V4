@@ -86,6 +86,10 @@ public:
      */
     bool tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t timeout);
 
+    // Read exactly len bytes of raw binary data (no ';' terminator check).
+    // Returns true when all bytes received, false on timeout.
+    bool tcpRecvExact(void *buf, uint32_t len, uint32_t timeout);
+
     std::string toString();
 };
 

@@ -7,9 +7,8 @@ static const rclcpp::Logger kLogger = rclcpp::get_logger("dobot_tcp");
 static constexpr uint32_t kRecvBufSize = 1024;
 
 CRCommanderRos2::CRCommanderRos2(const std::string &ip)
-    : current_joint_{}, tool_vector_{}, is_running_(false)
+    : is_running_(false)
 {
-    is_running_ = false;
     real_time_data_ = std::make_shared<RealTimeData>();
     real_time_tcp_ = std::make_shared<TcpClient>(ip, 30004);
     dash_board_tcp_ = std::make_shared<TcpClient>(ip, 29999);
@@ -18,45 +17,45 @@ CRCommanderRos2::CRCommanderRos2(const std::string &ip)
 CRCommanderRos2::~CRCommanderRos2()
 {
     is_running_ = false;
-    thread_->join();
+    if (thread_ && thread_->joinable())
+        thread_->join();
 }
 
 void CRCommanderRos2::getCurrentJointStatus(double *joint)
 {
-    mutex_.lock();
-    memcpy(joint, current_joint_, sizeof(current_joint_));
-    mutex_.unlock();
+    std::lock_guard<std::mutex> lock(mutex_);
+    for (uint32_t i = 0; i < 6; i++)
+        joint[i] = deg2Rad(real_time_data_->q_actual[i]);
 }
 
 void CRCommanderRos2::getToolVectorActual(double *val)
 {
-    mutex_.lock();
-    memcpy(val, tool_vector_, sizeof(tool_vector_));
-    mutex_.unlock();
+    std::lock_guard<std::mutex> lock(mutex_);
+    memcpy(val, real_time_data_->tool_vector_actual, sizeof(double) * 6);
 }
 
 void CRCommanderRos2::recvTask()
 {
-    uint32_t has_read;
     while (is_running_)
     {
         if (real_time_tcp_->isConnect())
         {
             try
             {
-                uint8_t *tmpData = reinterpret_cast<uint8_t *>(real_time_data_.get());
-                if (real_time_tcp_->tcpRecv(tmpData, sizeof(RealTimeData), has_read, 5000))
+                RealTimeData packet;
+                if (real_time_tcp_->tcpRecvExact(&packet, sizeof(RealTimeData), 5000))
                 {
+                    if (packet.len != sizeof(RealTimeData))
+                    {
+                        RCLCPP_WARN_ONCE(kLogger,
+                            "Unexpected packet size: %u (expected %zu)",
+                            packet.len, sizeof(RealTimeData));
+                    }
 
-                    if (real_time_data_->len != 1440)
-                        continue;
-
-                    mutex_.lock();
-                    for (uint32_t i = 0; i < 6; i++)
-                        current_joint_[i] = deg2Rad(real_time_data_->q_actual[i]);
-
-                    memcpy(tool_vector_, real_time_data_->tool_vector_actual, sizeof(tool_vector_));
-                    mutex_.unlock();
+                    {
+                        std::lock_guard<std::mutex> lock(mutex_);
+                        *real_time_data_ = packet;
+                    }
                 }
                 else
                 {
@@ -117,6 +116,7 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
                                std::vector<std::string> &result)
 {
     std::ignore = result;
+    err_id = 0;
     try
     {
         uint32_t has_read;
@@ -174,6 +174,7 @@ void CRCommanderRos2::doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cm
                                std::vector<std::string> &result)
 {
     std::ignore = result;
+    err_id = 0;
     try
     {
         uint32_t has_read;
@@ -348,12 +349,13 @@ bool CRCommanderRos2::isConnected() const
     return dash_board_tcp_->isConnect() && real_time_tcp_->isConnect();
 }
 
-uint16_t CRCommanderRos2::getRobotMode() const
+uint64_t CRCommanderRos2::getRobotMode() const
 {
     return real_time_data_->robot_mode;
 }
 
-std::shared_ptr<RealTimeData> CRCommanderRos2::getRealData() const
+RealTimeData CRCommanderRos2::getRealData() const
 {
-    return real_time_data_;
+    std::lock_guard<std::mutex> lock(mutex_);
+    return *real_time_data_;
 }

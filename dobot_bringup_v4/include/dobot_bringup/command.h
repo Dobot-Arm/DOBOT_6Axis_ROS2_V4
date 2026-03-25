@@ -125,9 +125,7 @@ protected:
     static constexpr double PI = 3.1415926;
 
 private:
-    std::mutex mutex_;
-    double current_joint_[6];
-    double tool_vector_[6];
+    mutable std::mutex mutex_;
     std::shared_ptr<RealTimeData> real_time_data_;
     std::atomic<bool> is_running_;
     std::unique_ptr<std::thread> thread_;
@@ -147,8 +145,8 @@ public:
     bool callRosService(const std::string cmd, int32_t &err_id, std::vector<std::string> &result_);
     bool isEnable() const;
     bool isConnected() const;
-    uint16_t getRobotMode() const;
-    std::shared_ptr<RealTimeData> getRealData() const;
+    uint64_t getRobotMode() const;
+    RealTimeData getRealData() const;
 
     // Thread-safe, low-overhead command send for servo streaming.
     // Uses dash_mutex_ to serialise with callRosService calls.

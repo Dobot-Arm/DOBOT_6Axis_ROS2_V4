@@ -125,6 +125,51 @@ bool TcpClient::tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t ti
     return true;
 }
 
+bool TcpClient::tcpRecvExact(void *buf, uint32_t len, uint32_t timeout)
+{
+    uint8_t *ptr = static_cast<uint8_t *>(buf);
+    uint32_t remaining = len;
+
+    while (remaining > 0)
+    {
+        fd_set read_fds;
+        FD_ZERO(&read_fds);
+        FD_SET(fd_, &read_fds);
+
+        timeval tv;
+        tv.tv_sec = timeout / 1000;
+        tv.tv_usec = (timeout % 1000) * 1000;
+
+        int select_result = ::select(fd_ + 1, &read_fds, nullptr, nullptr, &tv);
+        if (select_result < 0)
+        {
+            disConnect();
+            throw TcpClientException(toString() + std::string(" select() : ") + strerror(errno));
+        }
+        else if (select_result == 0)
+        {
+            return false;
+        }
+
+        ssize_t bytes_read = ::read(fd_, ptr, remaining);
+        if (bytes_read < 0)
+        {
+            disConnect();
+            throw TcpClientException(toString() + std::string(" ::read() ") + strerror(errno));
+        }
+        else if (bytes_read == 0)
+        {
+            disConnect();
+            throw TcpClientException(toString() + std::string(" tcp server has disconnected"));
+        }
+
+        ptr += bytes_read;
+        remaining -= bytes_read;
+    }
+
+    return true;
+}
+
 std::string TcpClient::toString()
 {
     return ip_ + ":" + std::to_string(port_);
