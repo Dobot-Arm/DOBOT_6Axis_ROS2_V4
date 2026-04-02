@@ -93,8 +93,7 @@ Added to the `dobot_bringup_ros2` node:
 
 | Parameter | Default | Description |
 |---|---|---|
-| `servo_rate` | 50.0 | ServoJ streaming rate (Hz) |
-| `servo_t` | 0.02 | ServoJ time parameter (seconds) |
+| `servo_rate` | 50.0 | ServoJ streaming rate (Hz). The ServoJ time parameter (`t`) is derived as 1/servo_rate. |
 | `servo_aheadtime` | 50.0 | Controller lookahead / D-term [20..100] |
 | `servo_gain` | 500.0 | Controller proportional gain [200..1000] |
 

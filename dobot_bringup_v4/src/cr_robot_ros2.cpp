@@ -288,12 +288,11 @@ kServiceEnableFTSensor = this->create_service<dobot_msgs_v4::srv::EnableFTSensor
     // Trajectory executor + FollowJointTrajectory action server
     // ------------------------------------------------------------------
     this->declare_parameter("servo_rate", 50.0);
-    this->declare_parameter("servo_t", 0.02);
     this->declare_parameter("servo_aheadtime", 50.0);
     this->declare_parameter("servo_gain", 500.0);
 
     double servoRate = this->get_parameter("servo_rate").as_double();
-    double servoT = this->get_parameter("servo_t").as_double();
+    double servoT = 1.0 / servoRate;
     double servoAheadtime = this->get_parameter("servo_aheadtime").as_double();
     double servoGain = this->get_parameter("servo_gain").as_double();
 
