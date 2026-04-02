@@ -1,4 +1,5 @@
 #include <dobot_bringup/tcp_socket.h>
+#include <rclcpp/rclcpp.hpp>
 
 TcpClient::TcpClient(std::string ip, uint16_t port) : fd_(-1), port_(port), ip_(std::move(ip)), is_connected_(false)
 {
@@ -39,7 +40,7 @@ void TcpClient::connect()
         throw TcpClientException(toString() + std::string(" connect : ") + strerror(errno));
     is_connected_ = true;
 
-    std::cout << "connect successfully  " << toString() << std::endl;
+    RCLCPP_INFO(rclcpp::get_logger("dobot_tcp"), "connected to %s", toString().c_str());
 }
 
 void TcpClient::disConnect()
@@ -62,19 +63,17 @@ void TcpClient::tcpSend(const void *buf, uint32_t len)
     if (!is_connected_)
         throw TcpClientException("tcp is disconnected");
 
-    //std::cout << "send : " << buf << std::endl;
-
     const auto *tmp = (const uint8_t *)buf;
     while (len)
     {
-        int err = (int)::send(fd_, tmp, len, MSG_NOSIGNAL);
-        if (err < 0)
+        ssize_t bytes_sent = ::send(fd_, tmp, len, MSG_NOSIGNAL);
+        if (bytes_sent < 0)
         {
             disConnect();
             throw TcpClientException(toString() + std::string(" ::send() ") + strerror(errno));
         }
-        len -= err;
-        tmp += err;
+        len -= bytes_sent;
+        tmp += bytes_sent;
     }
 }
 
@@ -92,41 +91,82 @@ bool TcpClient::tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t ti
 
         tv.tv_sec = timeout / 1000;
         tv.tv_usec = (timeout % 1000) * 1000;
-        int err = ::select(fd_ + 1, &read_fds, nullptr, nullptr, &tv);
-        if (err < 0)
+        int select_result = ::select(fd_ + 1, &read_fds, nullptr, nullptr, &tv);
+        if (select_result < 0)
         {
             disConnect();
             throw TcpClientException(toString() + std::string(" select() : ") + strerror(errno));
         }
-        else if (err == 0)
+        else if (select_result == 0)
         {
             return false;
         }
 
-        err = (int)::read(fd_, tmp, len);
-        if (err < 0)
+        ssize_t bytes_read = ::read(fd_, tmp, len);
+        if (bytes_read < 0)
         {
             disConnect();
             throw TcpClientException(toString() + std::string(" ::read() ") + strerror(errno));
         }
-        else if (err == 0)
+        else if (bytes_read == 0)
         {
             disConnect();
             throw TcpClientException(toString() + std::string(" tcp server has disconnected"));
         }
-        len -= err;
-        tmp += (err - 1);
+        has_read += bytes_read;
+        tmp += bytes_read;
+        len -= bytes_read;
 
-        if (tmp[0] == ';')
+        if (*(tmp - 1) == ';')
         {
-            has_read += err;
             return true;
         }
-
-        tmp++;
-        has_read += err;
-        //std::cout << "sbfeed:" << has_read << std::endl;
     }
+    return true;
+}
+
+bool TcpClient::tcpRecvExact(void *buf, uint32_t len, uint32_t timeout)
+{
+    uint8_t *ptr = static_cast<uint8_t *>(buf);
+    uint32_t remaining = len;
+
+    while (remaining > 0)
+    {
+        fd_set read_fds;
+        FD_ZERO(&read_fds);
+        FD_SET(fd_, &read_fds);
+
+        timeval tv;
+        tv.tv_sec = timeout / 1000;
+        tv.tv_usec = (timeout % 1000) * 1000;
+
+        int select_result = ::select(fd_ + 1, &read_fds, nullptr, nullptr, &tv);
+        if (select_result < 0)
+        {
+            disConnect();
+            throw TcpClientException(toString() + std::string(" select() : ") + strerror(errno));
+        }
+        else if (select_result == 0)
+        {
+            return false;
+        }
+
+        ssize_t bytes_read = ::read(fd_, ptr, remaining);
+        if (bytes_read < 0)
+        {
+            disConnect();
+            throw TcpClientException(toString() + std::string(" ::read() ") + strerror(errno));
+        }
+        else if (bytes_read == 0)
+        {
+            disConnect();
+            throw TcpClientException(toString() + std::string(" tcp server has disconnected"));
+        }
+
+        ptr += bytes_read;
+        remaining -= bytes_read;
+    }
+
     return true;
 }
 

@@ -289,102 +289,133 @@ kServiceEnableFTSensor = this->create_service<dobot_msgs_v4::srv::EnableFTSensor
     kPublisherInfo = this->create_publisher<std_msgs::msg::String>(topicFeedInfo, 10);
     threadPubFeedBackInfo = std::thread(&CRRobotRos2::pubFeedBackInfo, this);
     threadPubFeedBackInfo.detach();
+
+    // ------------------------------------------------------------------
+    // Trajectory executor + FollowJointTrajectory action server
+    // ------------------------------------------------------------------
+    this->declare_parameter("servo_rate", 50.0);
+    this->declare_parameter("servo_aheadtime", 50.0);
+    this->declare_parameter("servo_gain", 500.0);
+
+    double servoRate = this->get_parameter("servo_rate").as_double();
+    double servoT = 1.0 / servoRate;
+    double servoAheadtime = this->get_parameter("servo_aheadtime").as_double();
+    double servoGain = this->get_parameter("servo_gain").as_double();
+
+    trajectory_executor_ = std::make_shared<TrajectoryExecutor>(
+        commander_, servoRate, servoT, servoAheadtime, servoGain);
+
+    std::string fjtActionName =
+        "/" + robotType + "_group_controller/follow_joint_trajectory";
+
+    fjt_action_server_ = rclcpp_action::create_server<FollowJointTrajectory>(
+        this, fjtActionName,
+        std::bind(&CRRobotRos2::handleGoalFJT, this,
+                  std::placeholders::_1, std::placeholders::_2),
+        std::bind(&CRRobotRos2::handleCancelFJT, this,
+                  std::placeholders::_1),
+        std::bind(&CRRobotRos2::handleAcceptedFJT, this,
+                  std::placeholders::_1));
+
+    RCLCPP_INFO(this->get_logger(),
+                "FollowJointTrajectory action server ready at %s "
+                "(rate=%.0f Hz, t=%.4f, ahead=%.1f, gain=%.1f)",
+                fjtActionName.c_str(),
+                servoRate, servoT, servoAheadtime, servoGain);
 }
 
 void CRRobotRos2::pubFeedBackInfo()
 {
-    std::shared_ptr<RealTimeData> realTimeData;
-
     // 设置发布频率为100Hz
     rclcpp::Rate rate(100);
 
     while (rclcpp::ok())
     {
-        realTimeData = commander_->getRealData();
+        RealTimeData realTimeData = commander_->getRealData();
         nlohmann::json root;
 
-        root["len"] = realTimeData->len;
-        root["digital_input_bits"] = realTimeData->digital_input_bits;
-        root["digital_outputs"] = realTimeData->digital_outputs;
-        root["robot_mode"] = realTimeData->robot_mode;
-        root["controller_timer"] = realTimeData->controller_timer;
-        root["run_time"] = realTimeData->run_time;
-        root["test_value"] = realTimeData->test_value;
-        root["safety_mode"] = realTimeData->safety_mode;
-        root["speed_scaling"] = realTimeData->speed_scaling;
-        root["linear_momentum_norm"] = realTimeData->linear_momentum_norm;
-        root["v_main"] = realTimeData->v_main;
-        root["v_robot"] = realTimeData->v_robot;
-        root["i_robot"] = realTimeData->i_robot;
-        root["program_state"] = realTimeData->program_state;
-        root["safety_status"] = realTimeData->safety_status;
+        root["len"] = realTimeData.len;
+        root["digital_input_bits"] = realTimeData.digital_input_bits;
+        root["digital_outputs"] = realTimeData.digital_outputs;
+        root["robot_mode"] = realTimeData.robot_mode;
+        root["controller_timer"] = realTimeData.controller_timer;
+        root["run_time"] = realTimeData.run_time;
+        root["test_value"] = realTimeData.test_value;
+        root["safety_mode"] = realTimeData.safety_mode;
+        root["speed_scaling"] = realTimeData.speed_scaling;
+        root["linear_momentum_norm"] = realTimeData.linear_momentum_norm;
+        root["v_main"] = realTimeData.v_main;
+        root["v_robot"] = realTimeData.v_robot;
+        root["i_robot"] = realTimeData.i_robot;
+        root["program_state"] = realTimeData.program_state;
+        root["safety_status"] = realTimeData.safety_status;
         std::vector<double> vecTransit; // vector 中转存取数组类型
         for (int i = 0; i < 3; i++)
         {
-            vecTransit.push_back(realTimeData->tool_accelerometer_values[i]);
+            vecTransit.push_back(realTimeData.tool_accelerometer_values[i]);
         }
         root["tool_accelerometer_values"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 3; i++)
         {
-            vecTransit.push_back(realTimeData->elbow_position[i]);
+            vecTransit.push_back(realTimeData.elbow_position[i]);
         }
         root["elbow_position"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 3; i++)
         {
-            vecTransit.push_back(realTimeData->elbow_velocity[i]);
+            vecTransit.push_back(realTimeData.elbow_velocity[i]);
         }
         root["elbow_velocity"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->q_target[i]);
+            vecTransit.push_back(realTimeData.q_target[i]);
         }
         root["q_target"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->qd_target[i]);
+            vecTransit.push_back(realTimeData.qd_target[i]);
         }
         root["qd_target"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->qdd_target[i]);
+            vecTransit.push_back(realTimeData.qdd_target[i]);
         }
         root["qdd_target"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->i_target[i]);
+            vecTransit.push_back(realTimeData.i_target[i]);
         }
         root["i_target"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->m_target[i]);
+            vecTransit.push_back(realTimeData.m_target[i]);
         }
         root["m_target"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->q_actual[i]);
+            vecTransit.push_back(realTimeData.q_actual[i]);
         }
         root["q_actual"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->qd_actual[i]);
+            vecTransit.push_back(realTimeData.qd_actual[i]);
         }
        // cout << "Hello, world!" << endl;
         root["qd_actual"] = vecTransit;
@@ -392,164 +423,164 @@ void CRRobotRos2::pubFeedBackInfo()
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->i_actual[i]);
+            vecTransit.push_back(realTimeData.i_actual[i]);
         }
         root["i_actual"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->i_control[i]);
+            vecTransit.push_back(realTimeData.i_control[i]);
         }
         root["i_control"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->tool_vector_actual[i]);
+            vecTransit.push_back(realTimeData.tool_vector_actual[i]);
         }
         root["tool_vector_actual"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->TCP_speed_actual[i]);
+            vecTransit.push_back(realTimeData.TCP_speed_actual[i]);
         }
         root["TCP_speed_actual"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->TCP_force[i]);
+            vecTransit.push_back(realTimeData.TCP_force[i]);
         }
         root["TCP_force"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->tool_vector_target[i]);
+            vecTransit.push_back(realTimeData.tool_vector_target[i]);
         }
         root["tool_vector_target"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->TCP_speed_target[i]);
+            vecTransit.push_back(realTimeData.TCP_speed_target[i]);
         }
         root["TCP_speed_target"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->motor_temperatures[i]);
+            vecTransit.push_back(realTimeData.motor_temperatures[i]);
         }
         root["motor_temperatures"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->joint_modes[i]);
+            vecTransit.push_back(realTimeData.joint_modes[i]);
         }
         root["joint_modes"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->v_actual[i]);
+            vecTransit.push_back(realTimeData.v_actual[i]);
         }
         root["v_actual"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 4; i++)
         {
-            vecTransit.push_back(realTimeData->handtype[i]);
+            vecTransit.push_back(realTimeData.handtype[i]);
         }
         root["handtype"] = vecTransit;
         vecTransit.clear();
 
-        root["userCoordinate"] = realTimeData->userCoordinate;
-        root["toolCoordinate"] = realTimeData->toolCoordinate;
-        root["isRunQueuedCmd"] = realTimeData->isRunQueuedCmd;
-        root["isPauseCmdFlag"] = realTimeData->isPauseCmdFlag;
-        root["velocityRatio"] = realTimeData->velocityRatio;
-        root["accelerationRatio"] = realTimeData->accelerationRatio;
-        root["jerkRatio"] = realTimeData->jerkRatio;
-        root["xyzVelocityRatio"] = realTimeData->xyzVelocityRatio;
-        root["rVelocityRatio"] = realTimeData->rVelocityRatio;
-        root["xyzAccelerationRatio"] = realTimeData->xyzAccelerationRatio;
-        root["rAccelerationRatio"] = realTimeData->rAccelerationRatio;
-        root["xyzJerkRatio"] = realTimeData->xyzJerkRatio;
-        root["rJerkRatio"] = realTimeData->rJerkRatio;
-        root["BrakeStatus"] = realTimeData->BrakeStatus;
-        root["EnableStatus"] = realTimeData->EnableStatus;
-        root["DragStatus"] = realTimeData->DragStatus;
-        root["RunningStatus"] = realTimeData->RunningStatus;
-        root["ErrorStatus"] = realTimeData->ErrorStatus;
-        root["JogStatus"] = realTimeData->JogStatus;
-        root["RobotType"] = realTimeData->RobotType;
-        root["DragButtonSignal"] = realTimeData->DragButtonSignal;
-        root["EnableButtonSignal"] = realTimeData->EnableButtonSignal;
-        root["RecordButtonSignal"] = realTimeData->RecordButtonSignal;
-        root["ReappearButtonSignal"] = realTimeData->ReappearButtonSignal;
-        root["JawButtonSignal"] = realTimeData->JawButtonSignal;
-        root["SixForceOnline"] = realTimeData->SixForceOnline;
-        root["CollisionStates"] = realTimeData->CollisionStates;
-        root["ArmApproachState"] = realTimeData->ArmApproachState;
-        root["J4ApproachState"] = realTimeData->J4ApproachState;
-        root["J5ApproachState"] = realTimeData->J5ApproachState;
-        root["J6ApproachState"] = realTimeData->J6ApproachState;
-        root["vibrationDisZ"] = realTimeData->vibrationDisZ;
-        root["currentCommandId"] = realTimeData->currentCommandId;
+        root["userCoordinate"] = realTimeData.userCoordinate;
+        root["toolCoordinate"] = realTimeData.toolCoordinate;
+        root["isRunQueuedCmd"] = realTimeData.isRunQueuedCmd;
+        root["isPauseCmdFlag"] = realTimeData.isPauseCmdFlag;
+        root["velocityRatio"] = realTimeData.velocityRatio;
+        root["accelerationRatio"] = realTimeData.accelerationRatio;
+        root["jerkRatio"] = realTimeData.jerkRatio;
+        root["xyzVelocityRatio"] = realTimeData.xyzVelocityRatio;
+        root["rVelocityRatio"] = realTimeData.rVelocityRatio;
+        root["xyzAccelerationRatio"] = realTimeData.xyzAccelerationRatio;
+        root["rAccelerationRatio"] = realTimeData.rAccelerationRatio;
+        root["xyzJerkRatio"] = realTimeData.xyzJerkRatio;
+        root["rJerkRatio"] = realTimeData.rJerkRatio;
+        root["BrakeStatus"] = realTimeData.BrakeStatus;
+        root["EnableStatus"] = realTimeData.EnableStatus;
+        root["DragStatus"] = realTimeData.DragStatus;
+        root["RunningStatus"] = realTimeData.RunningStatus;
+        root["ErrorStatus"] = realTimeData.ErrorStatus;
+        root["JogStatus"] = realTimeData.JogStatus;
+        root["RobotType"] = realTimeData.RobotType;
+        root["DragButtonSignal"] = realTimeData.DragButtonSignal;
+        root["EnableButtonSignal"] = realTimeData.EnableButtonSignal;
+        root["RecordButtonSignal"] = realTimeData.RecordButtonSignal;
+        root["ReappearButtonSignal"] = realTimeData.ReappearButtonSignal;
+        root["JawButtonSignal"] = realTimeData.JawButtonSignal;
+        root["SixForceOnline"] = realTimeData.SixForceOnline;
+        root["CollisionStates"] = realTimeData.CollisionStates;
+        root["ArmApproachState"] = realTimeData.ArmApproachState;
+        root["J4ApproachState"] = realTimeData.J4ApproachState;
+        root["J5ApproachState"] = realTimeData.J5ApproachState;
+        root["J6ApproachState"] = realTimeData.J6ApproachState;
+        root["vibrationDisZ"] = realTimeData.vibrationDisZ;
+        root["currentCommandId"] = realTimeData.currentCommandId;
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->m_actual[i]);
+            vecTransit.push_back(realTimeData.m_actual[i]);
         }
         root["m_actual"] = vecTransit;
         vecTransit.clear();
 
-        root["load"] = realTimeData->load;
-        root["centerX"] = realTimeData->centerX;
-        root["centerY"] = realTimeData->centerY;
-        root["centerZ"] = realTimeData->centerZ;
+        root["load"] = realTimeData.load;
+        root["centerX"] = realTimeData.centerX;
+        root["centerY"] = realTimeData.centerY;
+        root["centerZ"] = realTimeData.centerZ;
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->user[i]);
+            vecTransit.push_back(realTimeData.user[i]);
         }
         root["user"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->tool[i]);
+            vecTransit.push_back(realTimeData.tool[i]);
         }
         root["tool"] = vecTransit;
         vecTransit.clear();
 
-        root["TraceIndex"] = realTimeData->TraceIndex; // 1296 ~ 1303 轨迹复现索引 （未实现）
+        root["TraceIndex"] = realTimeData.TraceIndex; // 1296 ~ 1303 轨迹复现索引 （未实现）
 
         for (int i = 0; i < 6; i++)
         {
-            vecTransit.push_back(realTimeData->SixForceValue[i]);
+            vecTransit.push_back(realTimeData.SixForceValue[i]);
         }
         root["SixForceValue"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 4; i++)
         {
-            vecTransit.push_back(realTimeData->TargetQuaternion[i]);
+            vecTransit.push_back(realTimeData.TargetQuaternion[i]);
         }
         root["TargetQuaternion"] = vecTransit;
         vecTransit.clear();
 
         for (int i = 0; i < 4; i++)
         {
-            vecTransit.push_back(realTimeData->ActualQuaternion[i]);
+            vecTransit.push_back(realTimeData.ActualQuaternion[i]);
         }
         root["ActualQuaternion"] = vecTransit;
         vecTransit.clear();
-        root["AutoManualMode"] = realTimeData->AutoManualMode; // 1416 ~ 1417 手自动模式 0: 未开启 1: manual 2:auto
+        root["AutoManualMode"] = realTimeData.AutoManualMode; // 1416 ~ 1417 手自动模式 0: 未开启 1: manual 2:auto
         std::string feedBackVecStr = root.dump();
 
         std_msgs::msg::String msgFeedInfo;
@@ -564,12 +595,12 @@ void CRRobotRos2::execute_action(const std::shared_ptr<dobot_msgs_v4::srv::Enabl
 {
     std::ignore = request;
     std::ignore = response;
-    std::cout << "execute_action" << std::endl;
+    RCLCPP_INFO(rclcpp::get_logger("dobot_bringup"), "execute_action");
 }
 
 void CRRobotRos2::goalHandle()
 {
-    std::cout << "goalHandle" << std::endl;
+    RCLCPP_INFO(rclcpp::get_logger("dobot_bringup"), "goalHandle");
 }
 
 void CRRobotRos2::getErrorID(std::vector<int> &vec)
@@ -1322,5 +1353,111 @@ bool CRRobotRos2::ServoJ(const std::shared_ptr<dobot_msgs_v4::srv::ServoJ::Reque
 bool CRRobotRos2::ServoP(const std::shared_ptr<dobot_msgs_v4::srv::ServoP::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::ServoP::Response> response)
 {
     return commander_->callRosService(parseTool::parserServoPRequest2String(request), response->res);
+}
+
+// ======================================================================
+// FollowJointTrajectory action server callbacks
+// ======================================================================
+
+rclcpp_action::GoalResponse CRRobotRos2::handleGoalFJT(
+    const rclcpp_action::GoalUUID & /*uuid*/,
+    std::shared_ptr<const FollowJointTrajectory::Goal> /*goal*/)
+{
+    RCLCPP_INFO(this->get_logger(), "FJT: received trajectory goal");
+    return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+}
+
+rclcpp_action::CancelResponse CRRobotRos2::handleCancelFJT(
+    const std::shared_ptr<GoalHandleFJT> /*goal_handle*/)
+{
+    RCLCPP_INFO(this->get_logger(), "FJT: cancel requested");
+    return rclcpp_action::CancelResponse::ACCEPT;
+}
+
+void CRRobotRos2::handleAcceptedFJT(
+    const std::shared_ptr<GoalHandleFJT> goal_handle)
+{
+    // Run execution in a separate thread — the callback itself must
+    // return promptly.  Detached because we don't track the handle.
+    std::thread{std::bind(&CRRobotRos2::executeTrajectory, this,
+                          goal_handle)}
+        .detach();
+}
+
+void CRRobotRos2::executeTrajectory(
+    const std::shared_ptr<GoalHandleFJT> goal_handle)
+{
+    auto result = std::make_shared<FollowJointTrajectory::Result>();
+    const auto &trajectory = goal_handle->get_goal()->trajectory;
+
+    if (trajectory.points.empty())
+    {
+        RCLCPP_WARN(this->get_logger(), "FJT: empty trajectory, succeeding immediately");
+        result->error_code = result->SUCCESSFUL;
+        goal_handle->succeed(result);
+        return;
+    }
+
+    RCLCPP_INFO(this->get_logger(),
+                "FJT: executing %zu-point trajectory (%.2f s)",
+                trajectory.points.size(),
+                trajectory.points.back().time_from_start.sec +
+                    trajectory.points.back().time_from_start.nanosec / 1e9);
+
+    // Load and start.
+    trajectory_executor_->loadTrajectory(trajectory);
+    trajectory_executor_->start();
+
+    // Monitor loop: publish feedback, check cancellation.
+    rclcpp::Rate feedback_rate(20.0);  // 20 Hz feedback
+    while (rclcpp::ok() && trajectory_executor_->isRunning())
+    {
+        // Cancellation?
+        if (goal_handle->is_canceling())
+        {
+            RCLCPP_WARN(this->get_logger(), "FJT: cancelling trajectory");
+            trajectory_executor_->stop();
+            result->error_code = result->SUCCESSFUL;
+            result->error_string = "Cancelled by client";
+            goal_handle->canceled(result);
+            return;
+        }
+
+        // Publish feedback.
+        auto state = trajectory_executor_->getState();
+        auto feedback = std::make_shared<FollowJointTrajectory::Feedback>();
+        feedback->joint_names = trajectory.joint_names;
+        for (size_t i = 0; i < 6; i++)
+        {
+            // Convert degrees back to radians for ROS feedback.
+            feedback->desired.positions.push_back(
+                state.desired[i] * 3.14159265358979 / 180.0);
+            feedback->actual.positions.push_back(
+                state.actual[i] * 3.14159265358979 / 180.0);
+            feedback->error.positions.push_back(
+                state.error[i] * 3.14159265358979 / 180.0);
+        }
+        goal_handle->publish_feedback(feedback);
+
+        feedback_rate.sleep();
+    }
+
+    // Check final state.
+    auto state = trajectory_executor_->getState();
+    if (!state.error_msg.empty())
+    {
+        RCLCPP_ERROR(this->get_logger(), "FJT: trajectory aborted: %s",
+                     state.error_msg.c_str());
+        result->error_code = result->PATH_TOLERANCE_VIOLATED;
+        result->error_string = state.error_msg;
+        goal_handle->abort(result);
+    }
+    else
+    {
+        RCLCPP_INFO(this->get_logger(), "FJT: trajectory succeeded (%.2f s)",
+                    state.elapsed);
+        result->error_code = result->SUCCESSFUL;
+        goal_handle->succeed(result);
+    }
 }
 
