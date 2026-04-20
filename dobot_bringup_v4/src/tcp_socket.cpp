@@ -44,11 +44,21 @@ void TcpClient::connect()
 
 void TcpClient::disConnect()
 {
+    // Close the real fd BEFORE setting fd_ = -1. Previously the order
+    // was reversed, so ::close(fd_) ran with fd_ already set to -1,
+    // making the call a no-op and leaking the socket. No FIN was sent
+    // to the robot, and the dashboard server kept tracking the stale
+    // session as live — subsequent connects were rejected with
+    // "Connection refused, IP:Port has been occupied" until the
+    // robot was power-cycled.
     if (is_connected_)
     {
+        if (fd_ >= 0)
+        {
+            ::close(fd_);
+        }
         fd_ = -1;
         is_connected_ = false;
-        ::close(fd_);
     }
 }
 
