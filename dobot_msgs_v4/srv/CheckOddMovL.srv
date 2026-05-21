@@ -1,0 +1,16 @@
+float64 point1_j1
+float64 point1_j2
+float64 point1_j3
+float64 point1_j4
+float64 point1_j5
+float64 point1_j6
+float64 point2_j1
+float64 point2_j2
+float64 point2_j3
+float64 point2_j4
+float64 point2_j5
+float64 point2_j6
+string[] param_value
+---
+string robot_return
+int32 res

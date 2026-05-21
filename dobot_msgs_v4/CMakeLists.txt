@@ -150,6 +150,9 @@ set(srv_files
        "srv/GetDOGroupDEC.srv"
        "srv/DIGroupDEC.srv"
        "srv/RequestControl.srv"
+       "srv/CheckOddMovL.srv"
+       "srv/CheckOddMovJ.srv"
+       "srv/CheckOddMovC.srv"
         )
 
 rosidl_generate_interfaces(${PROJECT_NAME}
