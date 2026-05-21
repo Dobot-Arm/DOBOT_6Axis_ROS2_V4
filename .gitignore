@@ -1,0 +1,40 @@
+# Colcon / ament build artifacts
+build/
+install/
+log/
+
+# C++ build artifacts
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.d
+*.obj
+*.lib
+*.dll
+*.exe
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cache/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# ROS bag files
+*.bag
+*.db3
