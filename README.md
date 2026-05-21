@@ -1,3 +1,5 @@
+> This is a fork — see [FORK_NOTES.md](FORK_NOTES.md) for changes specific to this fork.
+
 **ROS2_V4 安装与配置指南**
 
 ---
