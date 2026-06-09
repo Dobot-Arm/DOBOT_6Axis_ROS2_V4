@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 #ros2 run servo_action action_move_client
 
-import time
-
 import rclpy                                    
 from rclpy.node   import Node                    
 from rclpy.action import ActionClient             
@@ -14,35 +12,41 @@ import os
 class MoveCircleActionClient(Node):
     def __init__(self, name):
         super().__init__(name)                   
-        mane = os.getenv("DOBOT_TYPE")
+        name_env = os.getenv("DOBOT_TYPE")
         self._action_client = ActionClient(      
-            self, FollowJointTrajectory, f'{mane}_group_controller/follow_joint_trajectory') 
+            self, FollowJointTrajectory, f'/{name_env}_group_controller/follow_joint_trajectory') 
+        self.joint = 0.1
+        self.timer = self.create_timer(1.0, self.timer_callback)
+        self.get_logger().info("Action Move Client node started...")
 
-    def send_goal(self, enable):                 
-        joint = 0.1
-        while True:
-            if joint>2:
-                joint = 0.1
-            goal_msg = FollowJointTrajectory.Goal()            
-            goal_msg .trajectory.joint_names =  ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6"]
-            goal_msg.trajectory.points.append(trajectory_msgs.msg.JointTrajectoryPoint(positions = [joint,0.4,joint,joint,0.2,0.4]))
-            print(goal_msg.trajectory.points[0])
-            self._action_client.wait_for_server()                          
+    def timer_callback(self):                 
+        if self.joint > 2.0:
+            self.joint = 0.1
+            
+        goal_msg = FollowJointTrajectory.Goal()            
+        goal_msg.trajectory.joint_names = ["joint1", "joint2", "joint3", "joint4", "joint5", "joint6"]
+        goal_msg.trajectory.points.append(
+            trajectory_msgs.msg.JointTrajectoryPoint(
+                positions=[self.joint, 0.4, self.joint, self.joint, 0.2, 0.4]
+            )
+        )
+        self.get_logger().info(f"Sending goal: {goal_msg.trajectory.points[0]}")
+        
+        if self._action_client.wait_for_server(timeout_sec=1.0):                          
             self._send_goal_future = self._action_client.send_goal_async(  
                 goal_msg,                                                  
                 feedback_callback=self.feedback_callback)                  
-            joint = joint + 0.1
-            time.sleep(1)
+        else:
+            self.get_logger().warn("Action server not available")
+            
+        self.joint += 0.1
             
     def feedback_callback(self, feedback_msg):                               
-        print(1)
-        # time.sleep(5)
-        #feedback = feedback_msg.feedback                                    
-        #self.get_logger().info('Received feedback: {%d}' % feedback.state) 
+        self.get_logger().info('收到反馈')
+
 def main(args=None):                                      
     rclpy.init(args=args)                                 
     node = MoveCircleActionClient("action_move_client")   
-    node.send_goal(True)                                  
     rclpy.spin(node)                                      
     node.destroy_node()                                   
-    rclpy.shutdown()                                      
+    rclpy.shutdown()

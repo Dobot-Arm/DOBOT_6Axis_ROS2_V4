@@ -138,20 +138,21 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
 
             recv_ptr = recv_ptr + strlen(recv_ptr);
         }
-        for (int i = 0; i < 2000;i++)  //赋值
+        int data_len = strlen(buf);
+        for (int i = 0; i < data_len; i++)
         {
-            if (recv_ptr[i] == '{')
+            if (buf[i] == '{')
             {
-                std::string str(recv_ptr); // 将char*类型转为string类型
-                std::string result = str.substr(0, i-1); // 使用substr函数截取指定长度的子字符串
+                std::string str(buf);
+                std::string result = str.substr(0, i-1);
                 int num = stringToInt(result);
                 err_id = num;
                 std::cout << "ErrorID: " << result<< std::endl;
+                break;
             }
-            
         }
 
-        std::cout << "tcp recv feedback : " << recv_ptr << std::endl; // FIXME parse the buf may be better
+        std::cout << "tcp recv feedback : " << buf << std::endl; // FIXME parse the buf may be better
     }
     catch (const std::logic_error &err)
     {
@@ -189,27 +190,27 @@ void CRCommanderRos2::doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cm
             recv_ptr = recv_ptr + strlen(recv_ptr);
         }
         int pose1 = 0;
-        for (int i = 0; i < 2000;i++)  //赋值
+        int data_len = strlen(buf);
+        for (int i = 0; i < data_len; i++)
         {
-            if (recv_ptr[i] == '{')
+            if (buf[i] == '{')
             {
-                std::string str(recv_ptr); // 将char*类型转为string类型
-                std::string result = str.substr(0, i-1); // 使用substr函数截取指定长度的子字符串
+                std::string str(buf);
+                std::string result = str.substr(0, i-1);
                 int num = stringToInt(result);
                 err_id = num;
                 std::cout << "ErrorID: " << num<< std::endl;
                 pose1 = i;
             }
-            if (recv_ptr[i] == '}')
+            if (buf[i] == '}')
             {
-                std::string str(recv_ptr); // 将char*类型转为string类型
-                std::string result = str.substr(pose1, i-pose1+1); // 使用substr函数截取指定长度的子字符串
+                std::string str(buf);
+                std::string result = str.substr(pose1, i-pose1+1);
                 mode_id = result;
                 break;
             }
-            
         }
-        std::cout << "tcp recv feedback : " << recv_ptr << std::endl; // FIXME parse the buf may be better
+        std::cout << "tcp recv feedback : " << buf << std::endl; // FIXME parse the buf may be better
     }
     catch (const std::logic_error &err)
     {
@@ -269,7 +270,22 @@ bool CRCommanderRos2::isEnable() const
 
 bool CRCommanderRos2::isConnected() const
 {
-    return dash_board_tcp_->isConnect() && real_time_tcp_->isConnect();
+    bool dash_connected = dash_board_tcp_->isConnect();
+    bool real_time_connected = real_time_tcp_->isConnect();
+    
+    // 仅在连接断开时打印日志，帮助分析问题
+    static bool last_connected = true;
+    bool current_connected = dash_connected && real_time_connected;
+    
+    if (!current_connected && last_connected) {
+        RCLCPP_WARN(rclcpp::get_logger("CRCommanderRos2"), 
+                    "Robot disconnected - Dashboard: %s, Real-time: %s", 
+                    dash_connected ? "connected" : "disconnected", 
+                    real_time_connected ? "connected" : "disconnected");
+    }
+    last_connected = current_connected;
+    
+    return current_connected;
 }
 
 uint16_t CRCommanderRos2::getRobotMode() const

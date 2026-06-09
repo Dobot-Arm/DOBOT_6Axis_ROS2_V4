@@ -97,13 +97,13 @@
     type="revolute">
     <origin
       xyz="0 0 0.386"
-      rpy="1.5708 1.5708 0" />
+      rpy="0 0 0" />
     <parent
       link="base_link" />
     <child
       link="Link1" />
     <axis
-      xyz="-1 0 0" />
+      xyz="0 0 1" />
     <limit
       lower="-6.28"
       upper="6.28"
@@ -393,7 +393,7 @@
     <child
       link="Link6" />
     <axis
-      xyz="0 0 -1" />
+      xyz="0 0 1" />
     <limit
       lower="-6.28"
       upper="6.28"
