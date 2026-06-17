@@ -221,12 +221,6 @@
         <axis xyz="0 0 1" />
         <limit lower="-6.27" upper="6.27" effort="300" velocity="300" />
     </joint>
-    
-   <link name="world" />
-    <joint name="world_joint" type="fixed">
-        <parent link="world" />
-        <child link="dummy_link" />
-    </joint>
 
 <gazebo reference="base_link">
         <gravity>false</gravity>
