@@ -47,7 +47,7 @@ void CRRobotRos2::init()
     std::string serviceToolDOInstant = kRobotName + "/dobot_bringup_ros2/srv/ToolDOInstant";
     std::string serviceAO = kRobotName + "/dobot_bringup_ros2/srv/AO";
     std::string serviceAOInstant = kRobotName + "/dobot_bringup_ros2/srv/AOInstant";
-    std::string serviceAccJ = +"/dobot_bringup_ros2/srv/AccJ";
+    std::string serviceAccJ = kRobotName + "/dobot_bringup_ros2/srv/AccJ";
     std::string serviceAccL = kRobotName + "/dobot_bringup_ros2/srv/AccL";
     std::string serviceVelJ = kRobotName + "/dobot_bringup_ros2/srv/VelJ";
     std::string serviceVelL = kRobotName + "/dobot_bringup_ros2/srv/VelL";
@@ -61,7 +61,7 @@ void CRRobotRos2::init()
     std::string serviceEnableSafeSkin = kRobotName + "/dobot_bringup_ros2/srv/EnableSafeSkin";
     std::string serviceSetSafeSkin = kRobotName + "/dobot_bringup_ros2/srv/SetSafeSkin";
     std::string serviceGetStartPose = kRobotName + "/dobot_bringup_ros2/srv/GetStartPose";
-    std::string serviceStartPath = kRobotName + "/dobot_bringup_ros2/srv/StartPatht";
+    std::string serviceStartPath = kRobotName + "/dobot_bringup_ros2/srv/StartPath";
     std::string servicePositiveKin = kRobotName + "/dobot_bringup_ros2/srv/PositiveKin";
     std::string serviceInverseKin = kRobotName + "/dobot_bringup_ros2/srv/InverseKin";
     std::string serviceGetAngle = kRobotName + "/dobot_bringup_ros2/srv/GetAngle";
@@ -84,7 +84,7 @@ void CRRobotRos2::init()
     std::string serviceAI = kRobotName + "/dobot_bringup_ros2/srv/AI";
     std::string serviceToolAI = kRobotName + "/dobot_bringup_ros2/srv/ToolAI";
     std::string serviceDIGroup = kRobotName + "/dobot_bringup_ros2/srv/DIGroup";
-    std::string serviceDOGroup = kRobotName + "/dobot_bringup_ros2/srv/DoGroup";
+    std::string serviceDOGroup = kRobotName + "/dobot_bringup_ros2/srv/DOGroup";
     std::string serviceBrakeControl = kRobotName + "/dobot_bringup_ros2/srv/BrakeControl";
     std::string serviceStartDrag = kRobotName + "/dobot_bringup_ros2/srv/StartDrag";
     std::string serviceStopDrag = kRobotName + "/dobot_bringup_ros2/srv/StopDrag";
@@ -185,6 +185,7 @@ void CRRobotRos2::init()
     kServiceRunScript = this->create_service<dobot_msgs_v4::srv::RunScript>(serviceRunScript, std::bind(&CRRobotRos2::RunScript, this, std::placeholders::_1, std::placeholders::_2));
     kServiceStop = this->create_service<dobot_msgs_v4::srv::Stop>(serviceStop, std::bind(&CRRobotRos2::Stop, this, std::placeholders::_1, std::placeholders::_2));
     kServicePause = this->create_service<dobot_msgs_v4::srv::Pause>(servicePause, std::bind(&CRRobotRos2::Pause, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceContinue = this->create_service<dobot_msgs_v4::srv::Continue>(serviceContinue, std::bind(&CRRobotRos2::Continue, this, std::placeholders::_1, std::placeholders::_2));
     kServiceEnableSafeSkin = this->create_service<dobot_msgs_v4::srv::EnableSafeSkin>(serviceEnableSafeSkin, std::bind(&CRRobotRos2::EnableSafeSkin, this, std::placeholders::_1, std::placeholders::_2));
     kServiceSetSafeSkin = this->create_service<dobot_msgs_v4::srv::SetSafeSkin>(serviceSetSafeSkin, std::bind(&CRRobotRos2::SetSafeSkin, this, std::placeholders::_1, std::placeholders::_2));
     kServiceGetStartPose = this->create_service<dobot_msgs_v4::srv::GetStartPose>(serviceGetStartPose, std::bind(&CRRobotRos2::GetStartPose, this, std::placeholders::_1, std::placeholders::_2));
@@ -245,6 +246,7 @@ void CRRobotRos2::init()
     kServiceCircle = this->create_service<dobot_msgs_v4::srv::Circle>(serviceCircle, std::bind(&CRRobotRos2::Circle, this, std::placeholders::_1, std::placeholders::_2));
     kServiceMoveJog = this->create_service<dobot_msgs_v4::srv::MoveJog>(serviceMoveJog, std::bind(&CRRobotRos2::MoveJog, this, std::placeholders::_1, std::placeholders::_2));
     kServiceStopMoveJog = this->create_service<dobot_msgs_v4::srv::StopMoveJog>(serviceStopMoveJog, std::bind(&CRRobotRos2::StopMoveJog, this, std::placeholders::_1, std::placeholders::_2));
+    kServiceRelMovJTool = this->create_service<dobot_msgs_v4::srv::RelMovJTool>(serviceRelMovJTool, std::bind(&CRRobotRos2::RelMovJTool, this, std::placeholders::_1, std::placeholders::_2));
     kServiceRelMovLTool = this->create_service<dobot_msgs_v4::srv::RelMovLTool>(serviceRelMovLTool, std::bind(&CRRobotRos2::RelMovLTool, this, std::placeholders::_1, std::placeholders::_2));
     kServiceRelMovJUser = this->create_service<dobot_msgs_v4::srv::RelMovJUser>(serviceRelMovJUser, std::bind(&CRRobotRos2::RelMovJUser, this, std::placeholders::_1, std::placeholders::_2));
     kServiceRelMovLUser = this->create_service<dobot_msgs_v4::srv::RelMovLUser>(serviceRelMovLUser, std::bind(&CRRobotRos2::RelMovLUser, this, std::placeholders::_1, std::placeholders::_2));
@@ -283,7 +285,6 @@ kServiceEnableFTSensor = this->create_service<dobot_msgs_v4::srv::EnableFTSensor
     kServiceCheckOddMovJ = this->create_service<dobot_msgs_v4::srv::CheckOddMovJ>(serviceCheckOddMovJ, std::bind(&CRRobotRos2::CheckOddMovJ, this, std::placeholders::_1, std::placeholders::_2));
     kServiceCheckOddMovC = this->create_service<dobot_msgs_v4::srv::CheckOddMovC>(serviceCheckOddMovC, std::bind(&CRRobotRos2::CheckOddMovC, this, std::placeholders::_1, std::placeholders::_2));
 
-    //kTimer = this->create_wall_timer(std::chrono::seconds(2), std::bind(&CRRobotRos2::backendTask, this));
     commander_ = std::make_shared<CRCommanderRos2>(robotIp);
     commander_->init();
     kPublisherInfo = this->create_publisher<std_msgs::msg::String>(topicFeedInfo, 10);
@@ -386,7 +387,6 @@ void CRRobotRos2::pubFeedBackInfo()
         {
             vecTransit.push_back(realTimeData->qd_actual[i]);
         }
-       // cout << "Hello, world!" << endl;
         root["qd_actual"] = vecTransit;
         vecTransit.clear();
 
@@ -557,73 +557,6 @@ void CRRobotRos2::pubFeedBackInfo()
         kPublisherInfo->publish(msgFeedInfo);
         rate.sleep();
     }
-}
-
-void CRRobotRos2::execute_action(const std::shared_ptr<dobot_msgs_v4::srv::EnableRobot::Request> request,
-                                 std::shared_ptr<dobot_msgs_v4::srv::EnableRobot::Response> response)
-{
-    std::ignore = request;
-    std::ignore = response;
-    std::cout << "execute_action" << std::endl;
-}
-
-void CRRobotRos2::goalHandle()
-{
-    std::cout << "goalHandle" << std::endl;
-}
-
-void CRRobotRos2::getErrorID(std::vector<int> &vec)
-{
-    std::ignore = vec;
-    // 创建服务客户端
-    std::string name = kRobotName + "/dobot_bringup_ros2/srv/GeterrorID";
-    kClientGeterror = this->create_client<dobot_msgs_v4::srv::GetErrorID>(name);
-    // 创建请求消息
-    auto request = std::make_shared<dobot_msgs_v4::srv::GetErrorID::Request>();
-
-    while (!kClientGeterror->service_is_ready())
-    {
-        if (!rclcpp::ok())
-        {
-            RCLCPP_ERROR(this->get_logger(), "Interrupted while waiting for the service. Exiting.");
-            return;
-        }
-        //RCLCPP_INFO(this->get_logger(), "service not available, waiting again...");
-    }
-
-    auto result = kClientGeterror->async_send_request(request);
-
-    // Wait for the result.
-    auto self_shared_ptr = shared_from_this();
-    // if (rclcpp::spin_until_future_complete(self_shared_ptr, result) ==
-    //     rclcpp::FutureReturnCode::SUCCESS)
-    // {
-    //     for (auto i : result.get()->error_id)
-    //     {
-    //         vec.push_back(i);
-    //         RCLCPP_INFO(this->get_logger(), "Sum: %d", result.get()->error_id[0]);
-    //     }
-    // }
-    // else
-    // {
-    //     RCLCPP_ERROR(this->get_logger(), "Failed to call service add_two_ints");
-    // }
-}
-
-void CRRobotRos2::backendTask()
-{
-    uint16_t robot_mode = commander_->getRobotMode();
-    static uint16_t last_robot_mode_ = 0;
-    if (robot_mode == 9 && last_robot_mode_ != 9)
-    {
-        std::vector<int> errorIdVec;
-        this->getErrorID(errorIdVec);
-        for (auto i : errorIdVec)
-        {
-            RCLCPP_ERROR(this->get_logger(), "errorId: %d", i);
-        }
-    }
-    last_robot_mode_ = robot_mode;
 }
 
 void CRRobotRos2::getJointState(double *point)

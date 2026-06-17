@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot
   name="cr20_robot">
-  <link name="dummy_link"/>
-  <link
+  <link name="dummy_link" /><link
     name="base_link">
     <inertial>
       <origin
@@ -42,10 +41,12 @@
       </geometry>
     </collision>
   </link>
-     <joint name="dummy_joint" type="fixed">
+
+  <joint name="dummy_joint" type="fixed">
       <parent link="dummy_link" />
       <child  link="base_link" />
     </joint>
+
   <link
     name="Link1">
     <inertial>
@@ -101,8 +102,8 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.14" />
   </joint>
   <link
     name="Link2">
@@ -159,8 +160,8 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.14" />
   </joint>
   <link
     name="Link3">
@@ -217,8 +218,8 @@
     <limit
       lower="-2.9"
       upper="2.9"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
     name="Link4">
@@ -275,8 +276,8 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
     name="Link5">
@@ -333,8 +334,8 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
     name="Link6">
@@ -391,7 +392,7 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
 </robot>

@@ -1,5 +1,5 @@
 import os
-from ament_index_python.packages import get_package_share_directory
+from ament_index_python.packages import get_package_share_directory, get_package_share_path
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import ExecuteProcess, IncludeLaunchDescription, RegisterEventHandler
@@ -30,7 +30,7 @@ def load_yaml(package_name, file_path):
 
 
 def generate_launch_description():
-    name = os.getenv("DOBOT_TYPE")
+    name = os.getenv("DOBOT_TYPE", "cr5")
     robot_name_in_model = f'{name}_robot'
     package_name = 'cra_description'
     urdf_name = f"{name}_robot.xacro"
@@ -55,7 +55,8 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        parameters=[robot_description]
+        parameters=[robot_description],
+        remappings=[('/joint_states', '/rsp_joint_states')],
     )
 
     spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
@@ -63,14 +64,14 @@ def generate_launch_description():
                                    '-entity', robot_name_in_model],
                         output='screen')
     
-    # # 关节状态发布器
+    # Joint state broadcaster controller
     load_joint_state_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
              'joint_state_broadcaster'],
         output='screen'
     )
 
-    # # 路径执行控制器
+    # Trajectory controller
     load_joint_trajectory_controller = ExecuteProcess(
         cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
              f'{name}_group_controller'],
@@ -90,10 +91,19 @@ def generate_launch_description():
             )
     )
 
+    # Joint state relay — forwards /joint_states → /rsp_joint_states for RSP
+    urdf_path = str(get_package_share_path('dobot_rviz') / f'urdf/{name}_robot.urdf')
+    joint_state_relay_node = Node(
+        package='dobot_rviz',
+        executable='joint_state_relay.py',
+        arguments=[urdf_path],
+    )
+    
     return LaunchDescription([
-      close_evt1,
-      close_evt2,
-      gazebo,
-      node_robot_state_publisher,
-      spawn_entity
+        gazebo,
+        node_robot_state_publisher,
+        joint_state_relay_node,
+        spawn_entity,
+        close_evt1,
+        close_evt2,
     ])

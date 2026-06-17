@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(cr_robot_ros2)
+project(dobot_bringup_v4)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -23,10 +23,8 @@ find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(dobot_msgs_v4 REQUIRED)
 
-
 include_directories(
         include
-        ../../../install/dobot_msgs_v4/include
 )
 
 

@@ -411,7 +411,7 @@ namespace parseTool
     std::string parserGetAORequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetAO::Request> request)
     {
         std::stringstream ss;
-        ss << " GetAO(" << request->index << ")";
+        ss << "GetAO(" << request->index << ")";
         return ss.str();
     }
     std::string parserGetDOGroupRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroup::Request> request)

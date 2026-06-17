@@ -1,8 +1,6 @@
 <?xml version="1.0"?>
 <robot name="cr10_robot" xmlns:xacro="http://ros.org/wiki/xacro">
-
-  <link name="dummy_link"/>
-  <link name="base_link">
+  <link name="dummy_link" /><link name="base_link">
     <inertial>
       <origin
         xyz="-0.0017435 -4.7141E-06 0.032774" rpy="0 0 0" />
@@ -40,19 +38,18 @@
       </geometry>
     </collision>
   </link>
+
+  <joint name="dummy_joint" type="fixed">
+      <parent link="dummy_link" />
+      <child  link="base_link" />
+    </joint>
+
   <link  name="world"/>
 <joint name="world_joint" type="fixed">
     <origin xyz="0 0 0.03" rpy="0 0 0" />
     <parent link="world" />
     <child  link="dummy_link" />
-  </joint>
-
-  <joint name="dummy_joint" type="fixed">
-    <parent link="dummy_link" />
-    <child  link="base_link" />
-  </joint>
-
-  <link
+  </joint><link
     name="Link1">
     <inertial>
       <origin

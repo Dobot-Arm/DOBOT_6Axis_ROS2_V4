@@ -27,4 +27,9 @@ install(
   DESTINATION share/${PROJECT_NAME}  
 )
 
+install(PROGRAMS
+  dobot_rviz/joint_state_relay.py
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 ament_package()

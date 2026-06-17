@@ -13,12 +13,14 @@ class PublisherNode(Node):
 
     def __init__(self, name):
         super().__init__(name)
-        self.pub2 = self.create_publisher(JointState, "joint_states", 10)
+        # 注意：此节点为仿真测试用，发布话题为 servo_joint_states（非 joint_states），
+        # 避免与 dobot_moveit/joint_states.py 的真实关节状态冲突
+        self.pub2 = self.create_publisher(JointState, "servo_joint_states", 10)
         # 使用定时器定期发布关节状态（10Hz）
         self.timer = self.create_timer(0.1, self.timer_callback)
         # 初始关节位置
         self.joint_positions = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        self.get_logger().info("Joint_Position node started, publishing joint_states...")
+        self.get_logger().info("Servo fake joint_states node started, publishing servo_joint_states...")
 
     def timer_callback(self):
         msg2 = JointState()
@@ -33,7 +35,7 @@ class PublisherNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = PublisherNode("dobot_joint_states")
+    node = PublisherNode("servo_fake_joint_states")
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()

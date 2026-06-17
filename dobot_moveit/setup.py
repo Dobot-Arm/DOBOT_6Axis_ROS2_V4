@@ -23,7 +23,6 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        'joint_states    = dobot_moveit.joint_states:main',
         'action_move_server    = dobot_moveit.action_move_server:main',
         ],
     },

@@ -52,28 +52,124 @@ sudo apt update && sudo apt install -y \
   ros-humble-robot-state-publisher
 
 # Build
-colcon build --symlink-install
-source install/local_setup.sh
+colcon build
+source install/setup.bash
+
+# Configure robot connection IP (default for wired connection)
+echo "export IP_address=192.168.5.1" >> ~/.bashrc
+
+# Specify robot model (choose according to actual model)
+# Example: CR5 model
+echo "export DOBOT_TYPE=cr5" >> ~/.bashrc
+# Supported models: CR3, CR5, CR7, CR10, CR12, CR16, CR20, E6 (ME6), CR10AF, Nova2, Nova5, CR30H
+
+# Apply configuration
+source ~/.bashrc
 ```
 
 ---
 
-## Feature Demonstrations
+## Usage
+
+### 1. RViz Visualization (Standalone)
+
+Visualize the robot model without a physical robot:
 
 ```bash
-# RViz Visualization
 ros2 launch dobot_rviz dobot_rviz.launch.py
+```
 
-# MoveIt Virtual Demo
-ros2 launch dobot_moveit moveit_demo.launch.py
+### 2. RViz with Real Robot
 
-# Gazebo Simulation
-ros2 launch dobot_gazebo dobot_gazebo.launch.py
+Stream live joint states from the physical robot into RViz:
 
-# Control Real Robot
+```bash
+# Terminal 1: Connect to robot
 ros2 launch dobot_bringup_v4 dobot_bringup_ros2.launch.py
+
+# Terminal 2: RViz with live hardware mode
+ros2 launch dobot_rviz dobot_rviz.launch.py live_hardware:=true
+```
+
+### 3. MoveIt Virtual Demo
+
+Test motion planning in RViz with a virtual controller (no robot required):
+
+```bash
+ros2 launch dobot_moveit moveit_demo.launch.py
+```
+
+### 4. MoveIt with Real Robot
+
+Full motion planning and execution on the physical robot:
+
+```bash
+# Terminal 1: Connect to robot
+ros2 launch dobot_bringup_v4 dobot_bringup_ros2.launch.py
+
+# Terminal 2: MoveIt control interface
 ros2 launch dobot_moveit dobot_moveit.launch.py
 ```
+
+### 5. Gazebo + MoveIt Co-Simulation
+
+Physics simulation with motion planning:
+
+```bash
+# Terminal 1: Launch Gazebo with MoveIt controllers
+ros2 launch dobot_gazebo gazebo_moveit.launch.py
+
+# Terminal 2: Launch MoveIt control interface
+ros2 launch dobot_moveit moveit_gazebo.launch.py
+```
+
+### 6. Motion Demo Scripts
+
+Run pre-built motion demos for quick testing:
+
+```bash
+# Terminal 1: Connect to robot first
+ros2 launch dobot_bringup_v4 dobot_bringup_ros2.launch.py
+
+# Terminal 2: Run basic motion demo (MovJ/MovL/DO control)
+ros2 run dobot_demo demo
+```
+
+### 7. Servo Action Client
+
+Test joint trajectory control via action client (sends single-point trajectory goals periodically):
+
+```bash
+# Terminal 1: Connect to robot
+ros2 launch dobot_bringup_v4 dobot_bringup_ros2.launch.py
+
+# Terminal 2: Start MoveIt action server
+ros2 launch dobot_moveit dobot_moveit.launch.py
+
+# Terminal 3: Run action client (sends single-point goals every second)
+ros2 run servo_action action_move_client
+```
+
+---
+
+## Launch Parameters
+
+The following parameters apply to `dobot_rviz.launch.py`:
+
+| Parameter | Default Value | Description |
+|-----------|---------------|-------------|
+| `live_hardware` | `false` | Set to `true` to get joint states from a real robot |
+| `gui` | `false` | Enable `joint_state_publisher_gui` for manual joint control |
+| `model` | Auto | Path to robot URDF file (auto-generated based on `DOBOT_TYPE`) |
+
+### Environment Variables
+
+In addition to launch parameters, the project also supports the following environment variables:
+
+| Environment Variable | Default Source | Description |
+|---------------------|---------------|-------------|
+| `DOBOT_TYPE` | `param.json` | Robot type (e.g., `cr5`, `cr10`, `nova2`) |
+| `IP_address` | `param.json` | Robot IP address (for real robot connection) |
 
 ---
 
@@ -81,28 +177,59 @@ ros2 launch dobot_moveit dobot_moveit.launch.py
 
 ```
 DOBOT_6Axis_ROS2_V4/
-├── dobot_bringup_v4/        # Robot Driver
-├── dobot_moveit/            # MoveIt Core
-├── dobot_rviz/              # RViz Visualization
-├── dobot_gazebo/            # Gazebo Simulation
-├── cr3_moveit/              # CR3 Configuration
-├── cr5_moveit/              # CR5 Configuration
-├── cr7_moveit/              # CR7 Configuration
-├── cr10_moveit/             # CR10 Configuration
-├── cr10af_moveit/           # CR10AF Configuration
-├── cr12_moveit/             # CR12 Configuration
-├── cr16_moveit/             # CR16 Configuration
-├── cr20_moveit/             # CR20 Configuration
-├── cr30h_moveit/            # CR30H Configuration
-├── me6_moveit/              # E6/ME6 Configuration
-├── nova2_moveit/            # Nova2 Configuration
-├── nova5_moveit/            # Nova5 Configuration
-├── cra_description/         # Robot Description
-├── misc/                    # Auxiliary Tools & Docs
-├── image/                   # Documentation Images
+├── dobot_bringup_v4/        # Robot driver (TCP/IP communication)
+├── dobot_moveit/            # MoveIt action server & utilities
+├── dobot_rviz/              # RViz visualization launcher
+├── dobot_gazebo/            # Gazebo simulation
+├── dobot_demo/              # Simple motion demo scripts
+├── dobot_msgs_v4/           # ROS2 service & message definitions
+├── servo_action/            # Joint trajectory action client
+├── cr3_moveit/              # CR3 MoveIt config
+├── cr5_moveit/              # CR5 MoveIt config
+├── cr7_moveit/              # CR7 MoveIt config
+├── cr10_moveit/             # CR10 MoveIt config
+├── cr10af_moveit/           # CR10AF MoveIt config
+├── cr12_moveit/             # CR12 MoveIt config
+├── cr16_moveit/             # CR16 MoveIt config
+├── cr20_moveit/             # CR20 MoveIt config
+├── cr30h_moveit/            # CR30H MoveIt config
+├── me6_moveit/              # E6/ME6 MoveIt config
+├── nova2_moveit/            # Nova2 MoveIt config
+├── nova5_moveit/            # Nova5 MoveIt config
+├── cra_description/         # Robot URDF/XACRO descriptions & meshes
+├── image/                   # Documentation images
 ├── README.md
 └── README_ZH.md
 ```
+
+---
+
+## Architecture & Data Flow
+
+### MoveIt + Real Robot
+
+```
+dobot_bringup_v4 (main.cpp)
+  └→ /joint_states_robot  (10Hz, radians, from port 30004 feedback)
+       └→ joint_state_relay (--robot mode)
+            ├→ /joint_states           → MoveIt current_state_monitor (planning start state)
+            └→ /rsp_joint_states       → robot_state_publisher  → TF  → RViz
+
+MoveIt (OMPL / CHOMP planner)
+  └→ FollowJointTrajectory Action
+       └→ action_move_server (dobot_moveit package)
+            └→ ServoJ service (per waypoint)  → dobot_bringup_v4  → TCP  → robot
+```
+
+### Key Components
+
+| Component | Package | Role |
+|-----------|---------|------|
+| `main.cpp` | `dobot_bringup_v4` | TCP 30004 realtime feedback → `/joint_states_robot` |
+| `joint_state_relay.py` | `dobot_rviz` | Bridge `/joint_states_robot` → `/joint_states`; relay → `/rsp_joint_states` |
+| `action_move_server.py` | `dobot_moveit` | Receives MoveIt trajectory, sends ServoJ commands waypoint-by-waypoint |
+| `cra_description` | `cra_description` | Robot URDF/XACRO descriptions and STL meshes for all models |
+| `ompl_planning.yaml` | `{model}_moveit` | OMPL planner config (includes `AddTimeOptimalParameterization`) |
 
 ---
 
@@ -117,16 +244,25 @@ DOBOT_6Axis_ROS2_V4/
 
 ---
 
-## Launch Files
+## Launch Files Reference
 
 | Launch File | Description |
 |-------------|-------------|
-| `dobot_bringup_ros2.launch.py` | Launch robot driver |
-| `dobot_rviz.launch.py` | Launch RViz |
-| `moveit_demo.launch.py` | MoveIt virtual demo |
-| `dobot_moveit.launch.py` | MoveIt control interface |
-| `dobot_gazebo.launch.py` | Launch Gazebo |
-| `gazebo_moveit.launch.py` | Gazebo-MoveIt integration |
+| `dobot_rviz.launch.py` | RViz visualization (standalone or with `live_hardware:=true`) |
+| `dobot_bringup_ros2.launch.py` | Robot driver — TCP/IP connection to physical robot |
+| `moveit_demo.launch.py` | MoveIt motion planning demo (virtual) |
+| `dobot_moveit.launch.py` | MoveIt control interface (real robot) |
+| `dobot_gazebo.launch.py` | Gazebo physics simulation (without controllers) |
+| `gazebo_moveit.launch.py` | Gazebo + MoveIt co-simulation (with controllers) |
+| `dobot_joint.launch.py` | MoveIt action server (real robot) |
+
+## Demo & Utilities Reference
+
+| Package | Executable | Description |
+|---------|------------|-------------|
+| `dobot_demo` | `demo` | Basic motion demo (MovJ/MovL/DO control) |
+| `servo_action` | `action_move_client` | Joint trajectory action client (single-point goals every 1s) |
+| `servo_action` | `Joint_Position` | Fake joint state publisher for simulation testing |
 
 ---
 

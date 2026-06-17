@@ -14,10 +14,10 @@ class ContinuousFKCalculator(Node):
     def __init__(self, frequency=1.0):
         super().__init__('continuous_fk_calculator')
         
-        # 订阅关节状态话题
+        # 订阅关节状态话题（真实硬件状态）
         self.joint_state_sub = self.create_subscription(
             JointState,
-            '/joint_states',
+            '/joint_states_robot',
             self.joint_state_callback,
             10
         )
