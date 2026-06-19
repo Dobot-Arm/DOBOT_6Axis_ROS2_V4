@@ -22,6 +22,8 @@ find_package(rclcpp_action REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(dobot_msgs_v4 REQUIRED)
+find_package(control_msgs REQUIRED)
+find_package(trajectory_msgs REQUIRED)
 
 
 include_directories(
@@ -30,7 +32,7 @@ include_directories(
 )
 
 
-add_executable(${PROJECT_NAME}_node src/main.cpp src/cr_robot_ros2.cpp src/command.cpp src/tcp_socket.cpp src/parseTool.cpp)
+add_executable(${PROJECT_NAME}_node src/main.cpp src/cr_robot_ros2.cpp src/command.cpp src/tcp_socket.cpp src/parseTool.cpp src/trajectory_executor.cpp)
 
 target_include_directories(${PROJECT_NAME}_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -43,6 +45,8 @@ ament_target_dependencies(
   "std_msgs"
   "sensor_msgs"
   "dobot_msgs_v4"
+  "control_msgs"
+  "trajectory_msgs"
 )
 
 target_link_libraries(${PROJECT_NAME}_node 
@@ -57,12 +61,25 @@ install(DIRECTORY launch config
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # uncomment the line when a copyright and license is not present in all source files
-  #set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # uncomment the line when this package is not in a git repo
-  #set(ament_cmake_cpplint_FOUND TRUE)
+  set(ament_cmake_copyright_FOUND TRUE)
+  set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
+
+  find_package(ament_cmake_gtest REQUIRED)
+  ament_add_gtest(test_trajectory_executor
+    test/test_trajectory_executor.cpp
+    src/trajectory_executor.cpp
+    src/command.cpp
+    src/tcp_socket.cpp
+  )
+  target_include_directories(test_trajectory_executor PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  )
+  ament_target_dependencies(test_trajectory_executor
+    "rclcpp"
+    "trajectory_msgs"
+    "dobot_msgs_v4"
+  )
+  target_link_libraries(test_trajectory_executor pthread)
 endif()
 ament_package()
