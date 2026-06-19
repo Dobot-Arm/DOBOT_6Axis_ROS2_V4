@@ -148,20 +148,18 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
 
             recv_ptr += has_read;
         }
-        for (int i = 0; buf[i] != '\0'; i++)
+
+        const char* p = std::strchr(buf, '{');
+        if (p)
         {
-            if (buf[i] == '{')
-            {
-                std::string num_str(buf, i);
-                while (!num_str.empty() && (num_str.back() == ',' || num_str.back() == ' '))
-                    num_str.pop_back();
-                err_id = stringToInt(num_str);
-                RCLCPP_INFO(kLogger, "ErrorID: %s", num_str.c_str());
-                break;
-            }
+            std::string num_str(buf, p - buf);
+            while (!num_str.empty() && (num_str.back() == ',' || num_str.back() == ' '))
+                num_str.pop_back();
+            err_id = stringToInt(num_str);
+            RCLCPP_INFO(kLogger, "ErrorID: %s", num_str.c_str());
         }
 
-        RCLCPP_INFO(kLogger, "tcp recv feedback: %s", buf);
+        RCLCPP_INFO(kLogger, "tcp recv feedback: %s", buf); // FIXME parse the buf may be better
     }
     catch (const std::logic_error &err)
     {
@@ -205,25 +203,28 @@ void CRCommanderRos2::doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cm
 
             recv_ptr += has_read;
         }
-        int brace_start = 0;
-        for (int i = 0; buf[i] != '\0'; i++)
+
+        const char* brace_start = std::strchr(buf, '{');
+        if (brace_start != nullptr)
         {
-            if (buf[i] == '{')
+            std::string num_str(buf, brace_start - buf);
+
+            while (!num_str.empty() &&
+                   (num_str.back() == ',' || num_str.back() == ' '))
             {
-                std::string num_str(buf, i);
-                while (!num_str.empty() && (num_str.back() == ',' || num_str.back() == ' '))
-                    num_str.pop_back();
-                err_id = stringToInt(num_str);
-                RCLCPP_INFO(kLogger, "ErrorID: %d", err_id);
-                brace_start = i;
+                num_str.pop_back();
             }
-            if (buf[i] == '}')
-            {
-                mode_id = std::string(buf + brace_start, i - brace_start + 1);
-                break;
-            }
+
+            err_id = stringToInt(num_str);
+            RCLCPP_INFO(kLogger, "ErrorID: %d", err_id);
+
+            const char* brace_end = std::strchr(brace_start, '}');
+
+            if (brace_end != nullptr)
+                mode_id = std::string(brace_start, brace_end - brace_start + 1);
         }
-        RCLCPP_INFO(kLogger, "tcp recv feedback: %s", buf);
+
+        RCLCPP_INFO(kLogger, "tcp recv feedback: %s", buf); // FIXME parse the buf may be better
     }
     catch (const std::logic_error &err)
     {
@@ -346,7 +347,22 @@ bool CRCommanderRos2::isEnable() const
 
 bool CRCommanderRos2::isConnected() const
 {
-    return dash_board_tcp_->isConnect() && real_time_tcp_->isConnect();
+    bool dash_connected = dash_board_tcp_->isConnect();
+    bool real_time_connected = real_time_tcp_->isConnect();
+    
+    // 仅在连接断开时打印日志，帮助分析问题
+    static bool last_connected = true;
+    bool current_connected = dash_connected && real_time_connected;
+    
+    if (!current_connected && last_connected) {
+        RCLCPP_WARN(rclcpp::get_logger("CRCommanderRos2"), 
+                    "Robot disconnected - Dashboard: %s, Real-time: %s", 
+                    dash_connected ? "connected" : "disconnected", 
+                    real_time_connected ? "connected" : "disconnected");
+    }
+    last_connected = current_connected;
+    
+    return current_connected;
 }
 
 uint64_t CRCommanderRos2::getRobotMode() const

@@ -49,7 +49,11 @@ int main(int argc, char *argv[])
   while (rclcpp::ok())
   {
     // 获取关节状态并发布消息
-    robot->getJointState(position);
+    if (robot->isConnected()) {
+      robot->getJointState(position);
+    } else {
+      memset(position, 0, sizeof(position));
+    }
     joint_state_msg.header.stamp = robot->get_clock()->now();
     joint_state_msg.header.frame_id = "dummy_link";
     for (uint32_t i = 0; i < 6; i++)
@@ -59,14 +63,16 @@ int main(int argc, char *argv[])
     joint_state_pub->publish(joint_state_msg);
 
     double val[6];
-    robot->getToolVectorActual(val);
-    tool_vector_actual_msg.x = val[0];
-    tool_vector_actual_msg.y = val[1];
-    tool_vector_actual_msg.z = val[2];
-    tool_vector_actual_msg.rx = val[3];
-    tool_vector_actual_msg.ry = val[4];
-    tool_vector_actual_msg.rz = val[5];
-    tool_vector_pub->publish(tool_vector_actual_msg);
+    if (robot->isConnected()) {
+      robot->getToolVectorActual(val);
+      tool_vector_actual_msg.x = val[0];
+      tool_vector_actual_msg.y = val[1];
+      tool_vector_actual_msg.z = val[2];
+      tool_vector_actual_msg.rx = val[3];
+      tool_vector_actual_msg.ry = val[4];
+      tool_vector_actual_msg.rz = val[5];
+      tool_vector_pub->publish(tool_vector_actual_msg);
+    }
 
     // publish robot status
     robot_status_msg.is_enable = robot->isEnable();

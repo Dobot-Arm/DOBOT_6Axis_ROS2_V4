@@ -98,7 +98,7 @@
     type="revolute">
     <origin
       xyz="0 0 0.1348"
-      rpy="0 0 -1.5708" />
+      rpy="0 0 0" />
     <parent
       link="base_link" />
     <child
@@ -269,7 +269,7 @@
   </link>
   <joint
     name="joint4"
-    type="continuous">
+    type="revolute">
     <origin
       xyz="-0.23 0 0.1283"
       rpy="0 0 -1.5708" />
@@ -278,7 +278,7 @@
     <child
       link="Link4" />
     <axis
-      xyz="0 0 -1" />
+      xyz="0 0 1" />
     <limit
       lower="-6.28"
       upper="6.28"
@@ -327,7 +327,7 @@
   </link>
   <joint
     name="joint5"
-    type="continuous">
+    type="revolute">
     <origin
       xyz="0 -0.116 0"
       rpy="1.5708 0 0" />
@@ -336,7 +336,7 @@
     <child
       link="Link5" />
     <axis
-      xyz="0 0 -1" />
+      xyz="0 0 1" />
     <limit
       lower="-6.28"
       upper="6.28"
@@ -394,7 +394,7 @@
     <child
       link="Link6" />
     <axis
-      xyz="0 0 -1" />
+      xyz="0 0 1" />
     <limit
       lower="-6.28"
       upper="6.28"
