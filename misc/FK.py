@@ -230,7 +230,6 @@ class ContinuousFKCalculator(Node):
     
     def get_expected_position(self, joint_angles):
         """获取预期位置（用于验证）"""
-        # 已知的关节角度和位置对应关系
         known_configs = {
             (0.0, 0.0, 0.0, 0.0, 0.0, 0.0): (1.8465e-06, -0.2333, 0.7548),
             (-0.613134, -0.410763, 1.731611, 0.068835, -1.440735, -3.547466): 
