@@ -197,7 +197,7 @@ DOBOT_6Axis_ROS2_V4/
 ├── nova2_moveit/            # Nova2 MoveIt config
 ├── nova5_moveit/            # Nova5 MoveIt config
 ├── cra_description/         # Robot URDF/XACRO descriptions & meshes
-├── image/                   # Documentation images
+├── image/                   # Images
 ├── README.md
 └── README_ZH.md
 ```

@@ -197,7 +197,7 @@ DOBOT_6Axis_ROS2_V4/
 ├── nova2_moveit/            # Nova2 MoveIt 配置
 ├── nova5_moveit/            # Nova5 MoveIt 配置
 ├── cra_description/         # 机器人 URDF/XACRO 描述与网格文件
-├── image/                   # 文档图片
+├── image/                   # 图片
 ├── README.md
 └── README_ZH.md
 ```
