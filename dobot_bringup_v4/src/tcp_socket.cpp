@@ -1,4 +1,6 @@
 #include <dobot_bringup/tcp_socket.h>
+#include <rclcpp/rclcpp.hpp>
+#include <netinet/tcp.h>
 
 TcpClient::TcpClient(std::string ip, uint16_t port) : fd_(-1), port_(port), ip_(std::move(ip)), is_connected_(false)
 {
@@ -12,21 +14,31 @@ TcpClient::~TcpClient()
 void TcpClient::close()
 {
     if (fd_ >= 0)
-    {
         ::close(fd_);
-        is_connected_ = false;
-        fd_ = -1;
-    }
+    fd_ = -1;
+    is_connected_ = false;
 }
 
 void TcpClient::connect()
 {
+    // Always start from a fresh socket. A TCP socket whose ::connect() failed is
+    // spent: further attempts on the same fd fail permanently (EINVAL /
+    // ECONNABORTED), so reusing it wedged the reconnect loop for the lifetime of
+    // the process once a single attempt had missed — which is exactly what
+    // happens while the controller is rebooting.
+    close();
+
+    fd_ = ::socket(AF_INET, SOCK_STREAM, 0);
     if (fd_ < 0)
-    {
-        fd_ = ::socket(AF_INET, SOCK_STREAM, 0);
-        if (fd_ < 0)
-            throw TcpClientException(toString() + std::string(" socket : ") + strerror(errno));
-    }
+        throw TcpClientException(toString() + std::string(" socket : ") + strerror(errno));
+
+#ifdef TCP_SYNCNT
+    // Bound the SYN retries so an attempt against a powered-off controller fails
+    // in seconds rather than the ~2 min kernel default, keeping the retry cadence
+    // (and therefore recovery latency) predictable.
+    int syn_retries = 2;
+    ::setsockopt(fd_, IPPROTO_TCP, TCP_SYNCNT, &syn_retries, sizeof(syn_retries));
+#endif
 
     sockaddr_in addr = {};
 
@@ -36,20 +48,21 @@ void TcpClient::connect()
     addr.sin_port = htons(port_);
 
     if (::connect(fd_, (sockaddr *)&addr, sizeof(addr)) < 0)
-        throw TcpClientException(toString() + std::string(" connect : ") + strerror(errno));
+    {
+        std::string what = toString() + std::string(" connect : ") + strerror(errno);
+        close();
+        throw TcpClientException(what);
+    }
     is_connected_ = true;
 
-    std::cout << "connect successfully  " << toString() << std::endl;
+    RCLCPP_INFO(rclcpp::get_logger("dobot_tcp"), "connected to %s", toString().c_str());
 }
 
 void TcpClient::disConnect()
 {
-    if (is_connected_)
-    {
-        fd_ = -1;
-        is_connected_ = false;
-        ::close(fd_);
-    }
+    // Previously cleared fd_ *before* ::close(fd_), so it closed -1 and leaked the
+    // real descriptor on every disconnect.
+    close();
 }
 
 bool TcpClient::isConnect() const
@@ -62,19 +75,17 @@ void TcpClient::tcpSend(const void *buf, uint32_t len)
     if (!is_connected_)
         throw TcpClientException("tcp is disconnected");
 
-    //std::cout << "send : " << buf << std::endl;
-
     const auto *tmp = (const uint8_t *)buf;
     while (len)
     {
-        int err = (int)::send(fd_, tmp, len, MSG_NOSIGNAL);
-        if (err < 0)
+        ssize_t bytes_sent = ::send(fd_, tmp, len, MSG_NOSIGNAL);
+        if (bytes_sent < 0)
         {
             disConnect();
             throw TcpClientException(toString() + std::string(" ::send() ") + strerror(errno));
         }
-        len -= err;
-        tmp += err;
+        len -= bytes_sent;
+        tmp += bytes_sent;
     }
 }
 
@@ -92,41 +103,82 @@ bool TcpClient::tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t ti
 
         tv.tv_sec = timeout / 1000;
         tv.tv_usec = (timeout % 1000) * 1000;
-        int err = ::select(fd_ + 1, &read_fds, nullptr, nullptr, &tv);
-        if (err < 0)
+        int select_result = ::select(fd_ + 1, &read_fds, nullptr, nullptr, &tv);
+        if (select_result < 0)
         {
             disConnect();
             throw TcpClientException(toString() + std::string(" select() : ") + strerror(errno));
         }
-        else if (err == 0)
+        else if (select_result == 0)
         {
             return false;
         }
 
-        err = (int)::read(fd_, tmp, len);
-        if (err < 0)
+        ssize_t bytes_read = ::read(fd_, tmp, len);
+        if (bytes_read < 0)
         {
             disConnect();
             throw TcpClientException(toString() + std::string(" ::read() ") + strerror(errno));
         }
-        else if (err == 0)
+        else if (bytes_read == 0)
         {
             disConnect();
             throw TcpClientException(toString() + std::string(" tcp server has disconnected"));
         }
-        len -= err;
-        tmp += (err - 1);
+        has_read += bytes_read;
+        tmp += bytes_read;
+        len -= bytes_read;
 
-        if (tmp[0] == ';')
+        if (*(tmp - 1) == ';')
         {
-            has_read += err;
             return true;
         }
-
-        tmp++;
-        has_read += err;
-        //std::cout << "sbfeed:" << has_read << std::endl;
     }
+    return true;
+}
+
+bool TcpClient::tcpRecvExact(void *buf, uint32_t len, uint32_t timeout)
+{
+    uint8_t *ptr = static_cast<uint8_t *>(buf);
+    uint32_t remaining = len;
+
+    while (remaining > 0)
+    {
+        fd_set read_fds;
+        FD_ZERO(&read_fds);
+        FD_SET(fd_, &read_fds);
+
+        timeval tv;
+        tv.tv_sec = timeout / 1000;
+        tv.tv_usec = (timeout % 1000) * 1000;
+
+        int select_result = ::select(fd_ + 1, &read_fds, nullptr, nullptr, &tv);
+        if (select_result < 0)
+        {
+            disConnect();
+            throw TcpClientException(toString() + std::string(" select() : ") + strerror(errno));
+        }
+        else if (select_result == 0)
+        {
+            return false;
+        }
+
+        ssize_t bytes_read = ::read(fd_, ptr, remaining);
+        if (bytes_read < 0)
+        {
+            disConnect();
+            throw TcpClientException(toString() + std::string(" ::read() ") + strerror(errno));
+        }
+        else if (bytes_read == 0)
+        {
+            disConnect();
+            throw TcpClientException(toString() + std::string(" tcp server has disconnected"));
+        }
+
+        ptr += bytes_read;
+        remaining -= bytes_read;
+    }
+
     return true;
 }
 

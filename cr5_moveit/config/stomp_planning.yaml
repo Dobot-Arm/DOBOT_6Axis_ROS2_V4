@@ -1,0 +1,17 @@
+planning_plugins:
+  - stomp_moveit/StompPlanner
+request_adapters:
+  - default_planning_request_adapters/ResolveConstraintFrames
+  - default_planning_request_adapters/ValidateWorkspaceBounds
+  - default_planning_request_adapters/CheckStartStateBounds
+  - default_planning_request_adapters/CheckStartStateCollision
+response_adapters:
+  - default_planning_response_adapters/AddTimeOptimalParameterization
+  - default_planning_response_adapters/ValidateSolution
+stomp:
+  num_timesteps: 60
+  num_iterations: 40
+  num_rollouts: 30
+  delta_t: 0.1
+  control_cost_weight: 0.1
+  exponentiated_cost_sensitivity: 0.5
