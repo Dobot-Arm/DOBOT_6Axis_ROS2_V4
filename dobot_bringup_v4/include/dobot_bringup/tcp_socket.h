@@ -22,6 +22,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/select.h>
+#include <vector>
 
 /**
  * TcpClientException
@@ -44,6 +45,7 @@ private:
     uint16_t port_;
     std::string ip_;
     std::atomic<bool> is_connected_;
+    std::vector<uint8_t> recv_buffer_;
 
 public:
     /**
@@ -85,6 +87,11 @@ public:
      * tcpRecv
      */
     bool tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t timeout);
+
+    /**
+     * tcpRecvFrame
+     */
+    bool tcpRecvFrame(void *buf, uint32_t frame_len, uint32_t test_value_offset, uint64_t expected_test_value, uint32_t timeout);
 
     std::string toString();
 };

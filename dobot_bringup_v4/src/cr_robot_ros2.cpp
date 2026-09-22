@@ -999,7 +999,7 @@ bool CRRobotRos2::DI(const std::shared_ptr<dobot_msgs_v4::srv::DI::Request> requ
 
 bool CRRobotRos2::ToolDI(const std::shared_ptr<dobot_msgs_v4::srv::ToolDI::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::ToolDI::Response> response)
 {
-    return commander_->callRosService(parseTool::parserToolDIRequest2String(request), response->res);
+    return commander_->callRosService_f(parseTool::parserToolDIRequest2String(request), response->res, response->robot_return);
 }
 
 bool CRRobotRos2::AI(const std::shared_ptr<dobot_msgs_v4::srv::AI::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::AI::Response> response)
