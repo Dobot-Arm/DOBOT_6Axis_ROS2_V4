@@ -22,9 +22,21 @@ struct SentServo
     double gap_ms;                  // wall time since the previous send
     std::array<double, 6> target;   // deg
     std::array<double, 6> actual;   // deg, controller feedback at send time
+    std::array<double, 6> ctrl_target;  // deg, the controller's own target then
+    double tcp_target;              // mm/s, the controller's target tool speed
+    double tcp_actual;              // mm/s, its measured tool speed
 };
 
+// The linear part of the feed's TCP speed (x, y, z; mm/s).
+double linearSpeed(const double *v)
+{
+    return std::sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+}
+
 constexpr size_t kRecentSends = 8;
+// The controller's target further than this from the arm before a stream is
+// worth a warning.
+constexpr double kTargetOffsetWarnDeg = 0.5;
 
 std::string joints(const std::array<double, 6> &v, const char *fmt = "%.3f")
 {
@@ -53,9 +65,11 @@ void logRecentSends(const std::deque<SentServo> &sends, double servo_t)
         if (i > 0)
             for (size_t j = 0; j < 6; j++)
                 speed[j] = (s.target[j] - sends[i - 1].target[j]) / servo_t;
-        RCLCPP_ERROR(kLogger, "  t=%.3f gap=%.1f ms target=%s actual=%s speed=%s deg/s",
+        RCLCPP_ERROR(kLogger, "  t=%.3f gap=%.1f ms target=%s actual=%s speed=%s deg/s "
+                     "controller target=%s tool speed target %.0f actual %.0f mm/s",
                      s.elapsed, s.gap_ms, joints(s.target).c_str(),
-                     joints(s.actual).c_str(), joints(speed, "%.1f").c_str());
+                     joints(s.actual).c_str(), joints(speed, "%.1f").c_str(),
+                     joints(s.ctrl_target).c_str(), s.tcp_target, s.tcp_actual);
     }
 }
 }  // namespace
@@ -271,6 +285,27 @@ void TrajectoryExecutor::servoLoop()
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
+    // Where the controller is aiming before the first command. A target away
+    // from the arm means it still holds an earlier motion's, and streaming
+    // may start by driving towards it.
+    {
+        RealTimeData rd = commander_->getRealData();
+        std::array<double, 6> ctrl{}, actual{};
+        double worst = 0.0;
+        for (size_t j = 0; j < 6; j++)
+        {
+            ctrl[j] = rd.q_target[j];
+            actual[j] = rd.q_actual[j];
+            worst = std::max(worst, std::fabs(ctrl[j] - actual[j]));
+        }
+        if (worst > kTargetOffsetWarnDeg)
+            RCLCPP_WARN(kLogger, "Before streaming: the controller's target %s is %.2f deg "
+                        "from the arm %s", joints(ctrl).c_str(), worst, joints(actual).c_str());
+        else
+            RCLCPP_INFO(kLogger, "Before streaming: the controller's target is on the arm "
+                        "(within %.3f deg)", worst);
+    }
+
     auto start_time = std::chrono::steady_clock::now();
     const auto period = std::chrono::duration_cast<
         std::chrono::steady_clock::duration>(
@@ -362,9 +397,13 @@ void TrajectoryExecutor::servoLoop()
 
         SentServo sent{elapsed,
                        std::chrono::duration<double, std::milli>(send_time - last_send).count(),
-                       target, {}};
+                       target, {}, {}, linearSpeed(real_data.TCP_speed_target),
+                       linearSpeed(real_data.TCP_speed_actual)};
         for (size_t j = 0; j < 6; j++)
+        {
             sent.actual[j] = real_data.q_actual[j];
+            sent.ctrl_target[j] = real_data.q_target[j];
+        }
         if (iteration > 0)
             max_gap_ms = std::max(max_gap_ms, sent.gap_ms);
         last_send = send_time;
