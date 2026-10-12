@@ -3,6 +3,8 @@
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp/node.hpp>
 #include <rclcpp/clock.hpp>
+#include <algorithm>
+#include <chrono>
 #include <iostream>
 #include <string>
 #include <stdio.h>
@@ -46,6 +48,18 @@ int main(int argc, char *argv[])
 
   rclcpp::Rate rate(rate_value);
   double position[6];
+  // A gap in the tool pose longer than 2.5 publish periods is logged: the arm camera's TF
+  // comes from it, so frames captured in the gap cannot be placed. The log
+  // says whether the loop was held up (its callbacks: the driver's services)
+  // or had no fresh realtime data to publish.
+  using Clock = std::chrono::steady_clock;
+  const auto gap_warn = std::chrono::milliseconds(static_cast<int>(2500.0 / rate_value));
+  Clock::time_point last_tool_pub{};
+  Clock::duration longest_spin{};
+  int stale_passes = 0;
+  auto ms = [](Clock::duration d) {
+    return static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(d).count());
+  };
   while (rclcpp::ok())
   {
     // Joint states only from fresh realtime data: without it nothing is
@@ -74,13 +88,26 @@ int main(int argc, char *argv[])
       tool_vector_actual_msg.ry = val[4];
       tool_vector_actual_msg.rz = val[5];
       tool_vector_pub->publish(tool_vector_actual_msg);
+      auto now = Clock::now();
+      if (last_tool_pub != Clock::time_point{} && now - last_tool_pub > gap_warn)
+        RCLCPP_WARN(robot->get_logger(),
+                    "Tool pose not published for %ld ms: %d loop pass(es) without fresh "
+                    "realtime data, longest callback pass %ld ms",
+                    ms(now - last_tool_pub), stale_passes, ms(longest_spin));
+      last_tool_pub = now;
+      longest_spin = Clock::duration{};
+      stale_passes = 0;
+    } else {
+      ++stale_passes;
     }
 
     // publish robot status
     robot_status_msg.is_enable = robot->isEnable();
     robot_status_msg.is_connected = robot->isConnected();
     robot_status_pub->publish(robot_status_msg);
+    auto spin_start = Clock::now();
     rclcpp::spin_some(robot);
+    longest_spin = std::max(longest_spin, Clock::now() - spin_start);
     rate.sleep();
   }
 

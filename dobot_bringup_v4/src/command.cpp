@@ -16,6 +16,9 @@ static constexpr uint64_t kRealtimeTestValue = 0x0123456789ABCDEFULL;
 // Joint angles older than this are not reported: the realtime link sends a
 // packet every few milliseconds, so a gap this long means it is down or stalled.
 static constexpr std::chrono::milliseconds kJointStateMaxAge{500};
+// A gap between realtime packets longer than this is logged: the arm's pose
+// (joint states, the tool pose and the TF built from them) stops moving on.
+static constexpr std::chrono::milliseconds kRealtimeGapWarn{100};
 
 CRCommanderRos2::CRCommanderRos2(const std::string &ip)
     : is_running_(false)
@@ -124,9 +127,15 @@ void CRCommanderRos2::recvTask()
                             realtime_healthy = true;
                         }
 
+                        auto now = std::chrono::steady_clock::now();
                         std::lock_guard<std::mutex> lock(mutex_);
+                        if (real_time_stamp_.time_since_epoch().count() != 0 &&
+                            now - real_time_stamp_ > kRealtimeGapWarn)
+                            RCLCPP_WARN(kLogger, "realtime packets: none for %ld ms",
+                                        static_cast<long>(std::chrono::duration_cast<
+                                            std::chrono::milliseconds>(now - real_time_stamp_).count()));
                         *real_time_data_ = packet;
-                        real_time_stamp_ = std::chrono::steady_clock::now();
+                        real_time_stamp_ = now;
                     }
                 }
                 else if (++realtime_timeouts >= kRealtimeMaxTimeouts)
