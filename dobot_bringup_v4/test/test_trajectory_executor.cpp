@@ -376,6 +376,31 @@ TEST(TrajectoryExecutorLifecycle, SubsecondTimestamp)
 // Many-segment trajectory (stress test for segment finding)
 // ---------------------------------------------------------------------------
 
+// --- Send schedule: index timing -------------------------------------------
+
+TEST(TrajectoryExecutorSchedule, OnTimeKeepsTheGrid)
+{
+    EXPECT_DOUBLE_EQ(TrajectoryExecutor::nextDue(0.040, 0.0405, 0.02), 0.060);
+}
+
+TEST(TrajectoryExecutorSchedule, SlightlyLateKeepsTheGrid)
+{
+    // up to half a period late: the next command is still due on the grid
+    EXPECT_DOUBLE_EQ(TrajectoryExecutor::nextDue(0.040, 0.049, 0.02), 0.060);
+}
+
+TEST(TrajectoryExecutorSchedule, LateSendMovesTheGridInsteadOfBunching)
+{
+    // 40 ms late: the next command is one period after the send, not at once
+    EXPECT_DOUBLE_EQ(TrajectoryExecutor::nextDue(0.040, 0.080, 0.02), 0.100);
+}
+
+TEST(TrajectoryExecutorSchedule, NeverDueBeforeTheLastSend)
+{
+    for (double late : {0.0, 0.005, 0.0101, 0.03, 0.2})
+        EXPECT_GT(TrajectoryExecutor::nextDue(1.0, 1.0 + late, 0.02), 1.0 + late);
+}
+
 TEST(TrajectoryExecutorInterp, ManySegments)
 {
     auto exec = makeExecutor();

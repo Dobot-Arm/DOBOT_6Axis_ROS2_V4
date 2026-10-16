@@ -296,14 +296,18 @@ kServiceEnableFTSensor = this->create_service<dobot_msgs_v4::srv::EnableFTSensor
     this->declare_parameter("servo_rate", 50.0);
     this->declare_parameter("servo_aheadtime", 50.0);
     this->declare_parameter("servo_gain", 500.0);
+    // SCHED_FIFO priority of the thread that streams ServoJ (0: normal
+    // scheduling). Without the right to it the thread warns and stays normal.
+    this->declare_parameter("servo_rt_priority", 80);
 
     double servoRate = this->get_parameter("servo_rate").as_double();
     double servoT = 1.0 / servoRate;
     double servoAheadtime = this->get_parameter("servo_aheadtime").as_double();
     double servoGain = this->get_parameter("servo_gain").as_double();
+    int servoRtPriority = static_cast<int>(this->get_parameter("servo_rt_priority").as_int());
 
     trajectory_executor_ = std::make_shared<TrajectoryExecutor>(
-        commander_, servoRate, servoT, servoAheadtime, servoGain);
+        commander_, servoRate, servoT, servoAheadtime, servoGain, servoRtPriority);
 
     std::string fjtActionName =
         "/" + robotType + "_group_controller/follow_joint_trajectory";

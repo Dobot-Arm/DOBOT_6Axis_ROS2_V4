@@ -28,7 +28,8 @@ public:
                        double servo_rate = 50.0,
                        double servo_t = 0.02,
                        double aheadtime = 50.0,
-                       double gain = 500.0);
+                       double gain = 500.0,
+                       int rt_priority = 0);
 
     ~TrajectoryExecutor();
 
@@ -67,6 +68,14 @@ public:
     static inline double rad2Deg(double rad) { return rad * 180.0 / kPi; }
     static inline double deg2Rad(double deg) { return deg * kPi / 180.0; }
 
+    // When the next ServoJ is due (s from the stream's start), given when the
+    // last one was due and when it was sent: one period later, or one period
+    // after the send if that was more than half a period late. Each command
+    // carries the trajectory point for its own slot (index × period), so a
+    // late send delays the rest of the stream instead of being made up by a
+    // burst of commands, each of which the controller runs in servo_t.
+    static double nextDue(double due, double sent, double period);
+
 private:
     void servoLoop();
     std::array<double, 6> interpolate(double t) const;  // caller must hold mutex_
@@ -85,6 +94,7 @@ private:
     double servo_t_;
     double aheadtime_;
     double gain_;
+    int rt_priority_;               // SCHED_FIFO priority of the servo thread; 0: none
 
     // Current execution state
     State state_;

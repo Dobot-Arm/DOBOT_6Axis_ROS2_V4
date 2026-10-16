@@ -1,4 +1,6 @@
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.substitutions import LaunchConfiguration
 import launch_ros.actions
 import json
 import os
@@ -38,15 +40,27 @@ dobot_ros2_params = [
 ]
 
 
-def generate_launch_description():
-
-    return LaunchDescription([
+def driver_node(context):
+    # A robot's own parameters (servo_aheadtime, servo_gain, ...), applied
+    # after the ones above; without params_file the driver's defaults stand.
+    params_file = LaunchConfiguration('params_file').perform(context)
+    return [
         launch_ros.actions.Node(
             package='cr_robot_ros2',
             executable='cr_robot_ros2_node',
             name=robot_node_name,
             output='screen',
-            parameters=dobot_ros2_params
+            parameters=dobot_ros2_params + ([params_file] if params_file else [])
             # respawn=True
         ),
+    ]
+
+
+def generate_launch_description():
+
+    return LaunchDescription([
+        DeclareLaunchArgument(
+            'params_file', default_value='',
+            description='ROS parameters file for the driver node (optional)'),
+        OpaqueFunction(function=driver_node),
     ])

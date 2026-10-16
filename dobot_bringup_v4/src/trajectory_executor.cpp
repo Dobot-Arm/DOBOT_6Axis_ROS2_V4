@@ -3,8 +3,12 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
+#include <cstring>
 #include <deque>
 #include <string>
+
+#include <pthread.h>
+#include <sched.h>
 
 static const rclcpp::Logger kLogger = rclcpp::get_logger("trajectory_executor");
 // The controller pushes a realtime packet every ~8 ms. Half a second is 60
@@ -77,13 +81,19 @@ void logRecentSends(const std::deque<SentServo> &sends, double servo_t)
 TrajectoryExecutor::TrajectoryExecutor(
     std::shared_ptr<CRCommanderRos2> commander,
     double servo_rate, double servo_t,
-    double aheadtime, double gain)
+    double aheadtime, double gain, int rt_priority)
     : commander_(commander),
       servo_rate_(servo_rate),
       servo_t_(servo_t),
       aheadtime_(aheadtime),
-      gain_(gain)
+      gain_(gain),
+      rt_priority_(rt_priority)
 {
+}
+
+double TrajectoryExecutor::nextDue(double due, double sent, double period)
+{
+    return (sent - due > period / 2 ? sent : due) + period;
 }
 
 TrajectoryExecutor::~TrajectoryExecutor()
@@ -225,6 +235,21 @@ std::array<double, 6> TrajectoryExecutor::interpolate(double t) const
 
 void TrajectoryExecutor::servoLoop()
 {
+    // A late wake-up delays a ServoJ; the controller has nothing new to aim
+    // at meanwhile and the arm dips. Ahead of the camera and planning threads
+    // on a busy Pi, the servo thread wakes on time. Needs RLIMIT_RTPRIO
+    // (LimitRTPRIO= in the systemd unit) or CAP_SYS_NICE.
+    if (rt_priority_ > 0)
+    {
+        sched_param sp{};
+        sp.sched_priority = rt_priority_;
+        int err = pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp);
+        static std::atomic<bool> warned{false};
+        if (err != 0 && !warned.exchange(true))
+            RCLCPP_WARN(kLogger, "Servo thread stays at normal priority: SCHED_FIFO %d refused (%s)",
+                        rt_priority_, std::strerror(err));
+    }
+
     RCLCPP_INFO(kLogger,
                 "Servo loop started: rate=%.1f Hz, t=%.4f s, "
                 "aheadtime=%.1f, gain=%.1f, points=%zu",
@@ -307,9 +332,10 @@ void TrajectoryExecutor::servoLoop()
     }
 
     auto start_time = std::chrono::steady_clock::now();
-    const auto period = std::chrono::duration_cast<
-        std::chrono::steady_clock::duration>(
-        std::chrono::duration<double>(1.0 / servo_rate_));
+    const double period = 1.0 / servo_rate_;
+    auto since_start = [&start_time](std::chrono::steady_clock::time_point t) {
+        return std::chrono::duration<double>(t - start_time).count();
+    };
 
     double total_duration;
     {
@@ -321,12 +347,15 @@ void TrajectoryExecutor::servoLoop()
     std::deque<SentServo> recent;
     auto last_send = start_time;
     double max_gap_ms = 0.0;
+    double due = 0.0;               // when this command was due (s from start)
+    int late_sends = 0;
+    double max_wake_late_ms = 0.0;  // how late the thread woke for a command
+    double max_reply_ms = 0.0;      // the controller's slowest ServoJ reply
 
     while (running_)
     {
-        auto now = std::chrono::steady_clock::now();
-        double elapsed =
-            std::chrono::duration<double>(now - start_time).count();
+        // The trajectory point for this command's slot, whenever it is sent.
+        double elapsed = static_cast<double>(iteration) * period;
 
         // Trajectory complete?
         if (elapsed >= total_duration)
@@ -353,9 +382,12 @@ void TrajectoryExecutor::servoLoop()
             state_.elapsed = total_duration;
             state_.desired = final_target;
             state_.done = true;
-            RCLCPP_INFO(kLogger, "Trajectory complete: %.2f s, longest gap between "
-                        "ServoJ commands %.1f ms (nominal %.1f ms)",
-                        elapsed, max_gap_ms, 1000.0 / servo_rate_);
+            RCLCPP_INFO(kLogger, "Trajectory complete: %.2f s (planned %.2f s), longest gap "
+                        "between ServoJ commands %.1f ms (nominal %.1f ms), %d sent more "
+                        "than half a period late; latest wake-up %.1f ms, slowest reply %.1f ms",
+                        since_start(std::chrono::steady_clock::now()), total_duration,
+                        max_gap_ms, 1000.0 / servo_rate_, late_sends, max_wake_late_ms,
+                        max_reply_ms);
             break;
         }
 
@@ -394,6 +426,11 @@ void TrajectoryExecutor::servoLoop()
         int32_t err_id = 0;
         auto send_time = std::chrono::steady_clock::now();
         bool ok = commander_->sendServoCommand(std::string(cmd), err_id);
+        auto reply_time = std::chrono::steady_clock::now();
+        if (iteration > 0)
+            max_wake_late_ms = std::max(max_wake_late_ms, (since_start(send_time) - due) * 1e3);
+        max_reply_ms = std::max(
+            max_reply_ms, std::chrono::duration<double, std::milli>(reply_time - send_time).count());
 
         SentServo sent{elapsed,
                        std::chrono::duration<double, std::milli>(send_time - last_send).count(),
@@ -434,12 +471,14 @@ void TrajectoryExecutor::servoLoop()
             }
         }
 
-        // Drift-compensated sleep: target next_time relative to start,
-        // not relative to "now", to prevent accumulated drift.
         iteration++;
-        auto next_time = start_time +
-                         static_cast<long long>(iteration) * period;
-        std::this_thread::sleep_until(next_time);
+        double sent_at = since_start(send_time);
+        if (sent_at - due > period / 2)
+            late_sends++;
+        due = nextDue(due, sent_at, period);
+        std::this_thread::sleep_until(
+            start_time + std::chrono::duration_cast<std::chrono::steady_clock::duration>(
+                             std::chrono::duration<double>(due)));
     }
 
     running_ = false;
