@@ -3,9 +3,7 @@
      Commit Version: 1.6.0-1-g15f4949  Build Version: 1.6.7594.29634
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot
-  name="cr12_robot">
-  <link name="dummy_link"/>
-  <link
+  name="cr12_robot">  <link
     name="base_link">
     <inertial>
       <origin
@@ -44,15 +42,7 @@
           filename="package://dobot_rviz/meshes/cr12/base_link0.STL" />
       </geometry>
     </collision>
-  </link>
-
-     <joint name="dummy_joint" type="fixed">
-      <parent link="dummy_link" />
-      <child  link="base_link" />
-    </joint>
-
-
-  <link
+  </link>  <link
     name="Link1">
     <inertial>
       <origin
@@ -108,7 +98,7 @@
       lower="-6.27"
       upper="6.27"
       effort="0"
-      velocity="0" />
+      velocity="0.5236" />
   </joint>
   <link
     name="Link2">
@@ -166,7 +156,7 @@
       lower="-6.27"
       upper="6.27"
       effort="0"
-      velocity="0" />
+      velocity="0.5236" />
   </joint>
   <link
     name="Link3">
@@ -224,7 +214,7 @@
       lower="-2.79"
       upper="2.79"
       effort="0"
-      velocity="0" />
+      velocity="0.5236" />
   </joint>
   <link
     name="Link4">
@@ -282,7 +272,7 @@
       lower="-6.27"
       upper="6.27"
       effort="0"
-      velocity="0" />
+      velocity="0.5236" />
   </joint>
   <link
     name="Link5">
@@ -340,7 +330,7 @@
       lower="-6.27"
       upper="6.27"
       effort="0"
-      velocity="0" />
+      velocity="0.5236" />
   </joint>
   <link
     name="Link6">
@@ -398,6 +388,6 @@
       lower="-6.27"
       upper="6.27"
       effort="0"
-      velocity="0" />
+      velocity="0.5236" />
   </joint>
 </robot>

@@ -1,6 +1,6 @@
 from ament_index_python.packages import get_package_share_path
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
+from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable
 from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import Command, LaunchConfiguration
 from launch_ros.actions import Node
@@ -8,7 +8,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 import os
 
 def generate_launch_description():
-    name = str(os.getenv("DOBOT_TYPE"))
+    name = os.getenv("DOBOT_TYPE", "cr5")
     urdf_tutorial_path = get_package_share_path('dobot_rviz')
     default_model_path = urdf_tutorial_path / f'urdf/{name}_robot.urdf'
     default_rviz_config_path = urdf_tutorial_path / 'rviz/urdf.rviz'
@@ -26,7 +26,9 @@ def generate_launch_description():
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
-        parameters=[{'robot_description': robot_description}]
+        parameters=[{
+            'robot_description': robot_description,
+        }]
     )
 
     # Depending on gui parameter, either launch joint_state_publisher or joint_state_publisher_gui
@@ -50,7 +52,15 @@ def generate_launch_description():
         arguments=['-d', LaunchConfiguration('rvizconfig')],
     )
 
+    # Restrict DDS to localhost only. Without this, another machine on the same
+    # network running a CR5 bringup publishes /tf for the CR5 model. When this
+    # launch loads a different model (e.g. cr3), RViz receives two conflicting
+    # sets of transforms for the same frame names (local cr3 + remote cr5 with
+    # different link lengths) and the model jumps up and down. cr5 is unaffected
+    # because both transforms happen to match. localhost isolation stops the
+    # remote TF from leaking in.
     return LaunchDescription([
+        SetEnvironmentVariable('ROS_AUTOMATIC_DISCOVERY_RANGE', 'LOCALHOST'),
         gui_arg,
         model_arg,
         rviz_arg,

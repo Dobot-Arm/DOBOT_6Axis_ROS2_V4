@@ -145,6 +145,8 @@
 #include <dobot_msgs_v4/srv/check_odd_mov_l.hpp>
 #include <dobot_msgs_v4/srv/check_odd_mov_j.hpp>
 #include <dobot_msgs_v4/srv/check_odd_mov_c.hpp>
+#include <dobot_msgs_v4/srv/inverse_solution.hpp>
+#include <dobot_msgs_v4/srv/tcp_dashboard.hpp>
 
 class CRRobotRos2 : public rclcpp::Node
 {
@@ -286,6 +288,8 @@ protected:
     bool CheckOddMovL(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovL::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovL::Response> response);
     bool CheckOddMovJ(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovJ::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovJ::Response> response);
     bool CheckOddMovC(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovC::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovC::Response> response);
+    bool InverseSolution(const std::shared_ptr<dobot_msgs_v4::srv::InverseSolution::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::InverseSolution::Response> response);
+    bool TcpDashboard(const std::shared_ptr<dobot_msgs_v4::srv::TcpDashboard::Request> request, const std::shared_ptr<dobot_msgs_v4::srv::TcpDashboard::Response> response);
 
 private:
     rclcpp::TimerBase::SharedPtr kTimer;
@@ -313,6 +317,7 @@ private:
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::RunScript>> kServiceRunScript;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::Stop>> kServiceStop;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::Pause>> kServicePause;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::Continue>> kServiceContinue;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::EnableSafeSkin>> kServiceEnableSafeSkin;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::SetSafeSkin>> kServiceSetSafeSkin;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::GetStartPose>> kServiceGetStartPose;
@@ -411,6 +416,8 @@ private:
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::CheckOddMovL>> kServiceCheckOddMovL;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::CheckOddMovJ>> kServiceCheckOddMovJ;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::CheckOddMovC>> kServiceCheckOddMovC;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::InverseSolution>> kServiceInverseSolution;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::TcpDashboard>> kServiceTcpDashboard;
     std::shared_ptr<rclcpp::Client<dobot_msgs_v4::srv::GetErrorID>> kClientGeterror;
 
 private:

@@ -106,8 +106,8 @@
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="300"
+      velocity="3.14" />
   </joint>
   <link
     name="Link2">
@@ -164,8 +164,8 @@
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="300"
+      velocity="3.14" />
   </joint>
   <link
     name="Link3">
@@ -222,8 +222,8 @@
     <limit
       lower="-2.7925"
       upper="2.7925"
-      effort="0"
-      velocity="0" />
+      effort="300"
+      velocity="3.14" />
   </joint>
   <link
     name="Link4">
@@ -280,8 +280,8 @@
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="300"
+      velocity="3.14" />
   </joint>
   <link
     name="Link5">
@@ -338,8 +338,8 @@
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="300"
+      velocity="3.14" />
   </joint>
   <link
     name="Link6">
@@ -396,8 +396,8 @@
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="300"
+      velocity="3.14" />
   </joint>
   <link name="tool0"/>
   <joint name="tool_joint" type="fixed">
@@ -436,7 +436,7 @@
     <!-- 在运行demo.launch.py时，需要注释这个ros2_control节点，因为它使用了xxx.ros2_control.xacro来生成了ros2_control节点-->
     <ros2_control name="GazeboSystem" type="system">
         <hardware>
-            <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+            <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         </hardware>
         <joint name="joint1">
             <command_interface name="position">
@@ -501,7 +501,7 @@
     </ros2_control>
 
     <gazebo>
-        <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+        <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
             <parameters>$(find cr10af_moveit)/config/ros2_controllers.yaml</parameters>
             <robot_param_node>robot_state_publisher</robot_param_node>
         </plugin>

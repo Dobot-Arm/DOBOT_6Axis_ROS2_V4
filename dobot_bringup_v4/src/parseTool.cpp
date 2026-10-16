@@ -411,7 +411,7 @@ namespace parseTool
     std::string parserGetAORequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetAO::Request> request)
     {
         std::stringstream ss;
-        ss << " GetAO(" << request->index << ")";
+        ss << "GetAO(" << request->index << ")";
         return ss.str();
     }
     std::string parserGetDOGroupRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroup::Request> request)
@@ -1217,6 +1217,18 @@ namespace parseTool
         stringOrder = stringOrder + ")";
 
         return stringOrder;
+    }
+
+    std::string parserInverseSolutionRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::InverseSolution::Request> request)
+    {
+        std::string stringOrder = "InverseSolution(";
+        stringOrder = stringOrder + request->parameter + ")";
+        return stringOrder;
+    }
+
+    std::string parserTcpDashboardRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::TcpDashboard::Request> request)
+    {
+        return request->command;
     }
 
 }

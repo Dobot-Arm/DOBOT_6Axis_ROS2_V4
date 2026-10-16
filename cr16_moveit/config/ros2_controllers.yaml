@@ -12,6 +12,7 @@ controller_manager:
 
 cr16_group_controller:
   ros__parameters:
+    use_sim_time: true
     joints:
       - joint1
       - joint2
@@ -24,3 +25,13 @@ cr16_group_controller:
     state_interfaces:
       - position
       - velocity
+joint_state_broadcaster:
+  ros__parameters:
+    use_sim_time: true
+    joints:
+      - joint1
+      - joint2
+      - joint3
+      - joint4
+      - joint5
+      - joint6

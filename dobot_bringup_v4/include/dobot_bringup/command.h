@@ -145,6 +145,7 @@ public:
     bool callRosService(const std::string cmd, int32_t &err_id);
     bool callRosService_f(const std::string cmd, int32_t &err_id,std::string &mode_id);
     bool callRosService(const std::string cmd, int32_t &err_id, std::vector<std::string> &result_);
+    std::string callRosServiceTcp(const std::string cmd);
     bool isEnable() const;
     bool isConnected() const;
     uint16_t getRobotMode() const;

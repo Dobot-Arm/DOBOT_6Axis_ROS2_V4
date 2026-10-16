@@ -3,8 +3,6 @@ project(cr30h_moveit)
 
 find_package(ament_cmake REQUIRED)
 
-ament_package()
-
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/launch")
   install(
     DIRECTORY launch
@@ -14,3 +12,5 @@ endif()
 
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
 install(FILES .setup_assistant DESTINATION share/${PROJECT_NAME})
+
+ament_package()

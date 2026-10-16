@@ -13,6 +13,8 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'), glob(os.path.join('launch', '*.launch.py'))),
+        # 只安装 .py 文件：用 'scripts/*' 会把 scripts/__pycache__ 目录也当成数据文件导致构建失败
+        (os.path.join('lib', package_name), glob(os.path.join('scripts', '*.py'))),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -25,6 +27,7 @@ setup(
         'console_scripts': [
         'joint_states    = dobot_moveit.joint_states:main',
         'action_move_server    = dobot_moveit.action_move_server:main',
+        'fake_demo_server    = dobot_moveit.fake_demo_server:main',
         ],
     },
 )

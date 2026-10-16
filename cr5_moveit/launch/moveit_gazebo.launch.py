@@ -1,3 +1,6 @@
+import os
+import xacro
+from ament_index_python.packages import get_package_share_directory
 from moveit_configs_utils import MoveItConfigsBuilder
 from moveit_configs_utils.launches import generate_moveit_rviz_launch
 
@@ -15,7 +18,16 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
-    moveit_config = MoveItConfigsBuilder("cr5_robot", package_name="cr5_moveit").to_moveit_configs() 
+    moveit_config = MoveItConfigsBuilder("cr5_robot", package_name="cr5_moveit").to_moveit_configs()
+
+    # Override robot_description with the Gazebo-compatible URDF (uses
+    # gz_ros2_control/GazeboSimSystem instead of mock_components/GenericSystem)
+    # so that gz_ros2_control can load the correct hardware interface.
+    cra_description_path = get_package_share_directory('cra_description')
+    xacro_file = os.path.join(cra_description_path, 'urdf', 'cr5_robot.xacro')
+    doc = xacro.parse(open(xacro_file))
+    xacro.process_doc(doc)
+    moveit_config.robot_description = {'robot_description': doc.toxml()}
 
     ld = LaunchDescription()
 

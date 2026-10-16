@@ -1,17 +1,19 @@
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, SetEnvironmentVariable
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 import os
 from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
-    name = os.getenv("DOBOT_TYPE")
+    name = os.getenv("DOBOT_TYPE", "cr5")
     package_name = f'{name}_moveit'
     urdf_name = "moveit_gazebo.launch.py"
 
     pkg_share = os.path.join(get_package_share_directory(package_name))
 
     moveit_model_path = os.path.join(pkg_share,'launch',urdf_name)
-    ld = LaunchDescription()
+    ld = LaunchDescription([
+        SetEnvironmentVariable('ROS_AUTOMATIC_DISCOVERY_RANGE', 'LOCALHOST'),
+    ])
     included_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(moveit_model_path)
     )

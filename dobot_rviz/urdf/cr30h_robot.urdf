@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot
-  name="cr30h_robot">
-  <link name="dummy_link"/>
-  <link
+  name="cr30h_robot">  <link
     name="base_link">
     <inertial>
       <origin
@@ -41,12 +39,7 @@
           filename="package://dobot_rviz/meshes/cr30h/base_link.STL" />
       </geometry>
     </collision>
-  </link>
-  <joint name="dummy_joint" type="fixed">
-      <parent link="dummy_link" />
-      <child  link="base_link" />
-    </joint>
-  <link
+  </link>  <link
     name="Link1">
     <inertial>
       <origin
@@ -102,7 +95,7 @@
       lower="-6.28"
       upper="6.28"
       effort="0"
-      velocity="0" />
+      velocity="0.5236" />
   </joint>
   <link
     name="Link2">
@@ -160,7 +153,7 @@
       lower="-6.28"
       upper="6.28"
       effort="0"
-      velocity="0" />
+      velocity="0.5236" />
   </joint>
   <link
     name="Link3">
@@ -218,7 +211,7 @@
       lower="-2.79"
       upper="2.79"
       effort="0"
-      velocity="0" />
+      velocity="0.5236" />
   </joint>
   <link
     name="Link4">
@@ -276,7 +269,7 @@
       lower="-6.28"
       upper="6.28"
       effort="0"
-      velocity="0" />
+      velocity="0.5236" />
   </joint>
   <link
     name="Link5">
@@ -334,7 +327,7 @@
       lower="-6.28"
       upper="6.28"
       effort="0"
-      velocity="0" />
+      velocity="0.5236" />
   </joint>
   <link
     name="Link6">
@@ -392,6 +385,6 @@
       lower="-6.28"
       upper="6.28"
       effort="0"
-      velocity="0" />
+      velocity="0.5236" />
   </joint>
 </robot>

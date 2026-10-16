@@ -12,9 +12,9 @@ import os
 class MoveCircleActionClient(Node):
     def __init__(self, name):
         super().__init__(name)                   
-        name_env = os.getenv("DOBOT_TYPE")
+        name_env = os.getenv("DOBOT_TYPE", "cr5")
         self._action_client = ActionClient(      
-            self, FollowJointTrajectory, f'/{name_env}_group_controller/follow_joint_trajectory') 
+            self, FollowJointTrajectory, '/action_move_server/follow_joint_trajectory') 
         self.joint = 0.1
         self.timer = self.create_timer(1.0, self.timer_callback)
         self.get_logger().info("Action Move Client node started...")

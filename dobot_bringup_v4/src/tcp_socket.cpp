@@ -46,9 +46,9 @@ void TcpClient::disConnect()
 {
     if (is_connected_)
     {
-        fd_ = -1;
         is_connected_ = false;
         ::close(fd_);
+        fd_ = -1;
     }
 }
 
@@ -126,6 +126,51 @@ bool TcpClient::tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t ti
         tmp++;
         has_read += err;
         //std::cout << "sbfeed:" << has_read << std::endl;
+    }
+    return true;
+}
+
+bool TcpClient::tcpRecvRaw(void *buf, uint32_t len, uint32_t timeout)
+{
+    if (!is_connected_)
+        return false;
+
+    uint8_t *tmp = (uint8_t *)buf; // NOLINT
+    uint32_t remaining = len;
+    fd_set read_fds;
+    timeval tv = {0, 0};
+
+    while (remaining > 0)
+    {
+        FD_ZERO(&read_fds);
+        FD_SET(fd_, &read_fds);
+
+        tv.tv_sec = timeout / 1000;
+        tv.tv_usec = (timeout % 1000) * 1000;
+        int err = ::select(fd_ + 1, &read_fds, nullptr, nullptr, &tv);
+        if (err < 0)
+        {
+            disConnect();
+            throw TcpClientException(toString() + std::string(" select() : ") + strerror(errno));
+        }
+        else if (err == 0)
+        {
+            return false;  // timeout
+        }
+
+        err = (int)::read(fd_, tmp, remaining);
+        if (err < 0)
+        {
+            disConnect();
+            throw TcpClientException(toString() + std::string(" ::read() ") + strerror(errno));
+        }
+        else if (err == 0)
+        {
+            disConnect();
+            throw TcpClientException(toString() + std::string(" tcp server has disconnected"));
+        }
+        remaining -= err;
+        tmp += err;
     }
     return true;
 }

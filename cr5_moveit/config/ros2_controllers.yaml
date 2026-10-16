@@ -1,4 +1,5 @@
-# This config file is used by ros2_control
+# This config file is used by ros2_control (Gazebo only).
+# All controllers must use sim time since Gazebo publishes /clock.
 controller_manager:
   ros__parameters:
     update_rate: 100  # Hz
@@ -11,6 +12,7 @@ controller_manager:
 
 cr5_group_controller:
   ros__parameters:
+    use_sim_time: true
     joints:
       - joint1
       - joint2
@@ -23,3 +25,14 @@ cr5_group_controller:
     state_interfaces:
       - position
       - velocity
+
+joint_state_broadcaster:
+  ros__parameters:
+    use_sim_time: true
+    joints:
+      - joint1
+      - joint2
+      - joint3
+      - joint4
+      - joint5
+      - joint6

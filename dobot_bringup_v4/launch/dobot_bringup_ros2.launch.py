@@ -1,4 +1,5 @@
 from launch import LaunchDescription
+from launch.actions import SetEnvironmentVariable
 import launch_ros.actions
 import json
 import os
@@ -24,9 +25,9 @@ trajectory_duration = json_data["node_info"][current_robot -
                                              1]["trajectory_duration"]
 robot_node_name = json_data["node_info"][current_robot -
                                          1]["robot_node_name"]
-ip_address = os.getenv("IP_address")
-             
-robot_type = os.getenv("DOBOT_TYPE")
+ip_address = os.getenv("IP_address") or json_data["node_info"][current_robot - 1]["ip_address"]
+
+robot_type = os.getenv("DOBOT_TYPE") or json_data["node_info"][current_robot - 1]["robot_type"]
 
 
 dobot_ros2_params = [
@@ -41,9 +42,10 @@ dobot_ros2_params = [
 def generate_launch_description():
 
     return LaunchDescription([
+        SetEnvironmentVariable('ROS_AUTOMATIC_DISCOVERY_RANGE', 'LOCALHOST'),
         launch_ros.actions.Node(
-            package='cr_robot_ros2',
-            executable='cr_robot_ros2_node',
+            package='dobot_bringup_v4',
+            executable='dobot_bringup_v4_node',
             name=robot_node_name,
             output='screen',
             parameters=dobot_ros2_params

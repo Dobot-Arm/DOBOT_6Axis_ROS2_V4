@@ -24,10 +24,10 @@ Visualization Manager:
       Scene Geometry:
         Scene Alpha: 1
       Scene Robot:
-        Robot Alpha: 0.5
+        Robot Alpha: 1
       Value: true
   Global Options:
-    Fixed Frame: dummy_link
+    Fixed Frame: base_link
   Tools:
     - Class: rviz_default_plugins/Interact
     - Class: rviz_default_plugins/MoveCamera
@@ -43,7 +43,7 @@ Visualization Manager:
         Z: 0.30
       Name: Current View
       Pitch: 0.5
-      Target Frame: dummy_link
+      Target Frame: base_link
       Yaw: -0.623
 Window Geometry:
   Height: 975

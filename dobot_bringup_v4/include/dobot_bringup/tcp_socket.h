@@ -82,9 +82,14 @@ public:
     void tcpSend(const void *buf, uint32_t len);
 
     /**
-     * tcpRecv
+     * tcpRecv (text protocol, terminates on ';' delimiter)
      */
     bool tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t timeout);
+
+    /**
+     * tcpRecvRaw (binary protocol, reads exactly len bytes, no delimiter)
+     */
+    bool tcpRecvRaw(void *buf, uint32_t len, uint32_t timeout);
 
     std::string toString();
 };

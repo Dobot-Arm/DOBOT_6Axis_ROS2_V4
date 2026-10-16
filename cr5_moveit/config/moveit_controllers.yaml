@@ -1,4 +1,6 @@
 # MoveIt uses this configuration for controller management
+# Default controller: cr5_group_controller (ros2_control, used in demo/simulation)
+# For hardware mode, the dobot_moveit custom launch overrides this with action_move_server
 
 moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
 

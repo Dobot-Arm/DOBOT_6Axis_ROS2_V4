@@ -7,8 +7,8 @@
  *
  ***********************************************************************************************************************
  */
-#ifndef PARSETOOL_HPP
-#define PARSETOOL_HPP
+#ifndef PARSETOOL_H
+#define PARSETOOL_H
 
 #include <string>
 #include <sstream>
@@ -134,6 +134,8 @@
 #include <dobot_msgs_v4/srv/check_odd_mov_l.hpp>
 #include <dobot_msgs_v4/srv/check_odd_mov_j.hpp>
 #include <dobot_msgs_v4/srv/check_odd_mov_c.hpp>
+#include <dobot_msgs_v4/srv/inverse_solution.hpp>
+#include <dobot_msgs_v4/srv/tcp_dashboard.hpp>
 
 namespace parseTool
 {
@@ -354,6 +356,10 @@ namespace parseTool
     std::string parserCheckOddMovJRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovJ::Request> request);
     std::string parserCheckOddMovCRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::CheckOddMovC::Request> request);
 
+    std::string parserInverseSolutionRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::InverseSolution::Request> request);
+
+    std::string parserTcpDashboardRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::TcpDashboard::Request> request);
+
 }
 
-#endif // PARSETOOL_HPP
+#endif // PARSETOOL_H

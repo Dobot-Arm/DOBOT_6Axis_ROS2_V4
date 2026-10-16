@@ -2,6 +2,8 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <sstream>
+#include <string>
 CRCommanderRos2::CRCommanderRos2(const std::string &ip)
     : current_joint_{}, tool_vector_{}, is_running_(false)
 {
@@ -33,7 +35,6 @@ void CRCommanderRos2::getToolVectorActual(double *val)
 
 void CRCommanderRos2::recvTask()
 {
-    uint32_t has_read;
     while (is_running_)
     {
         if (real_time_tcp_->isConnect())
@@ -41,7 +42,7 @@ void CRCommanderRos2::recvTask()
             try
             {
                 uint8_t *tmpData = reinterpret_cast<uint8_t *>(real_time_data_.get());
-                if (real_time_tcp_->tcpRecv(tmpData, sizeof(RealTimeData), has_read, 5000))
+                if (real_time_tcp_->tcpRecvRaw(tmpData, sizeof(RealTimeData), 200))
                 {
 
                     if (real_time_data_->len != 1440)
@@ -62,7 +63,7 @@ void CRCommanderRos2::recvTask()
             catch (const TcpClientException &err)
             {
                 real_time_tcp_->disConnect();
-                std::cout << "tcp recv error :" << std::endl;
+                std::cout << "tcp recv error :" << err.what() << std::endl;
             }
         }
         else
@@ -112,7 +113,6 @@ int stringToInt(const std::string& str) {
 void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd, int32_t &err_id,
                                std::vector<std::string> &result)
 {
-    std::ignore = result;
     try
     {
         uint32_t has_read;
@@ -138,21 +138,32 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
 
             recv_ptr = recv_ptr + strlen(recv_ptr);
         }
-        int data_len = strlen(buf);
-        for (int i = 0; i < data_len; i++)
+        std::string response(buf);
+        size_t brace_start = response.find('{');
+        size_t brace_end = response.find('}');
+
+        if (brace_start != std::string::npos && brace_start > 0)
         {
-            if (buf[i] == '{')
+            std::string err_str = response.substr(0, brace_start);
+            err_id = stringToInt(err_str);
+            std::cout << "ErrorID: " << err_str << std::endl;
+        }
+
+        if (brace_start != std::string::npos && brace_end != std::string::npos && brace_end > brace_start)
+        {
+            std::string data = response.substr(brace_start + 1, brace_end - brace_start - 1);
+            std::stringstream ss(data);
+            std::string item;
+            while (std::getline(ss, item, ','))
             {
-                std::string str(buf);
-                std::string result = str.substr(0, i-1);
-                int num = stringToInt(result);
-                err_id = num;
-                std::cout << "ErrorID: " << result<< std::endl;
-                break;
+                if (!item.empty())
+                {
+                    result.push_back(item);
+                }
             }
         }
 
-        std::cout << "tcp recv feedback : " << buf << std::endl; // FIXME parse the buf may be better
+        std::cout << "tcp recv feedback : " << buf << std::endl;
     }
     catch (const std::logic_error &err)
     {
@@ -164,7 +175,6 @@ void CRCommanderRos2::doTcpCmd(std::shared_ptr<TcpClient> &tcp, const char *cmd,
 void CRCommanderRos2::doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cmd, int32_t &err_id,std::string &mode_id,
                                std::vector<std::string> &result)
 {
-    std::ignore = result;
     try
     {
         uint32_t has_read;
@@ -189,28 +199,34 @@ void CRCommanderRos2::doTcpCmd_f(std::shared_ptr<TcpClient> &tcp, const char *cm
 
             recv_ptr = recv_ptr + strlen(recv_ptr);
         }
-        int pose1 = 0;
-        int data_len = strlen(buf);
-        for (int i = 0; i < data_len; i++)
+        std::string response(buf);
+        size_t brace_start = response.find('{');
+        size_t brace_end = response.find('}');
+
+        if (brace_start != std::string::npos && brace_start > 0)
         {
-            if (buf[i] == '{')
+            std::string err_str = response.substr(0, brace_start);
+            err_id = stringToInt(err_str);
+            std::cout << "ErrorID: " << err_str << std::endl;
+        }
+
+        if (brace_start != std::string::npos && brace_end != std::string::npos && brace_end > brace_start)
+        {
+            mode_id = response.substr(brace_start, brace_end - brace_start + 1);
+
+            std::string data = response.substr(brace_start + 1, brace_end - brace_start - 1);
+            std::stringstream ss(data);
+            std::string item;
+            while (std::getline(ss, item, ','))
             {
-                std::string str(buf);
-                std::string result = str.substr(0, i-1);
-                int num = stringToInt(result);
-                err_id = num;
-                std::cout << "ErrorID: " << num<< std::endl;
-                pose1 = i;
-            }
-            if (buf[i] == '}')
-            {
-                std::string str(buf);
-                std::string result = str.substr(pose1, i-pose1+1);
-                mode_id = result;
-                break;
+                if (!item.empty())
+                {
+                    result.push_back(item);
+                }
             }
         }
-        std::cout << "tcp recv feedback : " << buf << std::endl; // FIXME parse the buf may be better
+
+        std::cout << "tcp recv feedback : " << buf << std::endl;
     }
     catch (const std::logic_error &err)
     {
@@ -260,6 +276,27 @@ bool CRCommanderRos2::callRosService(const std::string cmd, int32_t &err_id, std
         std::cout << "%s" << std::endl;
         err_id = -1;
         return false;
+    }
+}
+
+std::string CRCommanderRos2::callRosServiceTcp(const std::string cmd)
+{
+    try
+    {
+        int32_t err_id;
+        std::vector<std::string> result_;
+        doTcpCmd(this->dash_board_tcp_, cmd.c_str(), err_id, result_);
+        std::string result_str = std::to_string(err_id);
+        for (size_t i = 0; i < result_.size(); ++i)
+        {
+            result_str += ",";
+            result_str += result_[i];
+        }
+        return result_str;
+    }
+    catch (const TcpClientException &err)
+    {
+        return std::string("Error: ") + err.what();
     }
 }
 
