@@ -93,7 +93,7 @@ TrajectoryExecutor::TrajectoryExecutor(
 
 double TrajectoryExecutor::nextDue(double due, double sent, double period)
 {
-    return (sent - due > period / 2 ? sent : due) + period;
+    return (sent - due > kLateSend ? sent : due) + period;
 }
 
 TrajectoryExecutor::~TrajectoryExecutor()
@@ -384,7 +384,7 @@ void TrajectoryExecutor::servoLoop()
             state_.done = true;
             RCLCPP_INFO(kLogger, "Trajectory complete: %.2f s (planned %.2f s), longest gap "
                         "between ServoJ commands %.1f ms (nominal %.1f ms), %d sent more "
-                        "than half a period late; latest wake-up %.1f ms, slowest reply %.1f ms",
+                        "than 1 ms late; latest wake-up %.1f ms, slowest reply %.1f ms",
                         since_start(std::chrono::steady_clock::now()), total_duration,
                         max_gap_ms, 1000.0 / servo_rate_, late_sends, max_wake_late_ms,
                         max_reply_ms);
@@ -473,7 +473,7 @@ void TrajectoryExecutor::servoLoop()
 
         iteration++;
         double sent_at = since_start(send_time);
-        if (sent_at - due > period / 2)
+        if (sent_at - due > kLateSend)
             late_sends++;
         due = nextDue(due, sent_at, period);
         std::this_thread::sleep_until(

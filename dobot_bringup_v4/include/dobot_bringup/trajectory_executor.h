@@ -70,11 +70,15 @@ public:
 
     // When the next ServoJ is due (s from the stream's start), given when the
     // last one was due and when it was sent: one period later, or one period
-    // after the send if that was more than half a period late. Each command
+    // after the send if that was more than kLateSend late. Each command
     // carries the trajectory point for its own slot (index × period), so a
-    // late send delays the rest of the stream instead of being made up by a
-    // burst of commands, each of which the controller runs in servo_t.
+    // late send delays the rest of the stream instead of being made up. The
+    // next command never follows a late one early: on the CR5, a ServoJ 10 ms
+    // early made the controller's target speed surge 30 % and raised alarm 225.
     static double nextDue(double due, double sent, double period);
+
+    // How late a send may be and still keep the schedule (s): wake-up jitter.
+    static constexpr double kLateSend = 0.001;
 
 private:
     void servoLoop();

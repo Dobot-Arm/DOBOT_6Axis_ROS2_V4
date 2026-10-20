@@ -383,10 +383,10 @@ TEST(TrajectoryExecutorSchedule, OnTimeKeepsTheGrid)
     EXPECT_DOUBLE_EQ(TrajectoryExecutor::nextDue(0.040, 0.0405, 0.02), 0.060);
 }
 
-TEST(TrajectoryExecutorSchedule, SlightlyLateKeepsTheGrid)
+TEST(TrajectoryExecutorSchedule, LateUnderHalfAPeriodMovesTheGrid)
 {
-    // up to half a period late: the next command is still due on the grid
-    EXPECT_DOUBLE_EQ(TrajectoryExecutor::nextDue(0.040, 0.049, 0.02), 0.060);
+    // 9 ms late: the next command waits a full period, not 11 ms
+    EXPECT_DOUBLE_EQ(TrajectoryExecutor::nextDue(0.040, 0.049, 0.02), 0.069);
 }
 
 TEST(TrajectoryExecutorSchedule, LateSendMovesTheGridInsteadOfBunching)
@@ -395,10 +395,13 @@ TEST(TrajectoryExecutorSchedule, LateSendMovesTheGridInsteadOfBunching)
     EXPECT_DOUBLE_EQ(TrajectoryExecutor::nextDue(0.040, 0.080, 0.02), 0.100);
 }
 
-TEST(TrajectoryExecutorSchedule, NeverDueBeforeTheLastSend)
+TEST(TrajectoryExecutorSchedule, NextFollowsTheLastSendByAlmostAPeriod)
 {
-    for (double late : {0.0, 0.005, 0.0101, 0.03, 0.2})
-        EXPECT_GT(TrajectoryExecutor::nextDue(1.0, 1.0 + late, 0.02), 1.0 + late);
+    const double period = 0.02;
+    for (double late : {0.0, 0.0005, 0.001, 0.0015, 0.005, 0.0101, 0.03, 0.2})
+        EXPECT_GE(TrajectoryExecutor::nextDue(1.0, 1.0 + late, period) - (1.0 + late),
+                  period - TrajectoryExecutor::kLateSend - 1e-12)
+            << "late " << late;
 }
 
 TEST(TrajectoryExecutorInterp, ManySegments)
