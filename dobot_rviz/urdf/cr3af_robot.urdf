@@ -3,23 +3,23 @@
      Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot
-  name="cr5af_robot">
+  name="cr3af_robot">
   <link name="dummy_link" />
   <link
     name="base_link">
     <inertial>
       <origin
-        xyz="8.1389E-06 -0.0019104 0.028995"
+        xyz="-0.0015345 -1.0554E-05 0.028348"
         rpy="0 0 0" />
       <mass
-        value="1.1" />
+        value="0.74" />
       <inertia
-        ixx="0.0014545"
-        ixy="-4.324E-08"
-        ixz="-1.8126E-07"
-        iyy="0.001345"
-        iyz="-6.2469E-06"
-        izz="0.002155" />
+        ixx="0.00074849"
+        ixy="5.9724E-08"
+        ixz="-1.3251E-06"
+        iyy="0.00079951"
+        iyz="1.6433E-07"
+        izz="0.0010879" />
     </inertial>
     <visual>
       <origin
@@ -27,7 +27,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/base_link.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/base_link.STL" />
       </geometry>
       <material
         name="">
@@ -41,7 +41,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/base_link.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/base_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -50,20 +50,20 @@
       <child  link="base_link" />
     </joint>
   <link
-    name="link1">
+    name="Link1">
     <inertial>
       <origin
-        xyz="-4.7455E-07 0.0032577 0.075323"
+        xyz="0.0039443 -3.6376E-05 0.073442"
         rpy="0 0 0" />
       <mass
-        value="5" />
+        value="4.45" />
       <inertia
-        ixx="0.0053277"
-        ixy="5.647E-08"
-        ixz="-2.2604E-08"
-        iyy="0.0051106"
-        iyz="-9.2564E-05"
-        izz="0.0034077" />
+        ixx="0.0030782"
+        ixy="-1.8164E-06"
+        ixz="-1.8902E-05"
+        iyy="0.0031919"
+        iyz="3.5177E-07"
+        izz="0.001909" />
     </inertial>
     <visual>
       <origin
@@ -71,7 +71,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/J1.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/J1.STL" />
       </geometry>
       <material
         name="">
@@ -85,7 +85,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/J1.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/J1.STL" />
       </geometry>
     </collision>
   </link>
@@ -93,35 +93,35 @@
     name="joint1"
     type="revolute">
     <origin
-      xyz="0 0 0.064"
+      xyz="0 0 0.065"
       rpy="0 0 0" />
     <parent
-      link="base" />
+      link="base_link" />
     <child
-      link="J1" />
+      link="Link1" />
     <axis
       xyz="0 0 1" />
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.14" />
   </joint>
   <link
-    name="link2">
+    name="Link2">
     <inertial>
       <origin
-        xyz="0.00017389 0.078516 0.21351"
+        xyz="0.074174 1.4072E-05 0.12923"
         rpy="0 0 0" />
       <mass
-        value="11.9" />
+        value="8.74" />
       <inertia
-        ixx="0.17347"
-        ixy="-3.9709E-08"
-        ixz="0.000131"
-        iyy="0.16953"
-        iyz="3.7334E-08"
-        izz="0.013285" />
+        ixx="0.015046"
+        ixy="-3.3667E-07"
+        ixz="0.00063538"
+        iyy="0.017734"
+        iyz="1.7848E-06"
+        izz="0.0066528" />
     </inertial>
     <visual>
       <origin
@@ -129,7 +129,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/J2.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/J2.STL" />
       </geometry>
       <material
         name="">
@@ -143,7 +143,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/J2.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/J2.STL" />
       </geometry>
     </collision>
   </link>
@@ -151,35 +151,35 @@
     name="joint2"
     type="revolute">
     <origin
-      xyz="0 0.064 0.083"
+      xyz="0.059 0 0.0698"
       rpy="0 0 0" />
     <parent
-      link="J1" />
+      link="Link1" />
     <child
-      link="J2" />
+      link="Link2" />
     <axis
-      xyz="0 1 0" />
+      xyz="1 0 0" />
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.14" />
   </joint>
   <link
-    name="link3">
+    name="Link3">
     <inertial>
       <origin
-        xyz="-0.00015029 -0.048307 0.15228"
+        xyz="-0.0626 6.0771E-07 -0.34381"
         rpy="0 0 0" />
       <mass
-        value="3.87" />
+        value="3.14" />
       <inertia
-        ixx="0.064798"
-        ixy="-1.5455E-06"
-        ixz="-5.9339E-05"
-        iyy="0.064091"
-        iyz="0.001556"
-        izz="0.0042264" />
+        ixx="0.003139"
+        ixy="2.60E-07"
+        ixz="-0.000151"
+        iyy="0.023669"
+        iyz="3.67E-08"
+        izz="0.022579" />
     </inertial>
     <visual>
       <origin
@@ -187,7 +187,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/J3.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/J3.STL" />
       </geometry>
       <material
         name="">
@@ -201,7 +201,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/J3.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/J3.STL" />
       </geometry>
     </collision>
   </link>
@@ -209,35 +209,35 @@
     name="joint3"
     type="revolute">
     <origin
-      xyz="0.00034991 0.007 0.42703"
+      xyz="0.0036 0 0.27401"
       rpy="0 0 0" />
     <parent
-      link="J2" />
+      link="Link2" />
     <child
-      link="J3" />
+      link="Link3" />
     <axis
-      xyz="0 -1 0" />
+      xyz="1 0 0" />
     <limit
-      lower="-2.7925"
-      upper="2.7925"
-      effort="0"
-      velocity="0" />
+      lower="-2.7052"
+      upper="2.7052"
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
-    name="link4">
+    name="Link4">
     <inertial>
       <origin
-        xyz="-2.894E-07 0.047446 0.0020777"
+        xyz="0.046127 2.7026E-08 -0.0034506"
         rpy="0 0 0" />
       <mass
-        value="2.07" />
+        value="2.1" />
       <inertia
-        ixx="0.0016115"
-        ixy="5.4436E-09"
-        ixz="-4.7861E-09"
-        iyy="0.0015715"
-        iyz="-3.8502E-05"
-        izz="0.00067853" />
+        ixx="0.0016946"
+        ixy="-3.1265E-09"
+        ixz="-9.3105E-06"
+        iyy="0.0017337"
+        iyz="5.4022E-09"
+        izz="0.0008225" />
     </inertial>
     <visual>
       <origin
@@ -245,7 +245,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/J4.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/J4.STL" />
       </geometry>
       <material
         name="">
@@ -259,7 +259,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/J4.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/J4.STL" />
       </geometry>
     </collision>
   </link>
@@ -267,35 +267,35 @@
     name="joint4"
     type="revolute">
     <origin
-      xyz="-0.00034988 0.021 0.35697"
+      xyz="0.0167 0 0.22999"
       rpy="0 0 0" />
     <parent
-      link="J3" />
+      link="Link3" />
     <child
-      link="J4" />
+      link="Link4" />
     <axis
-      xyz="0 1 0" />
+      xyz="1 0 0" />
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
-    name="link5">
+    name="Link5">
     <inertial>
       <origin
-        xyz="-2.9433E-07 -0.0072582 0.046677"
+        xyz="-0.0033307 -1.2849E-07 0.046132"
         rpy="0 0 0" />
       <mass
         value="2.1" />
       <inertia
-        ixx="0.0021291"
-        ixy="2.591E-08"
-        ixz="-1.2719E-08"
-        iyy="0.00088081"
-        iyz="-2.0847E-05"
-        izz="0.0020942" />
+        ixx="0.0008236"
+        ixy="-5.4869E-09"
+        ixz="-9.0189E-06"
+        iyy="0.0017414"
+        iyz="3.5935E-09"
+        izz="0.0017023" />
     </inertial>
     <visual>
       <origin
@@ -303,7 +303,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/J5.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/J5.STL" />
       </geometry>
       <material
         name="">
@@ -317,7 +317,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/J5.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/J5.STL" />
       </geometry>
     </collision>
   </link>
@@ -325,34 +325,34 @@
     name="joint5"
     type="revolute">
     <origin
-      xyz="0 0.049 0.067"
+      xyz="0.049 0 0.067"
       rpy="0 0 0" />
     <parent
-      link="J4" />
+      link="Link4" />
     <child
-      link="J5" />
+      link="Link5" />
     <axis
       xyz="0 0 1" />
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
-    name="link6">
+    name="Link6">
     <inertial>
       <origin
-        xyz="1.019E-08 0.022777 8.8138E-05"
+        xyz="0.022777 -1.019E-08 8.8138E-05"
         rpy="0 0 0" />
       <mass
-        value="0.27" />
+        value="0.29" />
       <inertia
-        ixx="0.0001425"
-        ixy="1.1102E-12"
-        ixz="1.2175E-10"
-        iyy="0.00019903"
-        iyz="-2.2857E-07"
+        ixx="0.00019903"
+        ixy="-1.1106E-12"
+        ixz="-2.2857E-07"
+        iyy="0.0001425"
+        iyz="-1.2175E-10"
         izz="0.00014123" />
     </inertial>
     <visual>
@@ -361,7 +361,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/J6.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/J6.STL" />
       </geometry>
       <material
         name="">
@@ -375,7 +375,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://dobot_rviz/meshes/cr5af/J6.STL" />
+          filename="package://dobot_rviz/meshes/cr3af/J6.STL" />
       </geometry>
     </collision>
   </link>
@@ -383,18 +383,24 @@
     name="joint6"
     type="revolute">
     <origin
-      xyz="0 0.0665 0.049"
+      xyz="0.0667 0 0.049"
       rpy="0 0 0" />
     <parent
-      link="J5" />
+      link="Link5" />
     <child
-      link="J6" />
+      link="Link6" />
     <axis
-      xyz="0 1 0" />
+      xyz="1 0 0" />
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
+  </joint>
+  <link name="tool0"/>
+  <joint name="tool_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="4.7124 0 3.14159" />
+    <parent link="Link6" />
+    <child link="tool0" />
   </joint>
 </robot>

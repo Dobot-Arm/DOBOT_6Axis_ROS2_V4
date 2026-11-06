@@ -4,8 +4,7 @@
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot
   name="cr12_robot">
-  <link name="dummy_link"/>
-  <link
+  <link name="dummy_link" /><link
     name="base_link">
     <inertial>
       <origin
@@ -46,11 +45,10 @@
     </collision>
   </link>
 
-     <joint name="dummy_joint" type="fixed">
+  <joint name="dummy_joint" type="fixed">
       <parent link="dummy_link" />
       <child  link="base_link" />
     </joint>
-
 
   <link
     name="Link1">
@@ -107,8 +105,8 @@
     <limit
       lower="-6.27"
       upper="6.27"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.14" />
   </joint>
   <link
     name="Link2">
@@ -165,8 +163,8 @@
     <limit
       lower="-6.27"
       upper="6.27"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.14" />
   </joint>
   <link
     name="Link3">
@@ -223,8 +221,8 @@
     <limit
       lower="-2.79"
       upper="2.79"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
     name="Link4">
@@ -281,8 +279,8 @@
     <limit
       lower="-6.27"
       upper="6.27"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
     name="Link5">
@@ -339,8 +337,8 @@
     <limit
       lower="-6.27"
       upper="6.27"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
     name="Link6">
@@ -397,7 +395,7 @@
     <limit
       lower="-6.27"
       upper="6.27"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
 </robot>

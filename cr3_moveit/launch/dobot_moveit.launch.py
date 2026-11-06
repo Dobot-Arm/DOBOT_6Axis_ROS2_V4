@@ -20,9 +20,9 @@ def generate_launch_description():
 
     ld = LaunchDescription()
     my_generate_rsp_launch(ld, moveit_config)
-    # 启动move_group
+    # Launch move_group
     my_generate_move_group_launch(ld, moveit_config)
-    # 启动rviz
+    # Launch RViz
     my_generate_moveit_rviz_launch(ld, moveit_config)
 
     return ld

@@ -151,10 +151,6 @@ class CRRobotRos2 : public rclcpp::Node
 public:
     CRRobotRos2();
     void init();
-    static void execute_action(const std::shared_ptr<dobot_msgs_v4::srv::EnableRobot::Request> request,
-                               std::shared_ptr<dobot_msgs_v4::srv::EnableRobot::Response> response);
-    void goalHandle();
-    void backendTask();
     void getJointState(double *point);
     bool isEnable() const;
     bool isConnected() const;
@@ -313,6 +309,7 @@ private:
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::RunScript>> kServiceRunScript;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::Stop>> kServiceStop;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::Pause>> kServicePause;
+    std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::Continue>> kServiceContinue;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::EnableSafeSkin>> kServiceEnableSafeSkin;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::SetSafeSkin>> kServiceSetSafeSkin;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::GetStartPose>> kServiceGetStartPose;
@@ -411,13 +408,9 @@ private:
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::CheckOddMovL>> kServiceCheckOddMovL;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::CheckOddMovJ>> kServiceCheckOddMovJ;
     std::shared_ptr<rclcpp::Service<dobot_msgs_v4::srv::CheckOddMovC>> kServiceCheckOddMovC;
-    std::shared_ptr<rclcpp::Client<dobot_msgs_v4::srv::GetErrorID>> kClientGeterror;
 
 private:
-    void getErrorID(std::vector<int> &Vec);
     void pubFeedBackInfo();
-
-private:
     std::string kRobotName;
     std::shared_ptr<CRCommanderRos2> commander_;
     std::thread threadPubFeedBackInfo;

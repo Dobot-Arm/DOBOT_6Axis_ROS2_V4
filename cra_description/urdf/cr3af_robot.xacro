@@ -52,7 +52,7 @@
       <child  link="base_link" />
     </joint>
   <link
-    name="link1">
+    name="Link1">
     <inertial>
       <origin
         xyz="0.0039443 -3.6376E-05 0.073442"
@@ -100,17 +100,17 @@
     <parent
       link="base_link" />
     <child
-      link="J1" />
+      link="Link1" />
     <axis
       xyz="0 0 1" />
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.14" />
   </joint>
   <link
-    name="link2">
+    name="Link2">
     <inertial>
       <origin
         xyz="0.074174 1.4072E-05 0.12923"
@@ -156,19 +156,19 @@
       xyz="0.059 0 0.0698"
       rpy="0 0 0" />
     <parent
-      link="J1" />
+      link="Link1" />
     <child
-      link="J2" />
+      link="Link2" />
     <axis
       xyz="1 0 0" />
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.14" />
   </joint>
   <link
-    name="link3">
+    name="Link3">
     <inertial>
       <origin
         xyz="-0.0626 6.0771E-07 -0.34381"
@@ -176,12 +176,12 @@
       <mass
         value="3.14" />
       <inertia
-        ixx="0"
-        ixy="0"
-        ixz="0"
-        iyy="0"
-        iyz="0"
-        izz="0" />
+        ixx="0.003139"
+        ixy="2.60E-07"
+        ixz="-0.000151"
+        iyy="0.023669"
+        iyz="3.67E-08"
+        izz="0.022579" />
     </inertial>
     <visual>
       <origin
@@ -214,19 +214,19 @@
       xyz="0.0036 0 0.27401"
       rpy="0 0 0" />
     <parent
-      link="J2" />
+      link="Link2" />
     <child
-      link="J3" />
+      link="Link3" />
     <axis
-      xyz="-1 0 0" />
+      xyz="1 0 0" />
     <limit
       lower="-2.7052"
       upper="2.7052"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
-    name="link4">
+    name="Link4">
     <inertial>
       <origin
         xyz="0.046127 2.7026E-08 -0.0034506"
@@ -272,19 +272,19 @@
       xyz="0.0167 0 0.22999"
       rpy="0 0 0" />
     <parent
-      link="J3" />
+      link="Link3" />
     <child
-      link="J4" />
+      link="Link4" />
     <axis
       xyz="1 0 0" />
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
-    name="link5">
+    name="Link5">
     <inertial>
       <origin
         xyz="-0.0033307 -1.2849E-07 0.046132"
@@ -330,19 +330,19 @@
       xyz="0.049 0 0.067"
       rpy="0 0 0" />
     <parent
-      link="J4" />
+      link="Link4" />
     <child
-      link="J5" />
+      link="Link5" />
     <axis
       xyz="0 0 1" />
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
-    name="link6">
+    name="Link6">
     <inertial>
       <origin
         xyz="0.022777 -1.019E-08 8.8138E-05"
@@ -388,16 +388,22 @@
       xyz="0.0667 0 0.049"
       rpy="0 0 0" />
     <parent
-      link="J5" />
+      link="Link5" />
     <child
-      link="J6" />
+      link="Link6" />
     <axis
       xyz="1 0 0" />
     <limit
       lower="-6.2831"
       upper="6.2831"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
+  </joint>
+  <link name="tool0"/>
+  <joint name="tool_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="4.7124 0 3.14159" />
+    <parent link="Link6" />
+    <child link="tool0" />
   </joint>
   <gazebo reference="base_link">
         <gravity>false</gravity>

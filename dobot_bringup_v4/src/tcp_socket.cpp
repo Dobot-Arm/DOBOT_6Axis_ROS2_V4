@@ -39,16 +39,16 @@ void TcpClient::connect()
         throw TcpClientException(toString() + std::string(" connect : ") + strerror(errno));
     is_connected_ = true;
 
-    std::cout << "connect successfully  " << toString() << std::endl;
+    RCLCPP_INFO(rclcpp::get_logger("TcpClient"), "connect successfully: %s", toString().c_str());
 }
 
 void TcpClient::disConnect()
 {
     if (is_connected_)
     {
-        fd_ = -1;
         is_connected_ = false;
         ::close(fd_);
+        fd_ = -1;
     }
 }
 
@@ -61,8 +61,6 @@ void TcpClient::tcpSend(const void *buf, uint32_t len)
 {
     if (!is_connected_)
         throw TcpClientException("tcp is disconnected");
-
-    //std::cout << "send : " << buf << std::endl;
 
     const auto *tmp = (const uint8_t *)buf;
     while (len)
@@ -80,12 +78,12 @@ void TcpClient::tcpSend(const void *buf, uint32_t len)
 
 bool TcpClient::tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t timeout)
 {
-    uint8_t *tmp = (uint8_t *)buf; // NOLINT(modernize-use-auto)
+    uint8_t *tmp = (uint8_t *)buf;
     fd_set read_fds;
     timeval tv = {0, 0};
 
     has_read = 0;
-    while (len)
+    while (len > 0)
     {
         FD_ZERO(&read_fds);
         FD_SET(fd_, &read_fds);
@@ -114,18 +112,19 @@ bool TcpClient::tcpRecv(void *buf, uint32_t len, uint32_t &has_read, uint32_t ti
             disConnect();
             throw TcpClientException(toString() + std::string(" tcp server has disconnected"));
         }
-        len -= err;
-        tmp += (err - 1);
 
-        if (tmp[0] == ';')
+        has_read += err;
+        
+        for (int i = 0; i < err; ++i)
         {
-            has_read += err;
-            return true;
+            if (tmp[i] == ';')
+            {
+                return true;
+            }
         }
 
-        tmp++;
-        has_read += err;
-        //std::cout << "sbfeed:" << has_read << std::endl;
+        len -= err;
+        tmp += err;
     }
     return true;
 }

@@ -19,6 +19,8 @@ int main(int argc, char *argv[])
 
   // 创建关节状态消息和发布者
   sensor_msgs::msg::JointState joint_state_msg;
+  // 发布到 /joint_states_robot（原始关节数据），由 dobot_moveit 的中继转成 /joint_states，
+  // 避免与 Gazebo 的 joint_state_broadcaster 抢占 /joint_states，从而不影响仿真
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub = robot->create_publisher<sensor_msgs::msg::JointState>("joint_states_robot", 10);
   joint_state_msg.name = {"joint1", "joint2", "joint3", "joint4", "joint5", "joint6"};
   joint_state_msg.position = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -34,11 +36,7 @@ int main(int argc, char *argv[])
   std::string a = robot_type == nullptr ? "cr5" : robot_type;
   std::string b = "_robot/joint_controller/follow_joint_trajectory";
   std::string ss = z + a + b;
-//  for (uint32_t i = 0; i < 6; i++)
-//  {
-//    joint_state_msg.position.push_back(0.0);
-//    joint_state_msg.name.push_back(std::string("joint") + std::to_string(i + 1));
-//  }
+  (void)ss; // 预留变量
 
   double rate_value = robot->declare_parameter<double>("JointStatePublishRate", 10.0);
 
@@ -46,13 +44,20 @@ int main(int argc, char *argv[])
 
   rclcpp::Rate rate(rate_value);
   double position[6];
+  double last_valid_position[6] = {0};
+  bool has_valid_data = false;
   while (rclcpp::ok())
   {
     // 获取关节状态并发布消息
     if (robot->isConnected()) {
       robot->getJointState(position);
+      memcpy(last_valid_position, position, sizeof(position));
+      has_valid_data = true;
     } else {
-      memset(position, 0, sizeof(position));
+      if (has_valid_data)
+        memcpy(position, last_valid_position, sizeof(position));
+      else
+        memset(position, 0, sizeof(position));
     }
     joint_state_msg.header.stamp = robot->get_clock()->now();
     joint_state_msg.header.frame_id = "dummy_link";

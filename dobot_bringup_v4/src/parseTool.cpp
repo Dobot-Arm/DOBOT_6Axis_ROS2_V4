@@ -208,24 +208,31 @@ namespace parseTool
     }
     std::string parserPositiveKinRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::PositiveKin::Request> request)
     {
+        // PositiveKin(J1,J2,J3,J4,J5,J6,user=index,tool=index)
         std::stringstream ss;
         ss << "PositiveKin(";
-        ss << request->j1 << "," << request->j2 << "," << request->j3 << "," << request->j4 << "," << request->j5 << ","
-           << request->j6 << ",";
+        ss << request->j1 << "," << request->j2 << "," << request->j3 << ","
+           << request->j4 << "," << request->j5 << "," << request->j6;
         if (request->user != "")
             ss << ",user=" << request->user;
         if (request->tool != "")
-            ss << ", tool=" << request->tool;
+            ss << ",tool=" << request->tool;
         ss << ")";
         return ss.str();
     }
     std::string parserInverseKinRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::InverseKin::Request> request)
     {
-        // InverseKin(X,Y,Z,Rx,Ry,Rz,User,Tool,useJointNear,JointNear)
+        // InverseKin(X,Y,Z,Rx,Ry,Rz,useJointNear=value,jointNear={...},user=index,tool=index)
         std::stringstream ss;
-        ss << "InverseKin(" << request->x << "," << request->y << "," << request->z << "," << request->rx << "," << request->ry
-           << "," << request->rz << ", user=" << request->user << ",tool=" << request->tool
-           << ",useJointNear=" << request->use_joint_near << ",jointNear=" << request->joint_near << ")";
+        ss << "InverseKin(" << request->x << "," << request->y << "," << request->z
+           << "," << request->rx << "," << request->ry << "," << request->rz
+           << ",useJointNear=" << request->use_joint_near
+           << ",jointNear=" << request->joint_near;
+        if (request->user != "")
+            ss << ",user=" << request->user;
+        if (request->tool != "")
+            ss << ",tool=" << request->tool;
+        ss << ")";
         return ss.str();
     }
     std::string parserGetAngleRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetAngle::Request> request)
@@ -411,7 +418,7 @@ namespace parseTool
     std::string parserGetAORequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetAO::Request> request)
     {
         std::stringstream ss;
-        ss << " GetAO(" << request->index << ")";
+        ss << "GetAO(" << request->index << ")";
         return ss.str();
     }
     std::string parserGetDOGroupRequest2String(const std::shared_ptr<dobot_msgs_v4::srv::GetDOGroup::Request> request)

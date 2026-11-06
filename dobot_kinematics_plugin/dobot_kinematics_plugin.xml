@@ -1,0 +1,13 @@
+<library path="dobot_kinematics_plugin">
+  <class name="dobot_kinematics_plugin/DobotKinematicsPlugin"
+         type="dobot_kinematics_plugin::DobotKinematicsPlugin"
+         base_class_type="kinematics::KinematicsBase">
+    <description>
+      MoveIt2 kinematics plugin that delegates FK/IK to the Dobot controller's
+      real-DH ROS services (/dobot_bringup_ros2/srv/PositiveKin and
+      /dobot_bringup_ros2/srv/InverseKin). Falls back to the KDL plugin
+      (theoretical DH) when the controller is unreachable. Units / orientation
+      convention are configurable via kinematics.yaml.
+    </description>
+  </class>
+</library>

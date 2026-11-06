@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot
   name="cr30h_robot">
-  <link name="dummy_link"/>
-  <link
+  <link name="dummy_link" /><link
     name="base_link">
     <inertial>
       <origin
@@ -42,10 +41,12 @@
       </geometry>
     </collision>
   </link>
+
   <joint name="dummy_joint" type="fixed">
       <parent link="dummy_link" />
       <child  link="base_link" />
     </joint>
+
   <link
     name="Link1">
     <inertial>
@@ -91,18 +92,18 @@
     type="revolute">
     <origin
       xyz="0 0 0.386"
-      rpy="0 0 0" />
+      rpy="1.5708 1.5708 0" />
     <parent
       link="base_link" />
     <child
       link="Link1" />
     <axis
-      xyz="0 0 1" />
+      xyz="-1 0 0" />
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.14" />
   </joint>
   <link
     name="Link2">
@@ -159,8 +160,8 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.14" />
   </joint>
   <link
     name="Link3">
@@ -217,8 +218,8 @@
     <limit
       lower="-2.79"
       upper="2.79"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
     name="Link4">
@@ -275,8 +276,8 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
     name="Link5">
@@ -333,8 +334,8 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
     name="Link6">
@@ -387,11 +388,11 @@
     <child
       link="Link6" />
     <axis
-      xyz="0 0 1" />
+      xyz="0 0 -1" />
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
 </robot>

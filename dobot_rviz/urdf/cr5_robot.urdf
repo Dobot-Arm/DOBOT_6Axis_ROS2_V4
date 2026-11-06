@@ -46,6 +46,7 @@
     </collision>
   </link>
 
+
   <joint name="dummy_joint" type="fixed">
       <parent link="dummy_link" />
       <child  link="base_link" />
@@ -106,8 +107,8 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.14" />
   </joint>
   <link
     name="Link2">
@@ -164,8 +165,8 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.14" />
   </joint>
   <link
     name="Link3">
@@ -222,8 +223,8 @@
     <limit
       lower="-2.792"
       upper="2.792"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
     name="Link4">
@@ -280,8 +281,8 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
     name="Link5">
@@ -338,8 +339,8 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
   <link
     name="Link6">
@@ -396,7 +397,7 @@
     <limit
       lower="-6.28"
       upper="6.28"
-      effort="0"
-      velocity="0" />
+      effort="100"
+      velocity="3.89" />
   </joint>
 </robot>

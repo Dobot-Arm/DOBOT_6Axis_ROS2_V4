@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>dobot_kinematics_plugin</name>
+  <version>0.1.0</version>
+  <description>
+    MoveIt2 运动学插件：把 FK/IK 委托给 Dobot 控制器已有的正逆解 ROS 服务
+    (/dobot_bringup_ros2/srv/PositiveKin、/dobot_bringup_ros2/srv/InverseKin)，
+    使用控制器内部的真实标定 DH 参数；控制器不可用时回退到 KDL(理论 DH)。
+  </description>
+  <maintainer email="futingxing@dobot-robot.com">TX_F</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>moveit_kinematics</depend>
+  <depend>rclcpp</depend>
+  <depend>dobot_msgs_v4</depend>
+  <depend>tf2_eigen</depend>
+  <depend>tf2_kdl</depend>
+  <depend>geometry_msgs</depend>
+  <depend>moveit_msgs</depend>
+  <depend>eigen</depend>
+
+  <build_export_depend>moveit_core</build_export_depend>
+  <build_export_depend>pluginlib</build_export_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+    <!-- 注册到 moveit_core 插件命名空间，与 kdl_kinematics_plugin 一致 -->
+    <moveit_core plugin="${prefix}/dobot_kinematics_plugin.xml"/>
+  </export>
+</package>

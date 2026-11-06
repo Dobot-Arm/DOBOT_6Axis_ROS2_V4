@@ -1,4 +1,4 @@
-﻿from moveit_configs_utils import MoveItConfigsBuilder
+from moveit_configs_utils import MoveItConfigsBuilder
 from moveit_configs_utils.launches import generate_moveit_rviz_launch
 
 from launch import LaunchDescription
@@ -140,6 +140,3 @@ def my_generate_moveit_rviz_launch(ld, moveit_config):
     )
 
     return ld
-
-
-

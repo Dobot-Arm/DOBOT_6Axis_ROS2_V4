@@ -24,9 +24,16 @@ trajectory_duration = json_data["node_info"][current_robot -
                                              1]["trajectory_duration"]
 robot_node_name = json_data["node_info"][current_robot -
                                          1]["robot_node_name"]
-ip_address = os.getenv("IP_address")
+ip_address = os.getenv("IP_address", json_data["node_info"][current_robot - 1]["ip_address"])
              
-robot_type = os.getenv("DOBOT_TYPE")
+robot_type = os.getenv("DOBOT_TYPE", json_data["node_info"][current_robot - 1]["robot_type"])
+
+print(f"[DOBOT BRINGUP] Using IP: {ip_address}")
+print(f"[DOBOT BRINGUP] Using Robot Type: {robot_type}")
+if not os.getenv("IP_address"):
+    print("[DOBOT BRINGUP] IP_address not set, using default from param.json")
+if not os.getenv("DOBOT_TYPE"):
+    print("[DOBOT BRINGUP] DOBOT_TYPE not set, using default from param.json")
 
 
 dobot_ros2_params = [
@@ -42,8 +49,8 @@ def generate_launch_description():
 
     return LaunchDescription([
         launch_ros.actions.Node(
-            package='cr_robot_ros2',
-            executable='cr_robot_ros2_node',
+            package='dobot_bringup_v4',
+            executable='dobot_bringup_v4_node',
             name=robot_node_name,
             output='screen',
             parameters=dobot_ros2_params

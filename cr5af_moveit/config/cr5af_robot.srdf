@@ -12,6 +12,11 @@
     <group name="cr5af_group">
         <chain base_link="base_link" tip_link="Link6"/>
     </group>
+    <!-- 末端执行器声明：明确交互标记/末端执行器的父链接为法兰 Link6。
+         缺少此声明时 MoveIt 的 robot_interaction 找不到末端执行器，
+         会把交互球挂到 group 内某个中间 link，导致“规划球在六轴中部”。
+         注：控制器 IK 返回的是法兰位姿，故 parent_link=Link6（=tool0 位置，二者重合）。 -->
+    <end_effector name="tcp" parent_link="Link6" group="cr5af_group"/>
     <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
     <group_state name="home" group="cr5af_group">
         <joint name="joint1" value="0"/>

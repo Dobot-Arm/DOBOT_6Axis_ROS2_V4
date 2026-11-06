@@ -1,0 +1,180 @@
+# MoveIt Planning Pipeline Configuration for DOBOT Robots
+# This configuration ensures proper start state synchronization and validation
+
+# Planning plugin to be used for motion planning (MoveIt2 Humble format)
+planning_plugin: ompl_interface/OMPLPlanner
+
+# Request adapters are applied to the planning request before planning
+request_adapters: >-
+  default_planner_request_adapters/AddTimeOptimalParameterization
+  default_planner_request_adapters/ResolveConstraintFrames
+  default_planner_request_adapters/FixWorkspaceBounds
+  default_planner_request_adapters/FixStartStateBounds
+  default_planner_request_adapters/FixStartStateCollision
+  default_planner_request_adapters/FixStartStatePathConstraints
+
+# OMPL Planner Configuration
+ompl:
+  # Planning time limit (seconds)
+  planning_time: 2.0
+
+  # Maximum number of planning attempts
+  max_planning_threads: 2
+
+  # Maximum number of solutions to return
+  max_num_planning_attempts: 3
+
+  # Simplification settings
+  simplify_solutions: true
+  simplify_fraction: 0.3
+
+  # Interpolation settings
+  interpolation_fraction: 0.1
+
+  # Projection evaluator
+  projection_evaluator: joint(joint1,joint2)
+
+  # Default planner
+  default_planner_config: RRTConnect
+
+  # Planner configurations
+  planner_configs:
+    # RRTConnect - Good for complex environments
+    RRTConnect:
+      type: geometric::RRTConnect
+      range: 0.0  # Maximum extension distance (0.0 = auto)
+
+    # RRT - Rapidly-exploring Random Tree
+    RRT:
+      type: geometric::RRT
+      range: 0.0
+
+    # RRTstar - Asymptotically optimal RRT
+    RRTstar:
+      type: geometric::RRTstar
+      range: 0.0
+      delay_collision_checking: 0.0
+
+    # PRM - Probabilistic Roadmap
+    PRM:
+      type: geometric::PRM
+
+    # PRMstar - Asymptotically optimal PRM
+    PRMstar:
+      type: geometric::PRMstar
+
+    # EST - Expansive Space Trees
+    EST:
+      type: geometric::EST
+      range: 0.0
+      goal_bias: 0.05
+
+    # SBL - Single-query Bi-directional Lazy planner
+    SBL:
+      type: geometric::SBL
+      range: 0.0
+
+    # TRRT - Transition-based RRT
+    TRRT:
+      type: geometric::TRRT
+      range: 0.0
+      temp_change_factor: 0.2
+      min_temperature: 1e-10
+      max_temperature: 1e10
+      init_temperature: 1e-6
+      frountier_threshold: 0.0
+      frountier_node_ratio: 0.1
+      cost_threshold: 1e300
+
+    # LBKPIECE - Lazy Bi-directional KPIECE
+    LBKPIECE:
+      type: geometric::LBKPIECE
+      range: 0.0
+      border_fraction: 0.9
+      min_valid_path_fraction: 0.5
+
+    # BKPIECE - Bi-directional KPIECE
+    BKPIECE:
+      type: geometric::BKPIECE
+      range: 0.0
+      border_fraction: 0.9
+      failed_expansion_score_factor: 0.5
+      min_valid_path_fraction: 0.5
+
+    # KPIECE - Kinodynamic Planning by Interior-Exterior Cell Exploration
+    KPIECE:
+      type: geometric::KPIECE
+      range: 0.0
+      goal_bias: 0.1
+      border_fraction: 0.9
+      failed_expansion_score_factor: 0.5
+      min_valid_path_fraction: 0.5
+
+    # STRIDE - State Transition Rapid Incremental Discrete Expansion
+    STRIDE:
+      type: geometric::STRIDE
+      range: 0.0
+      degree: 16
+      max_degree: 18
+      min_degree: 12
+      max_states: 10000
+
+    # BiTRRT - Bi-directional Transition-based RRT
+    BiTRRT:
+      type: geometric::BiTRRT
+      range: 0.0
+      temp_change_factor: 0.2
+      min_temperature: 1e-10
+      max_temperature: 1e10
+      init_temperature: 1e-6
+      frountier_threshold: 0.0
+      frountier_node_ratio: 0.1
+      cost_threshold: 1e300
+
+    # FMT - Fast Marching Tree
+    FMT:
+      type: geometric::FMT
+      range: 0.0
+      num_samples: 1000
+      radius_multiplier: 1.1
+      nearest_k: 1
+      cache_cc: true
+      heuristic: true
+
+    # BFMT - Bidirectional Fast Marching Tree
+    BFMT:
+      type: geometric::BFMT
+      range: 0.0
+      num_samples: 1000
+      radius_multiplier: 1.0
+      cache_cc: true
+      heuristic: true
+
+    # PDST - Probabilistic Dynamic-domain Search Tree
+    PDST:
+      type: geometric::PDST
+
+    # SPARS - Sparse Roadmap Spanner
+    SPARS:
+      type: geometric::SPARS
+      sparse_delta_fraction: 0.25
+      dense_delta_fraction: 0.001
+      stretch_factor: 3.0
+
+    # SPARStwo - SPARS2
+    SPARStwo:
+      type: geometric::SPARStwo
+      sparse_delta_fraction: 0.25
+      dense_delta_fraction: 0.001
+      stretch_factor: 3.0
+
+  # Group-specific planner configurations
+  nova5_group:
+    # Default planner for this group
+    default_planner_config: RRTConnect
+
+    # Planner-specific overrides
+    planner_configs:
+      - RRTConnect
+      - RRTstar
+      - PRMstar
